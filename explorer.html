@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A#0M Captive Portal - Sovereign Authority</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background: #0a0a0a; color: #00ff00; margin: 0; display: flex; height: 100vh; overflow: hidden; flex-direction: column; }
+        #main { display: flex; flex: 1; overflow: hidden; }
+        #sidebar { width: 300px; background: #111; border-right: 1px solid #333; overflow-y: auto; padding: 10px; }
+        #content { flex: 1; display: flex; flex-direction: column; }
+        #header { background: #1a1a1a; padding: 10px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; color: #ff3333; font-weight: bold; }
+        #editor { flex: 1; background: #050505; color: #dcdcdc; padding: 10px; overflow: auto; white-space: pre; font-size: 14px; outline: none; border: none; width: 100%; resize: none; }
+        #terminal-container { height: 35%; background: #000; border-top: 2px solid #333; display: flex; flex-direction: column; }
+        #terminal-output { flex: 1; overflow-y: auto; padding: 10px; color: #00ff00; font-size: 13px; white-space: pre-wrap; }
+        #terminal-input-wrapper { display: flex; border-top: 1px solid #333; padding: 5px; background: #111; }
+        #terminal-prompt { color: #ffcc00; margin-right: 10px; line-height: 24px; }
+        #terminal-input { flex: 1; background: transparent; border: none; color: #00ff00; font-family: 'Courier New', Courier, monospace; font-size: 14px; outline: none; }
+        .folder { cursor: pointer; color: #ffcc00; font-weight: bold; margin-top: 5px; }
+        .file { cursor: pointer; color: #00ff00; margin-left: 15px; margin-top: 3px; }
+        .file:hover, .folder:hover { text-decoration: underline; }
+        .hidden { display: none; }
+        .children { margin-left: 10px; border-left: 1px dashed #333; padding-left: 5px; }
+        .error { color: #ff3333; }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <span>A#0M CAPTIVE PORTAL - SOVEREIGN AUTHORITY</span>
+        <span id="current-file">Select a file</span>
+    </div>
+    <div id="main">
+        <div id="sidebar">
+            <h3>File System</h3>
+            <div id="file-tree">Loading...</div>
+        </div>
+        <div id="content">
+            <textarea id="editor" readonly></textarea>
+        </div>
+    </div>
+    <div id="terminal-container">
+        <div id="terminal-output">Welcome to A#0M Captive Portal Shell. Type commands below.
+Use 'git log' to view history, 'ls -la' to view all files, or 'cat' to read logs.
+</div>
+        <div id="terminal-input-wrapper">
+            <span id="terminal-prompt">sovereign@a0m:~$</span>
+            <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus>
+        </div>
+    </div>
+
+    <script>
+        async function loadTree() {
+            const res = await fetch('/api/explorer/tree');
+            const tree = await res.json();
+            document.getElementById('file-tree').innerHTML = '';
+            document.getElementById('file-tree').appendChild(buildNode(tree));
+        }
+
+        function buildNode(node) {
+            const div = document.createElement('div');
+            if (node.type === 'directory') {
+                const title = document.createElement('div');
+                title.className = 'folder';
+                title.textContent = '📁 ' + node.name;
+                
+                const childrenDiv = document.createElement('div');
+                childrenDiv.className = 'children hidden';
+                
+                node.children.forEach(child => {
+                    childrenDiv.appendChild(buildNode(child));
+                });
+
+                title.onclick = (e) => {
+                    e.stopPropagation();
+                    childrenDiv.classList.toggle('hidden');
+                    title.textContent = childrenDiv.classList.contains('hidden') ? '📁 ' + node.name : '📂 ' + node.name;
+                };
+
+                div.appendChild(title);
+                div.appendChild(childrenDiv);
+            } else {
+                const title = document.createElement('div');
+                title.className = 'file';
+                title.textContent = '📄 ' + node.name;
+                title.onclick = (e) => {
+                    e.stopPropagation();
+                    loadFile(node.path);
+                };
+                div.appendChild(title);
+            }
+            return div;
+        }
+
+        async function loadFile(path) {
+            document.getElementById('current-file').textContent = path;
+            document.getElementById('editor').value = 'Loading...';
+            try {
+                const res = await fetch('/api/explorer/file?path=' + encodeURIComponent(path));
+                const data = await res.text();
+                document.getElementById('editor').value = data;
+            } catch (err) {
+                document.getElementById('editor').value = 'Error loading file: ' + err.message;
+            }
+        }
+
+        loadTree();
+
+        // Terminal Logic
+        const termInput = document.getElementById('terminal-input');
+        const termOutput = document.getElementById('terminal-output');
+        
+        termInput.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                const cmd = termInput.value;
+                if (!cmd) return;
+                termInput.value = '';
+                termOutput.innerHTML += `\n<span style="color:#ffcc00">sovereign@a0m:~$</span> ${cmd}\n`;
+                
+                try {
+                    const res = await fetch('/api/explorer/shell', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ command: cmd })
+                    });
+                    const data = await res.json();
+                    if (data.stdout) termOutput.innerHTML += escapeHtml(data.stdout);
+                    if (data.stderr) termOutput.innerHTML += `<span class="error">${escapeHtml(data.stderr)}</span>`;
+                    if (data.error) termOutput.innerHTML += `<span class="error">${escapeHtml(data.error)}</span>`;
+                } catch (err) {
+                    termOutput.innerHTML += `<span class="error">Execution failed: ${err.message}</span>`;
+                }
+                termOutput.scrollTop = termOutput.scrollHeight;
+            }
+        });
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

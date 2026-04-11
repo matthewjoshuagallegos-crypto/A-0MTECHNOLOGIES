@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+             (request.auth.token.email == "matthewjoshuagallegos@gmail.com" || 
+              request.auth.token.email == "melindagates@gmail.com" ||
+              request.auth.token.email == "melinda@gatesfoundation.org" ||
+              request.auth.token.email == "melinda.gates@gatesfoundation.org" ||
+              request.auth.token.email == "melinda@pivotalventures.org");
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidUser(data) {
+      return data.artisanId is string && data.artisanId.size() > 0 && data.artisanId.size() < 100 &&
+             data.artisanName is string && data.artisanName.size() > 0 && data.artisanName.size() < 100 &&
+             data.guildAddress is string && isValidEmail(data.guildAddress) &&
+             data.balance is number && data.balance >= 0;
+    }
+
+    function isValidMessage(data) {
+      return data.userId is string && data.userId.size() > 0 &&
+             data.userName is string && data.userName.size() > 0 &&
+             data.text is string && data.text.size() > 0 &&
+             data.text.size() < 1000;
+    }
+
+    function isValidLeaderboardEntry(data) {
+      return data.uid is string && data.uid.size() > 0 &&
+             data.name is string && data.name.size() > 0 &&
+             data.category in ['Gamer', 'Developer', 'Artist', 'Investor'] &&
+             data.score is number &&
+             data.contribution is string && data.contribution.size() < 500;
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // User Profiles
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isSuperAdmin();
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) &&
+                      request.resource.data.artisanId == resource.data.artisanId;
+    }
+
+    // Messages (Courier Stream)
+    match /messages/{messageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidMessage(request.resource.data) &&
+                      request.resource.data.userId == request.auth.uid;
+    }
+
+    // User Files
+    match /users/{userId}/files/{fileId} {
+      allow read, write: if isOwner(userId) || isSuperAdmin();
+    }
+
+    // Global Playlist
+    match /playlist/{songId} {
+      allow read: if isAuthenticated();
+      allow write: if isSuperAdmin();
+    }
+
+    // Assets
+    match /assets/{assetId} {
+      allow read: if isAuthenticated();
+      allow write: if isSuperAdmin();
+    }
+
+    // Leaderboard
+    match /leaderboard/{entryId} {
+      allow read: if isAuthenticated();
+      allow create, update: if (isOwner(entryId) || isSuperAdmin()) && isValidLeaderboardEntry(request.resource.data);
+    }
+
+    // Global Lockdown for everything else
+    match /{document=**} {
+      allow read, write: if isSuperAdmin();
+    }
+  }
+}

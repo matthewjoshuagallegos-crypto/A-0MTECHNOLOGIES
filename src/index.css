@@ -1,0 +1,160 @@
+/**
+ * ==========================================
+ * CORE CITATION & LICENSE MANIFEST
+ * ==========================================
+ * Recognized Entity: Google
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
+ * Sponsor: BeBe Rexa
+ * TM: A#0M Technologies
+ * Brands: Macintosh, Apple, Pixel, Microsoft
+ * Attorneys: Proctor & Gamble
+ * Design: Java
+ * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
+ * ==========================================
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;600&display=swap');
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-bg: #0A0A0A;
+  --color-card: #141414;
+  --color-accent: #9D4EDD;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #8E9299;
+  --color-border: #262626;
+}
+
+.dark {
+  --color-bg: #0A0A0A;
+  --color-card: #141414;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #8E9299;
+  --color-border: #262626;
+}
+
+.light {
+  --color-bg: #F5F5F5;
+  --color-card: #FFFFFF;
+  --color-text-primary: #171717;
+  --color-text-secondary: #525252;
+  --color-border: #E5E5E5;
+}
+
+[data-accent='purple'] { --color-accent: #9D4EDD; }
+[data-accent='blue'] { --color-accent: #3B82F6; }
+[data-accent='green'] { --color-accent: #10B981; }
+[data-accent='orange'] { --color-accent: #F59E0B; }
+
+@layer base {
+  body {
+    @apply bg-[var(--color-bg)] text-[var(--color-text-primary)] font-sans antialiased min-h-screen pb-12;
+  }
+}
+
+.glass {
+  @apply bg-[var(--color-card)] border border-[var(--color-border)] backdrop-blur-md;
+}
+
+.data-value {
+  font-family: var(--font-mono);
+}
+
+/* Leaflet Custom Popup Styles */
+.leaflet-popup-content-wrapper {
+  background: rgba(20, 20, 20, 0.9) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-accent) !important;
+  color: white !important;
+  border-radius: 12px !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(20, 20, 20, 0.9) !important;
+  border: 1px solid var(--color-accent) !important;
+}
+
+.leaflet-container {
+  background: var(--color-bg) !important;
+}
+
+/* Modern Map Markers */
+.a0m-node-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.a0m-node-core {
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--color-accent), 0 0 20px var(--color-accent);
+  z-index: 2;
+}
+
+.a0m-node-pulse {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: var(--color-accent);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: nodePulse 2s infinite ease-out;
+  z-index: 1;
+}
+
+@keyframes nodePulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.a0m-node-warning .a0m-node-core {
+  background-color: #FBBF24;
+  box-shadow: 0 0 10px #FBBF24, 0 0 20px #FBBF24;
+}
+
+.a0m-node-warning .a0m-node-pulse {
+  background-color: #FBBF24;
+}
+
+.a0m-user-core {
+  width: 14px;
+  height: 14px;
+  background-color: #38BDF8; /* Cyan for user */
+  border-radius: 50%;
+  box-shadow: 0 0 15px #38BDF8, 0 0 30px #38BDF8;
+  z-index: 2;
+}
+
+.a0m-user-pulse {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: #38BDF8;
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: nodePulse 1.5s infinite ease-out;
+  z-index: 1;
+}
+
+/* Map Filter for Cyberpunk Vibe */
+.cyberpunk-map-tiles {
+  filter: brightness(0.6) contrast(1.4) hue-rotate(15deg) saturate(1.8) invert(0);
+}

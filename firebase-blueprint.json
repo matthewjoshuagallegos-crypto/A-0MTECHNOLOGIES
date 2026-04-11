@@ -1,0 +1,126 @@
+{
+  "entities": {
+    "PhysicalAsset": {
+      "title": "PhysicalAsset",
+      "description": "A physical asset in the marketplace.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "rarity": { "type": "string" },
+        "price": { "type": "number" },
+        "lastPrice": { "type": "number" },
+        "image": { "type": "string" },
+        "description": { "type": "string" },
+        "history": { "type": "array" }
+      },
+      "required": ["id", "name", "category", "rarity", "price", "image"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information.",
+      "type": "object",
+      "properties": {
+        "artisanId": { "type": "string" },
+        "artisanName": { "type": "string" },
+        "guildAddress": { "type": "string" },
+        "guildTag": { "type": "string" },
+        "balance": { "type": "number" },
+        "totalEarnings": { "type": "number" },
+        "monetizationActive": { "type": "boolean" },
+        "portraitURL": { "type": "string" },
+        "bio": { "type": "string" },
+        "preferredSpecialization": { "type": "string" },
+        "cashTag": { "type": "string" },
+        "chimeTag": { "type": "string" },
+        "earningsHistory": { "type": "array" },
+        "connections": { "type": "object" },
+        "titheRecord": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["artisanId", "artisanName", "guildAddress", "balance"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A message in the courier stream.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "text": { "type": "string" },
+        "role": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "userName", "text", "timestamp"]
+    },
+    "UserFile": {
+      "title": "UserFile",
+      "description": "A file owned by a user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "size": { "type": "string" },
+        "date": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["id", "name", "content"]
+    },
+    "Song": {
+      "title": "Song",
+      "description": "A song in the playlist.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "artist": { "type": "string" },
+        "duration": { "type": "string" },
+        "source": { "type": "string" },
+        "url": { "type": "string" },
+        "cite": { "type": "string" }
+      },
+      "required": ["name", "artist", "url"]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "An entry in the global leaderboard.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "score": { "type": "number" },
+        "contribution": { "type": "string" },
+        "avatar": { "type": "string" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "category", "score", "contribution"]
+    }
+  },
+  "firestore": {
+    "/leaderboard/{entryId}": {
+      "schema": { "$ref": "LeaderboardEntry" },
+      "description": "Global leaderboard entries."
+    },
+    "/assets/{assetId}": {
+      "schema": { "$ref": "PhysicalAsset" },
+      "description": "Marketplace assets."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "UserProfile" },
+      "description": "User profiles."
+    },
+    "/users/{userId}/files/{fileId}": {
+      "schema": { "$ref": "UserFile" },
+      "description": "User-owned files."
+    },
+    "/playlist/{songId}": {
+      "schema": { "$ref": "Song" },
+      "description": "Global playlist."
+    },
+    "/messages/{messageId}": {
+      "schema": { "$ref": "Message" },
+      "description": "Courier stream messages."
+    }
+  }
+}
