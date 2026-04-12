@@ -32,9 +32,9 @@ const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGam
   const canvasRef = useRef(null);
 
   // System Logging Utility
-  const addLog = (msg, type = 'info') => {
+  const addLog = (msg: string, type: 'info' | 'success' | 'warning' = 'info') => {
     setLogs(prev => [{
-      id: Math.random(),
+      id: `${Date.now()}-${Math.random()}`,
       msg: `[© APACHE 2036] ${msg}`,
       type,
       time: new Date().toLocaleTimeString()

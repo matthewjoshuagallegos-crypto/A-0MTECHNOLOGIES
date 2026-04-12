@@ -50,9 +50,22 @@ service cloud.firestore {
              data.contribution is string && data.contribution.size() < 500;
     }
 
+    function isValidAPNProfile(data) {
+      return data.name is string && data.name.size() > 0 &&
+             data.apn is string && data.apn.size() > 0 &&
+             data.mcc is string && data.mcc.size() > 0 &&
+             data.mnc is string && data.mnc.size() > 0;
+    }
+
     // ===============================================================
     // Collection Rules
     // ===============================================================
+
+    // APN Profiles
+    match /apn_profiles/{profileId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isValidAPNProfile(request.resource.data);
+    }
 
     // User Profiles
     match /users/{userId} {

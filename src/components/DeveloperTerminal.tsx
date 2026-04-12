@@ -10,8 +10,11 @@
 
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Terminal, Send, Loader2, Shield, Zap, History, Server, Activity, ChevronRight, MessageSquare } from 'lucide-react';
+import { Terminal as TerminalIcon, Send, Loader2, Shield, Zap, History, Server, Activity, ChevronRight, MessageSquare, Wifi, BarChart3, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Terminal } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
+import 'xterm/css/xterm.css';
 
 interface LogEntry {
   timestamp: string;
@@ -23,12 +26,35 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
   const [logs, setLogs] = useState<string[]>([]);
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [currentMode, setCurrentMode] = useState<'menu' | 'radius-shock' | 'logs' | 'deploy' | 'earnings' | 'conversational'>('menu');
+  const [currentMode, setCurrentMode] = useState<'menu' | 'radius-shock' | 'logs' | 'deploy' | 'earnings' | 'conversational' | 'terminal'>('menu');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const xtermRef = useRef<Terminal | null>(null);
+  const fitAddonRef = useRef<FitAddon | null>(null);
 
   const [conversation, setConversation] = useState<{ role: 'user' | 'system', text: string }[]>([]);
+
+  // Network Performance State
+  const [networkStats, setNetworkStats] = useState({
+    packetLoss: '0.02%',
+    jitter: '1.4ms',
+    bandwidth: '842 Mbps',
+    latency: '14ms'
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNetworkStats({
+        packetLoss: (Math.random() * 0.05).toFixed(2) + '%',
+        jitter: (Math.random() * 2 + 0.5).toFixed(1) + 'ms',
+        bandwidth: (Math.random() * 100 + 800).toFixed(0) + ' Mbps',
+        latency: (Math.random() * 5 + 10).toFixed(0) + 'ms'
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const allLogs = useMemo(() => [...logs, ...(externalLogs || [])], [logs, externalLogs]);
 
@@ -45,6 +71,97 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [allLogs, conversation]);
+
+  useEffect(() => {
+    if (currentMode === 'terminal' && terminalRef.current && !xtermRef.current) {
+      const term = new Terminal({
+        cursorBlink: true,
+        theme: {
+          background: 'transparent',
+          foreground: '#dcdcdc',
+          cursor: '#D4AF37',
+          selectionBackground: 'rgba(212, 175, 55, 0.3)',
+        },
+        fontFamily: 'JetBrains Mono, monospace',
+        fontSize: 12,
+      });
+
+      const fitAddon = new FitAddon();
+      term.loadAddon(fitAddon);
+      term.open(terminalRef.current);
+      fitAddon.fit();
+
+      term.writeln('\x1b[1;33mA#0M SOVEREIGN SHELL v2026.4\x1b[0m');
+      term.writeln('Authorized Access Only. 512-Bit Encryption Active.');
+      term.write('\r\n\x1b[1;33msovereign@a0m:_\x1b[0m ');
+
+      let currentLine = '';
+      term.onData(async (data) => {
+        if (data === '\r') { // Enter
+          term.write('\r\n');
+          if (currentLine.trim()) {
+            await handleTerminalCommand(currentLine, term);
+          }
+          currentLine = '';
+          term.write('\x1b[1;33msovereign@a0m:_\x1b[0m ');
+        } else if (data === '\u007f') { // Backspace
+          if (currentLine.length > 0) {
+            currentLine = currentLine.slice(0, -1);
+            term.write('\b \b');
+          }
+        } else {
+          currentLine += data;
+          term.write(data);
+        }
+      });
+
+      xtermRef.current = term;
+      fitAddonRef.current = fitAddon;
+
+      const handleResize = () => fitAddon.fit();
+      window.addEventListener('resize', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        term.dispose();
+        xtermRef.current = null;
+      };
+    }
+  }, [currentMode]);
+
+  const handleTerminalCommand = async (cmd: string, term: Terminal) => {
+    if (cmd === 'clear') {
+      term.clear();
+      return;
+    }
+    if (cmd === 'help') {
+      term.writeln('Available commands: ls, cat, help, clear, whoami, date, pwd, echo, grep, find');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/explorer/shell', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: cmd })
+      });
+      const data = await res.json();
+      
+      if (data.stdout) {
+        data.stdout.split('\n').forEach((line: string) => term.writeln(line));
+      }
+      if (data.stderr) {
+        term.writeln(`\x1b[31m${data.stderr}\x1b[0m`);
+      }
+      if (data.error) {
+        term.writeln(`\x1b[31mEXECUTION ERROR: ${data.error}\x1b[0m`);
+      }
+      if (data.logId) {
+        term.writeln(`\x1b[33mDebug log generated: /api/explorer/shell/log/${data.logId}\x1b[0m`);
+      }
+    } catch (err: any) {
+      term.writeln(`\x1b[31mNETWORK ERROR: ${err.message}\x1b[0m`);
+    }
+  };
 
   const addLog = (msg: string) => {
     const timestamp = new Date().toLocaleTimeString();
@@ -244,7 +361,7 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
       <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-            <Terminal className="text-black w-5 h-5" />
+            <TerminalIcon className="text-black w-5 h-5" />
           </div>
           <div>
             <h2 className="text-lg font-bold tracking-tighter">ANTHEM DIAGNOSTIC TERMINAL</h2>
@@ -261,8 +378,18 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto mb-6 space-y-2 custom-scrollbar pr-2" ref={scrollRef}>
-        {currentMode === 'conversational' ? (
+      {/* Real-time Network Monitor */}
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        <NetworkStat icon={<Wifi size={14} />} label="Latency" value={networkStats.latency} color="text-blue-400" />
+        <NetworkStat icon={<BarChart3 size={14} />} label="Packet Loss" value={networkStats.packetLoss} color="text-red-400" />
+        <NetworkStat icon={<Activity size={14} />} label="Jitter" value={networkStats.jitter} color="text-purple-400" />
+        <NetworkStat icon={<Globe size={14} />} label="Bandwidth" value={networkStats.bandwidth} color="text-green-400" />
+      </div>
+
+      <div className="flex-1 overflow-y-auto mb-6 space-y-2 custom-scrollbar pr-2 relative" ref={scrollRef}>
+        {currentMode === 'terminal' ? (
+          <div ref={terminalRef} className="absolute inset-0" />
+        ) : currentMode === 'conversational' ? (
           conversation.map((msg, i) => (
             <div key={i} className={cn("py-1", msg.role === 'user' ? 'text-blue-400' : 'text-cyan-400')}>
               <span className="font-bold">{msg.role === 'user' ? '> ' : 'SYS: '}</span>
@@ -308,10 +435,10 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
             className="grid grid-cols-2 gap-4"
           >
             <MenuButton 
-              icon={<Server className="w-4 h-4" />}
-              label="Server Status"
-              onClick={() => addLog("Server Status: ONLINE | Load: 12% | Latency: 14ms")}
-              color="text-blue-500"
+              icon={<TerminalIcon className="w-4 h-4" />}
+              label="Interactive Shell"
+              onClick={() => setCurrentMode('terminal')}
+              color="text-accent"
             />
             <MenuButton 
               icon={<Zap className="w-4 h-4" />}
@@ -343,6 +470,22 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
               onClick={() => setCurrentMode('conversational')}
               color="text-blue-400"
             />
+          </motion.div>
+        )}
+
+        {currentMode === 'terminal' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex justify-end"
+          >
+            <button 
+              onClick={() => setCurrentMode('menu')}
+              className="px-6 py-2 bg-white/5 border border-border rounded-xl hover:bg-white/10 transition-colors uppercase text-[10px] font-bold tracking-widest"
+            >
+              Exit Shell
+            </button>
           </motion.div>
         )}
 
@@ -491,6 +634,18 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+function NetworkStat({ icon, label, value, color }: { icon: React.ReactNode, label: string, value: string, color: string }) {
+  return (
+    <div className="bg-white/5 border border-border p-3 rounded-2xl flex flex-col gap-1">
+      <div className="flex items-center gap-2 text-text-muted">
+        {icon}
+        <span className="text-[9px] uppercase tracking-widest font-bold">{label}</span>
+      </div>
+      <span className={cn("text-sm font-bold", color)}>{value}</span>
     </div>
   );
 }

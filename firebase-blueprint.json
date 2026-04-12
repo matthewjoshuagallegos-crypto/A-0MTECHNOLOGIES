@@ -95,9 +95,38 @@
         "lastUpdated": { "type": "string", "format": "date-time" }
       },
       "required": ["uid", "name", "category", "score", "contribution"]
+    },
+    "APNProfile": {
+      "title": "APNProfile",
+      "description": "Carrier APN profile configuration.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "apn": { "type": "string" },
+        "mcc": { "type": "string" },
+        "mnc": { "type": "string" },
+        "type": { "type": "string" },
+        "protocol": { "type": "string" },
+        "roamingProtocol": { "type": "string" },
+        "port": { "type": "number" },
+        "proxy": { "type": "string" },
+        "gateway": { "type": "string" },
+        "mmsc": { "type": "string" },
+        "mmsProxy": { "type": "string" },
+        "mmsPort": { "type": "number" },
+        "bearer": { "type": "number" },
+        "authType": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "apn", "mcc", "mnc"]
     }
   },
   "firestore": {
+    "/apn_profiles/{profileId}": {
+      "schema": { "$ref": "APNProfile" },
+      "description": "Carrier APN profiles."
+    },
     "/leaderboard/{entryId}": {
       "schema": { "$ref": "LeaderboardEntry" },
       "description": "Global leaderboard entries."

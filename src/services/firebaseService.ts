@@ -22,6 +22,7 @@ import {
   arrayUnion,
   getDoc, 
   setDoc,
+  deleteDoc,
   serverTimestamp,
   limit
 } from 'firebase/firestore';
@@ -262,5 +263,40 @@ export async function updateLeaderboardScore(entry: Partial<LeaderboardEntry>) {
     }, { merge: true });
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, 'leaderboard');
+  }
+}
+
+export function listenToAPNProfiles(callback: (profiles: any[]) => void) {
+  const q = query(collection(db, 'apn_profiles'), orderBy('updatedAt', 'desc'));
+  return onSnapshot(q, (snapshot) => {
+    const profiles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    callback(profiles);
+  }, (error) => {
+    handleFirestoreError(error, OperationType.LIST, 'apn_profiles');
+  });
+}
+
+export async function saveAPNProfile(profile: any) {
+  try {
+    const profileData = {
+      ...profile,
+      updatedAt: new Date().toISOString()
+    };
+    if (profile.id) {
+      const { id, ...data } = profileData;
+      await updateDoc(doc(db, 'apn_profiles', id), data);
+    } else {
+      await addDoc(collection(db, 'apn_profiles'), profileData);
+    }
+  } catch (error) {
+    handleFirestoreError(error, profile.id ? OperationType.UPDATE : OperationType.CREATE, 'apn_profiles');
+  }
+}
+
+export async function deleteAPNProfile(profileId: string) {
+  try {
+    await deleteDoc(doc(db, 'apn_profiles', profileId));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, 'apn_profiles');
   }
 }

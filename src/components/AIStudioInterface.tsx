@@ -270,32 +270,44 @@ export const AIStudioInterface: React.FC = () => {
   };
 
   return (
-    <div className="p-6 glass rounded-xl shadow-lg border border-white/10 relative overflow-hidden h-full flex flex-col">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(157,78,221,0.1),transparent_50%)]" />
-      <h2 className="text-2xl font-display italic tracking-tighter mb-4 rainbow-text relative z-10">AI STUDIO</h2>
+    <div className="p-8 premium-card relative overflow-hidden h-full flex flex-col">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(212,175,55,0.05),transparent_50%)]" />
       
-      <div className="flex space-x-2 mb-6 relative z-10 overflow-x-auto pb-2 custom-scrollbar">
+      <div className="flex items-center justify-between mb-8 relative z-10">
+        <div>
+          <h2 className="text-3xl font-display font-black italic tracking-tighter rainbow-text">AI STUDIO</h2>
+          <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Universal Records // Sovereign Intelligence</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[9px] font-mono text-text-muted uppercase tracking-widest">Neural Link Active</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex space-x-2 mb-8 relative z-10 overflow-x-auto pb-4 custom-scrollbar">
         {[
-          { id: 'music', icon: Music, label: 'Music' },
-          { id: 'image', icon: Palette, label: 'Image' },
-          { id: 'speech', icon: Mic, label: 'Speech' },
-          { id: 'video', icon: Video, label: 'Video' },
-          { id: 'search', icon: Search, label: 'Search' },
-          { id: 'maps', icon: MapPin, label: 'Maps' },
-          { id: 'thinking', icon: BrainCircuit, label: 'Thinking' },
-          { id: 'analyze-video', icon: Video, label: 'Analyze Video' },
-          { id: 'transcribe', icon: Mic, label: 'Transcribe' },
-          { id: 'mixer', icon: Mic, label: 'Mixer PA' },
-          { id: 'logs', icon: Terminal, label: 'Server Logs' },
+          { id: 'music', icon: Music, label: 'Lyria Music' },
+          { id: 'image', icon: Palette, label: 'Pro Image' },
+          { id: 'speech', icon: Mic, label: 'Vocal Synth' },
+          { id: 'video', icon: Video, label: 'Veo Video' },
+          { id: 'search', icon: Search, label: 'Web Search' },
+          { id: 'maps', icon: MapPin, label: 'Spatial Maps' },
+          { id: 'thinking', icon: BrainCircuit, label: 'Deep Logic' },
+          { id: 'analyze-video', icon: Video, label: 'Vision Audit' },
+          { id: 'transcribe', icon: Mic, label: 'Audio Scribe' },
+          { id: 'mixer', icon: Mic, label: 'Master Mixer' },
+          { id: 'logs', icon: Terminal, label: 'System Logs' },
         ].map(tab => (
           <button
             key={tab.id}
             onClick={() => { playClickSound(); setActiveTab(tab.id as any); setResult(null); setMediaFile(null); }}
             disabled={loading}
-            className={`flex items-center px-4 py-2 rounded-lg transition-all whitespace-nowrap text-sm ${
+            className={`flex items-center px-5 py-2.5 rounded-xl transition-all whitespace-nowrap text-xs font-bold uppercase tracking-widest ${
               activeTab === tab.id 
-                ? 'bg-accent/20 text-accent border border-accent/50 shadow-[0_0_15px_rgba(157,78,221,0.3)]' 
-                : 'bg-white/5 text-text-muted hover:bg-white/10 border border-transparent'
+                ? 'bg-accent/20 text-accent border border-accent/50 shadow-[0_0_20px_rgba(212,175,55,0.2)]' 
+                : 'bg-white/5 text-text-muted hover:bg-white/10 border border-white/5'
             } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <tab.icon className="w-4 h-4 mr-2" />
@@ -425,21 +437,21 @@ export const AIStudioInterface: React.FC = () => {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           disabled={loading}
-          placeholder={activeTab === 'transcribe' ? "Optional: Add context for transcription..." : `Enter prompt for ${activeTab}...`}
-          className={`w-full p-4 bg-black/40 border border-white/10 rounded-xl mb-4 text-white placeholder-text-muted focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activeTab === 'logs' ? 'hidden' : ''}`}
-          rows={3}
+          placeholder={activeTab === 'transcribe' ? "ENTER CONTEXT FOR TRANSCRIPTION..." : `ENTER PROMPT FOR ${activeTab.toUpperCase()}...`}
+          className={`w-full p-6 bg-black/60 border border-white/10 rounded-2xl mb-6 text-white placeholder-text-muted focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activeTab === 'logs' ? 'hidden' : ''}`}
+          rows={4}
         />
         <button
           onClick={handleGenerate}
           disabled={loading || ((activeTab === 'analyze-video' || activeTab === 'transcribe') && !mediaFile && !isRecording) || activeTab === 'mixer' || activeTab === 'logs'}
-          className={`w-full bg-accent text-black py-3 rounded-xl font-bold flex items-center justify-center hover:shadow-[0_0_25px_rgba(157,78,221,0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed ${(activeTab === 'mixer' || activeTab === 'logs') ? 'hidden' : ''}`}
+          className={`gold-button w-full !py-4 !text-base ${(activeTab === 'mixer' || activeTab === 'logs') ? 'hidden' : ''}`}
         >
           {loading ? (
             <>
-              <Loader2 className="animate-spin mr-2" />
-              Generating...
+              <Loader2 className="animate-spin mr-3" />
+              PROCESSING NEURAL REQUEST...
             </>
-          ) : 'Generate'}
+          ) : 'EXECUTE GENERATION'}
         </button>
 
         {!hasApiKey && (

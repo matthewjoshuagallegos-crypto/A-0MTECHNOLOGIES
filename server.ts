@@ -299,19 +299,16 @@ async function startServer() {
     });
   });
 
-  // Explorer API
+  // --- Explorer API ---
   const getTree = (dir: string): any => {
     const name = path.basename(dir);
     const stats = fs.statSync(dir);
-    const node: any = { name, path: path.relative(currentDir, dir) || "." };
+    const node: any = { name, path: path.relative(currentDir, dir) || ".", type: stats.isDirectory() ? 'directory' : 'file' };
 
     if (stats.isDirectory()) {
-      node.type = "directory";
       node.children = fs.readdirSync(dir)
         .filter(f => !f.startsWith(".") && f !== "node_modules" && f !== "dist")
         .map(f => getTree(path.join(dir, f)));
-    } else {
-      node.type = "file";
     }
     return node;
   };
@@ -339,17 +336,72 @@ async function startServer() {
     }
   });
 
+  app.post("/api/explorer/file", (req, res) => {
+    const { path: filePath, content } = req.body;
+    if (!filePath) return res.status(400).send("Path required");
+    
+    const fullPath = path.join(currentDir, filePath);
+    if (!fullPath.startsWith(currentDir)) return res.status(403).send("Forbidden");
+
+    try {
+      fs.writeFileSync(fullPath, content, "utf-8");
+      writeAuditLog("INFO", `[FILE WRITE] File saved: ${filePath}`, req.ip);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Secure Shell Execution Environment
+  const SHELL_LOG_DIR = path.join(currentDir, "shell_debug_logs");
+  if (!fs.existsSync(SHELL_LOG_DIR)) fs.mkdirSync(SHELL_LOG_DIR);
+
   app.post("/api/explorer/shell", (req, res) => {
     const { command } = req.body;
     if (!command) return res.status(400).json({ error: "Command required" });
 
+    const ip = req.ip;
+    const logId = crypto.randomBytes(8).toString('hex');
+    const logFile = path.join(SHELL_LOG_DIR, `shell_${logId}.log`);
+
+    // Rigorous sanitization: only allow specific safe commands or patterns
+    const allowedCommands = ['ls', 'whoami', 'date', 'pwd', 'cat', 'echo', 'grep', 'find'];
+    const cmdBase = command.split(' ')[0];
+
+    if (!allowedCommands.includes(cmdBase)) {
+      writeAuditLog("WARN", `[SHELL BLOCKED] Unauthorized command attempt: ${command}`, ip);
+      return res.status(403).json({ error: "Command not authorized in sovereign environment." });
+    }
+
+    // Prevent command injection via shell metacharacters
+    if (/[;&|`$]/.test(command)) {
+      writeAuditLog("CRITICAL", `[SHELL BLOCKED] Potential injection attempt: ${command}`, ip);
+      return res.status(403).json({ error: "Security violation: Shell metacharacters detected." });
+    }
+
+    writeAuditLog("INFO", `[SHELL EXEC] Command: ${command} | LogID: ${logId}`, ip);
+
     exec(command, (error, stdout, stderr) => {
+      const logContent = `COMMAND: ${command}\nIP: ${ip}\nTIMESTAMP: ${new Date().toISOString()}\n\nSTDOUT:\n${stdout}\n\nSTDERR:\n${stderr}\n\nERROR:\n${error ? error.message : 'None'}`;
+      fs.writeFileSync(logFile, logContent);
+
       res.json({
         stdout,
         stderr,
-        error: error ? error.message : null
+        error: error ? error.message : null,
+        logId
       });
     });
+  });
+
+  app.get("/api/explorer/shell/log/:id", (req, res) => {
+    const { id } = req.params;
+    const logFile = path.join(SHELL_LOG_DIR, `shell_${id}.log`);
+    if (fs.existsSync(logFile)) {
+      res.download(logFile);
+    } else {
+      res.status(404).send("Log not found");
+    }
   });
 
   // Artifact Downloader

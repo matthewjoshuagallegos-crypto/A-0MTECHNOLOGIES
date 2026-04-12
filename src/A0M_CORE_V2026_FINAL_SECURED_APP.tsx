@@ -121,6 +121,9 @@ import { Onboarding } from './components/Onboarding';
 import DeploymentManifest from './components/DeploymentManifest';
 import APNGatewayDiagnostic from './components/APNGatewayDiagnostic';
 import SystemMonitor from './components/SystemMonitor';
+import CommandLog from './components/CommandLog';
+import APNProfileManager from './components/APNProfileManager';
+import NetworkPerformanceMetrics from './components/NetworkPerformanceMetrics';
 import { SeedKernelUtilityUI } from './components/SeedKernelUtilityUI_A0M_v1.0.0_fcc_compliant';
 import GlobalImager from './components/GlobalImager';
 import RadialDashboard from './components/RadialDashboard';
@@ -206,7 +209,7 @@ const A0M_PUBLISHER = "BeBe Rexa";
 const A0M_EDITOR = "Sonia Lopez";
 const A0M_LEGAL_CONTEXT = "Dolby Media Copyright Amendment of 1954 to the Third Amendment of 1854";
 
-type View = 'dashboard' | 'marketplace' | 'portfolio' | 'earnings' | 'monetization' | 'storage' | 'playlist' | 'safe' | 'creations' | 'tithe' | 'messages' | 'appraiser' | 'artisan-workshop' | 'gemini' | 'developer-shell' | 'developer-server' | 'security-underwrite' | 'profile' | 'ai-studio' | 'deployment' | 'global-imager' | 'root-node-map' | 'gaming-platform' | 'private-payments' | 'chronos-archive' | 'leaderboard' | 'gaming-market' | 'global-trends' | 'tasks';
+type View = 'dashboard' | 'marketplace' | 'portfolio' | 'earnings' | 'monetization' | 'storage' | 'playlist' | 'safe' | 'creations' | 'tithe' | 'messages' | 'appraiser' | 'artisan-workshop' | 'gemini' | 'developer-shell' | 'developer-server' | 'security-underwrite' | 'profile' | 'ai-studio' | 'deployment' | 'global-imager' | 'root-node-map' | 'gaming-platform' | 'private-payments' | 'chronos-archive' | 'leaderboard' | 'gaming-market' | 'global-trends' | 'tasks' | 'android-legacy-console';
 
 const PLAYLIST = [
   { name: "Neon Horizon", artist: "A#0M Collective", duration: "3:45", source: "A#0M Records", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", cite: "Gallegos, M. J. (2026). Neon Horizon [Audio track]. A#0M Records." },
@@ -246,6 +249,7 @@ import GlobalTrendsDashboard from './components/GlobalTrendsDashboard';
 import ChronosArchive from './components/ChronosArchive';
 import Leaderboard from './components/Leaderboard';
 
+import AndroidLegacyConsole from './components/AndroidLegacyConsole';
 import { generateKey, encryptData, decryptData } from './A0M_CORE_V2026_FINAL_SECURED_CRYPTO';
 
 export default function App() {
@@ -1225,10 +1229,10 @@ export default function App() {
         <div className="flex-1 overflow-y-auto p-4 lg:p-6 custom-scrollbar">
           <div className={cn("flex items-center gap-3 mb-10", isSidebarCollapsed ? "justify-center" : "justify-between")}>
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
                 <Zap className="text-black w-6 h-6 fill-current" />
               </div>
-              {!isSidebarCollapsed && <h1 className="text-2xl font-display italic tracking-tighter rainbow-text truncate">A#0M</h1>}
+              {!isSidebarCollapsed && <h1 className="text-2xl font-display font-black italic tracking-tighter rainbow-text truncate">A#0M</h1>}
             </div>
             <button 
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -1423,6 +1427,13 @@ export default function App() {
               collapsed={isSidebarCollapsed}
             />
             <NavItem 
+              active={currentView === 'android-legacy-console'} 
+              onClick={() => { setCurrentView('android-legacy-console'); setIsMobileMenuOpen(false); }}
+              icon={<Tv size={20} />}
+              label="Legacy Console"
+              collapsed={isSidebarCollapsed}
+            />
+            <NavItem 
               active={currentView === 'global-trends'} 
               onClick={() => { setCurrentView('global-trends'); setIsMobileMenuOpen(false); }}
               icon={<Globe size={20} />}
@@ -1528,9 +1539,9 @@ export default function App() {
                 <span className="text-[10px] font-mono text-accent">{(presence || []).length} Active</span>
               </div>
               <div className="flex -space-x-2 overflow-hidden">
-                {(presence || []).slice(0, 5).map((u) => (
+                {(presence || []).slice(0, 5).map((u, idx) => (
                   <div 
-                    key={u.id} 
+                    key={`${u.id}-${idx}`} 
                     className="w-6 h-6 rounded-full bg-card border border-border flex items-center justify-center text-[8px] font-bold uppercase"
                     title={u.name}
                   >
@@ -1640,7 +1651,7 @@ export default function App() {
               </div>
               <button 
                 onClick={() => { setIsCashOutModalOpen(true); setCashOutError(null); }}
-                className="bg-accent text-black px-4 py-2 rounded-lg text-sm font-bold hover:shadow-[0_0_15px_rgba(157,78,221,0.4)] transition-all flex items-center gap-2"
+                className="gold-button !px-6 !py-2 !text-xs flex items-center gap-2"
               >
                 <DollarSign size={16} />
                 Cash Out
@@ -1736,7 +1747,10 @@ export default function App() {
                   <ChronosArchive />
                 </motion.div>
               )}
-              {currentView === 'gaming-platform' && (
+              {currentView === 'android-legacy-console' && (
+              <AndroidLegacyConsole />
+            )}
+            {currentView === 'gaming-platform' && (
               <motion.div 
                 key="gaming-platform"
                 initial={{ opacity: 0 }}
@@ -1765,7 +1779,9 @@ export default function App() {
                 className="space-y-6"
               >
                 <SystemMonitor status={systemStatus} wsStatus={wsStatus} onSync={() => sendWsSync('Sovereign Node Manual Sync')} />
+                <NetworkPerformanceMetrics />
                 <APNGatewayDiagnostic />
+                <APNProfileManager />
                 <DeploymentManifest />
                 <SeedKernelUtilityUI />
               </motion.div>
@@ -1871,6 +1887,8 @@ export default function App() {
                     <ExternalLink size={16} className="ml-auto text-text-muted group-hover:text-white transition-colors" />
                   </a>
                 </div>
+
+                <CommandLog />
 
                 {/* Connections Section */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -3600,7 +3618,11 @@ export default function App() {
                           <motion.div 
                             key={asset.id}
                             whileHover={{ scale: 1.05 }}
-                            onClick={() => setProfileShowcase(prev => [...prev, asset.id])}
+                            onClick={() => {
+                              if (!profileShowcase.includes(asset.id)) {
+                                setProfileShowcase(prev => [...prev, asset.id]);
+                              }
+                            }}
                             className="aspect-square rounded-2xl overflow-hidden border border-white/10 cursor-pointer relative group"
                           >
                             <img src={asset.image} className="w-full h-full object-cover" alt={asset.name} />
@@ -4228,12 +4250,13 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="h-full"
+                className="h-[calc(100vh-120px)] w-full premium-card overflow-hidden"
               >
-                <DeveloperTerminal 
-                totalEarnings={userProfile?.totalEarnings || 0} 
-                externalLogs={terminalLogs}
-              />
+                <iframe 
+                  src="/google.explorer.html" 
+                  className="w-full h-full border-none"
+                  title="Sovereign Explorer"
+                />
               </motion.div>
             )}
 
