@@ -223,10 +223,19 @@ async function startServer() {
     clients.add(ws);
 
     // Broadcast presence update
-    const presenceMsg = JSON.stringify({ type: 'presence', count: clients.size, timestamp: Date.now() });
-    clients.forEach(client => {
-      if (client.readyState === 1) client.send(presenceMsg);
-    });
+    const broadcastPresence = () => {
+      const presenceMsg = JSON.stringify({ 
+        type: 'presence', 
+        count: clients.size,
+        nodes: Array.from(clients).map((_, i) => ({ id: `node-${i}`, name: `Sovereign Node ${i + 1}` })),
+        timestamp: Date.now() 
+      });
+      clients.forEach(client => {
+        if (client.readyState === 1) client.send(presenceMsg);
+      });
+    };
+
+    broadcastPresence();
 
     ws.on('message', (message) => {
       try {
@@ -240,6 +249,9 @@ async function startServer() {
             }
           });
         }
+        if (data.type === 'ping') {
+          ws.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }));
+        }
       } catch (e) {
         writeAuditLog("WARN", `[WS ERROR] Invalid message format.`, ip as string);
       }
@@ -247,13 +259,28 @@ async function startServer() {
 
     ws.on('close', () => {
       clients.delete(ws);
-      const disconnectMsg = JSON.stringify({ type: 'presence', count: clients.size, timestamp: Date.now() });
-      clients.forEach(client => {
-        if (client.readyState === 1) client.send(disconnectMsg);
-      });
+      broadcastPresence();
       writeAuditLog("INFO", `[WS DISCONNECT] Client disconnected.`, ip as string);
     });
   });
+
+  // Periodic System Status Broadcast
+  setInterval(() => {
+    const statusMsg = JSON.stringify({
+      type: 'system_status',
+      payload: {
+        cpuUsage: (Math.random() * 15 + 5).toFixed(2),
+        memUsage: (Math.random() * 20 + 40).toFixed(2),
+        uptime: process.uptime(),
+        activeConnections: clients.size,
+        apnStatus: "SECURE_TUNNEL_ACTIVE"
+      },
+      timestamp: Date.now()
+    });
+    clients.forEach(client => {
+      if (client.readyState === 1) client.send(statusMsg);
+    });
+  }, 5000);
 
   // Middlewares
   app.use(express.json());

@@ -226,7 +226,7 @@ export default function GamingMarketDashboard({ setCurrentView }: { setCurrentVi
                         {selectedGame.title}
                       </h2>
                       <p className="text-[10px] font-mono uppercase tracking-[0.2em] opacity-50">
-                        Asset ID: {selectedGame.id.toUpperCase()}_SEC_2026
+                        Asset ID: {selectedGame.id?.toUpperCase() || 'UNKNOWN'}_SEC_2026
                       </p>
                     </div>
                   </div>

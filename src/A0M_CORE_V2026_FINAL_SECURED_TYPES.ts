@@ -45,6 +45,55 @@ export interface PhysicalAsset {
   activeInvestors?: number;
 }
 
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: 'Pending' | 'In Progress' | 'Completed';
+  priority: 'Low' | 'Medium' | 'High';
+  dueDate: string;
+  category: string;
+}
+
+export const MOCK_TASKS: Task[] = [
+  {
+    id: 't1',
+    title: 'Master Node Optimization',
+    description: 'Optimize the kernel for faster data throughput and reduced latency in the A#0M network.',
+    status: 'In Progress',
+    priority: 'High',
+    dueDate: '2026-04-15',
+    category: 'Development'
+  },
+  {
+    id: 't2',
+    title: 'Artisan Guild Onboarding',
+    description: 'Create a comprehensive guide for new artisans joining the guild, focusing on trade ethics and tool mastery.',
+    status: 'Pending',
+    priority: 'Medium',
+    dueDate: '2026-04-20',
+    category: 'Community'
+  },
+  {
+    id: 't3',
+    title: 'Security Audit - Phase 2',
+    description: 'Perform a deep dive into the AES-512-GCM implementation to ensure no side-channel vulnerabilities exist.',
+    status: 'Completed',
+    priority: 'High',
+    dueDate: '2026-04-10',
+    category: 'Security'
+  },
+  {
+    id: 't4',
+    title: 'Marketplace Liquidity Analysis',
+    description: 'Analyze the current trade volume of legendary assets and propose a strategy for maintaining stable FMV.',
+    status: 'In Progress',
+    priority: 'Medium',
+    dueDate: '2026-04-18',
+    category: 'Finance'
+  }
+];
+
 export interface CashOutHistory {
   amount: number;
   method: 'Stripe' | 'CashApp' | 'Chime';

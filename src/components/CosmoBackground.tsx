@@ -26,7 +26,7 @@ export const CosmoBackground: React.FC = () => {
     <img
       src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2000&auto=format&fit=crop"
       alt="Vibrant cosmic nebula"
-      className="fixed inset-0 w-full h-full object-cover z-0"
+      className="fixed inset-0 w-full h-full object-cover -z-10"
       referrerPolicy="no-referrer"
     />
   );

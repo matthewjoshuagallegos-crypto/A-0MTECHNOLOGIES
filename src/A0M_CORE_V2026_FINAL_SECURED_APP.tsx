@@ -17,7 +17,7 @@
  */
 
 import { askGuildAssistant, analyzeAsset, summarizeSecureFile } from './services/geminiService';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -28,6 +28,7 @@ import {
   ArrowUpRight, 
   ArrowDownRight,
   ChevronRight,
+  ChevronLeft,
   Zap,
   Shield,
   History,
@@ -105,7 +106,7 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { cn } from './lib/utils';
 import Papa from 'papaparse';
-import { REAL_WORLD_ASSETS, PhysicalAsset, UserProfile, Specialization } from './A0M_CORE_V2026_FINAL_SECURED_TYPES';
+import { REAL_WORLD_ASSETS, PhysicalAsset, UserProfile, Specialization, Task, MOCK_TASKS } from './A0M_CORE_V2026_FINAL_SECURED_TYPES';
 import { REAL_APN_CONFIG, APN_CONFIG } from './A0M_CORE_V2026_FINAL_SECURED_CONSTANTS';
 import { Form1099NEC } from './components/Form1099NEC';
 import { ArtisanWorkshop } from './components/ArtisanWorkshop';
@@ -118,6 +119,8 @@ import { EarningsChart } from './components/EarningsChart';
 import { PayoutDeepLink } from './components/PayoutDeepLink';
 import { Onboarding } from './components/Onboarding';
 import DeploymentManifest from './components/DeploymentManifest';
+import APNGatewayDiagnostic from './components/APNGatewayDiagnostic';
+import SystemMonitor from './components/SystemMonitor';
 import { SeedKernelUtilityUI } from './components/SeedKernelUtilityUI_A0M_v1.0.0_fcc_compliant';
 import GlobalImager from './components/GlobalImager';
 import RadialDashboard from './components/RadialDashboard';
@@ -203,7 +206,7 @@ const A0M_PUBLISHER = "BeBe Rexa";
 const A0M_EDITOR = "Sonia Lopez";
 const A0M_LEGAL_CONTEXT = "Dolby Media Copyright Amendment of 1954 to the Third Amendment of 1854";
 
-type View = 'dashboard' | 'marketplace' | 'portfolio' | 'earnings' | 'monetization' | 'storage' | 'playlist' | 'safe' | 'creations' | 'tithe' | 'messages' | 'appraiser' | 'artisan-workshop' | 'gemini' | 'developer-shell' | 'developer-server' | 'security-underwrite' | 'profile' | 'ai-studio' | 'deployment' | 'global-imager' | 'root-node-map' | 'gaming-platform' | 'private-payments' | 'chronos-archive' | 'leaderboard' | 'gaming-market' | 'global-trends';
+type View = 'dashboard' | 'marketplace' | 'portfolio' | 'earnings' | 'monetization' | 'storage' | 'playlist' | 'safe' | 'creations' | 'tithe' | 'messages' | 'appraiser' | 'artisan-workshop' | 'gemini' | 'developer-shell' | 'developer-server' | 'security-underwrite' | 'profile' | 'ai-studio' | 'deployment' | 'global-imager' | 'root-node-map' | 'gaming-platform' | 'private-payments' | 'chronos-archive' | 'leaderboard' | 'gaming-market' | 'global-trends' | 'tasks';
 
 const PLAYLIST = [
   { name: "Neon Horizon", artist: "A#0M Collective", duration: "3:45", source: "A#0M Records", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", cite: "Gallegos, M. J. (2026). Neon Horizon [Audio track]. A#0M Records." },
@@ -269,43 +272,77 @@ export default function App() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [presence, setPresence] = useState<{ id: string, name: string }[]>([]);
   const [wsStatus, setWsStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
+  const [systemStatus, setSystemStatus] = useState<{
+    cpuUsage: string;
+    memUsage: string;
+    uptime: number;
+    activeConnections: number;
+    apnStatus: string;
+  } | null>(null);
+
+  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     if (!user) return;
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
-    const socket = new WebSocket(wsUrl);
+    let reconnectTimeout: NodeJS.Timeout;
 
-    socket.onopen = () => {
-      console.log('[WS] Connected to Sovereign Gateway');
-      setWsStatus('connected');
-      socket.send(JSON.stringify({ type: 'ping' }));
-    };
+    const connect = () => {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}`;
+      const socket = new WebSocket(wsUrl);
+      wsRef.current = socket;
 
-    socket.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data);
-        if (payload.type === 'presence') {
-          setPresence(payload.data);
+      socket.onopen = () => {
+        console.log('[WS] Connected to Sovereign Gateway');
+        setWsStatus('connected');
+        socket.send(JSON.stringify({ type: 'ping' }));
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload.type === 'presence') {
+            setPresence(payload.nodes || []);
+          } else if (payload.type === 'system_status') {
+            setSystemStatus(payload.payload);
+          } else if (payload.type === 'sync') {
+            console.log('[WS] Sync received:', payload.payload);
+            toast.success(`SYNC RECEIVED: ${payload.payload.message || 'Data update'}`);
+          }
+        } catch (e) {
+          console.error('[WS] Error parsing message:', e);
         }
-      } catch (e) {
-        console.error('[WS] Error parsing message:', e);
-      }
+      };
+
+      socket.onerror = (error) => {
+        console.error('[WS] Connection error:', error);
+        setWsStatus('error');
+      };
+
+      socket.onclose = () => {
+        console.log('[WS] Disconnected. Attempting reconnect...');
+        setWsStatus('connecting');
+        reconnectTimeout = setTimeout(connect, 3000);
+      };
     };
 
-    socket.onerror = (error) => {
-      console.error('[WS] Connection error:', error);
-      setWsStatus('error');
-    };
+    connect();
 
-    socket.onclose = () => {
-      console.log('[WS] Disconnected');
-      setWsStatus('connecting');
+    return () => {
+      wsRef.current?.close();
+      clearTimeout(reconnectTimeout);
     };
-
-    return () => socket.close();
   }, [user]);
+
+  const sendWsSync = (message: string) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'sync', payload: { message, timestamp: Date.now() } }));
+      toast.success('SYNC BROADCAST SENT');
+    } else {
+      toast.error('WS DISCONNECTED');
+    }
+  };
 
   const [currentView, setCurrentView] = useState<View>(() => {
     const saved = localStorage.getItem('a0m_current_view');
@@ -355,6 +392,9 @@ export default function App() {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('a0m_sidebar_collapsed') === 'true';
+  });
   const [isPlatformModalOpen, setIsPlatformModalOpen] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
@@ -376,6 +416,10 @@ export default function App() {
     if (activeGame) localStorage.setItem('a0m_active_game', activeGame);
     else localStorage.removeItem('a0m_active_game');
   }, [isHostNetworkActive, platformType, activeGame]);
+
+  useEffect(() => {
+    localStorage.setItem('a0m_sidebar_collapsed', isSidebarCollapsed.toString());
+  }, [isSidebarCollapsed]);
 
   const [gameSessionState, setGameSessionState] = useState<'connecting' | 'ready' | 'playing'>('connecting');
   const [hostUptime, setHostUptime] = useState(0);
@@ -633,6 +677,7 @@ export default function App() {
   }, [isMusicPlaying, volume, currentSongIndex]);
 
   const [assets, setAssets] = useState<PhysicalAsset[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
@@ -659,11 +704,21 @@ export default function App() {
   const filteredAssets = useMemo(() => {
     return assets.filter(asset => {
       const matchesSearch = asset.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           asset.category.toLowerCase().includes(searchQuery.toLowerCase());
+                           asset.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           asset.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || asset.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, selectedCategory, assets]);
+
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
+      const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           task.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           task.category.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [searchQuery, tasks]);
 
   const ownedAssets = useMemo(() => {
     return assets.filter(asset => portfolio.assets.includes(asset.id));
@@ -1162,155 +1217,202 @@ export default function App() {
       
       {/* Sidebar */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-50 w-64 bg-card/80 backdrop-blur-xl border-r border-border transform transition-transform duration-300 lg:relative lg:translate-x-0 flex flex-col",
-        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        "fixed inset-y-0 left-0 z-50 bg-card/80 backdrop-blur-xl border-r border-border transform transition-transform duration-300 lg:relative lg:translate-x-0 flex flex-col",
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
+        isSidebarCollapsed ? "lg:w-20" : "lg:w-64",
+        "w-64"
       )}>
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="flex items-center gap-3 mb-10">
-            <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-              <Zap className="text-black w-6 h-6 fill-current" />
+        <div className="flex-1 overflow-y-auto p-4 lg:p-6 custom-scrollbar">
+          <div className={cn("flex items-center gap-3 mb-10", isSidebarCollapsed ? "justify-center" : "justify-between")}>
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center flex-shrink-0">
+                <Zap className="text-black w-6 h-6 fill-current" />
+              </div>
+              {!isSidebarCollapsed && <h1 className="text-2xl font-display italic tracking-tighter rainbow-text truncate">A#0M</h1>}
             </div>
-            <h1 className="text-2xl font-display italic tracking-tighter rainbow-text">A#0M</h1>
+            <button 
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="hidden lg:flex p-2 hover:bg-white/5 rounded-lg text-text-muted hover:text-white transition-colors"
+              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            >
+              {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+            </button>
+            <button 
+              className="lg:hidden p-2 hover:bg-white/5 rounded-lg text-text-muted"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X size={20} />
+            </button>
           </div>
 
-          <nav className="space-y-2">
+          <nav className={cn("space-y-2", isSidebarCollapsed && "flex flex-col items-center")}>
             <NavItem 
               active={currentView === 'chronos-archive'} 
               onClick={() => { setCurrentView('chronos-archive'); setIsMobileMenuOpen(false); }}
               icon={<Database size={20} />}
               label="Chronos Archive"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'gaming-platform'} 
               onClick={() => { setCurrentView('gaming-platform'); setIsMobileMenuOpen(false); }}
               icon={<Gamepad2 size={20} />}
               label="Gaming Platform"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'safe'} 
               onClick={() => { setCurrentView('safe'); setIsMobileMenuOpen(false); }}
               icon={<Shield size={20} />}
               label="Iron Safe"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'ai-studio'} 
               onClick={() => { setCurrentView('ai-studio'); setIsMobileMenuOpen(false); }}
               icon={<Zap size={20} />}
               label="AI Studio"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'global-imager'} 
               onClick={() => { setCurrentView('global-imager'); setIsMobileMenuOpen(false); }}
               icon={<Globe2 size={20} />}
               label="Global Imager"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'root-node-map'} 
               onClick={() => { setCurrentView('root-node-map'); setIsMobileMenuOpen(false); }}
               icon={<MapPin size={20} />}
               label="Root Node Map"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'deployment'} 
               onClick={() => { setCurrentView('deployment'); setIsMobileMenuOpen(false); }}
               icon={<Server size={20} />}
               label="Deployment"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'leaderboard'} 
               onClick={() => { setCurrentView('leaderboard'); setIsMobileMenuOpen(false); }}
               icon={<Trophy size={20} />}
               label="Leaderboard"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'dashboard'} 
               onClick={() => { setCurrentView('dashboard'); setIsMobileMenuOpen(false); }}
               icon={<LayoutDashboard size={20} />}
               label="Dashboard"
+              collapsed={isSidebarCollapsed}
+            />
+            <NavItem 
+              active={currentView === 'tasks'} 
+              onClick={() => { setCurrentView('tasks'); setIsMobileMenuOpen(false); }}
+              icon={<ListMusic size={20} />}
+              label="Tasks"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'marketplace'} 
               onClick={() => { setCurrentView('marketplace'); setIsMobileMenuOpen(false); }}
               icon={<ShoppingBag size={20} />}
               label="Marketplace"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'portfolio'} 
               onClick={() => { setCurrentView('portfolio'); setIsMobileMenuOpen(false); }}
               icon={<Wallet size={20} />}
               label="Portfolio"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'monetization'} 
               onClick={() => { setCurrentView('monetization'); setIsMobileMenuOpen(false); }}
               icon={<Coins size={20} />}
               label="Monetization"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'storage'} 
               onClick={() => { setCurrentView('storage'); setIsMobileMenuOpen(false); }}
               icon={<Gamepad2 size={20} />}
               label="Game Host"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'earnings'} 
               onClick={() => { setCurrentView('earnings'); setIsMobileMenuOpen(false); }}
               icon={<History size={20} />}
               label="Earnings"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'playlist'} 
               onClick={() => { setCurrentView('playlist'); setIsMobileMenuOpen(false); }}
               icon={<ListMusic size={20} />}
               label="A#0M Playlist"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'safe'} 
               onClick={() => { setCurrentView('safe'); setIsMobileMenuOpen(false); }}
               icon={<Lock size={20} />}
               label="Iron Safe"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'creations'} 
               onClick={() => { setCurrentView('creations'); setIsMobileMenuOpen(false); }}
               icon={<Zap size={20} />}
               label="Inventions"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'gemini'} 
               onClick={() => { setCurrentView('gemini'); setIsMobileMenuOpen(false); }}
               icon={<Terminal size={20} />}
               label="Gemini Terminal"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'developer-shell'} 
               onClick={() => { setCurrentView('developer-shell'); setIsMobileMenuOpen(false); }}
               icon={<Code2 size={20} />}
               label="Developer Shell"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'developer-server'} 
               onClick={() => { setCurrentView('developer-server'); setIsMobileMenuOpen(false); }}
               icon={<Server size={20} />}
               label="Developer Server"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'artisan-workshop'} 
               onClick={() => { setCurrentView('artisan-workshop'); setIsMobileMenuOpen(false); }}
               icon={<Zap size={20} />}
               label="Artisan Workshop"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'messages'} 
               onClick={() => { setCurrentView('messages'); setIsMobileMenuOpen(false); }}
               icon={<MessageSquare size={20} />}
               label="Message Board"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'appraiser'} 
               onClick={() => { setCurrentView('appraiser'); setIsMobileMenuOpen(false); }}
               icon={<TrendingUp size={20} />}
               label="Cash Balance Review"
+              collapsed={isSidebarCollapsed}
             />
             
             <NavItem 
@@ -1318,18 +1420,21 @@ export default function App() {
               onClick={() => { setCurrentView('gaming-market'); setIsMobileMenuOpen(false); }}
               icon={<TrendingUp size={20} />}
               label="Gaming Market"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'global-trends'} 
               onClick={() => { setCurrentView('global-trends'); setIsMobileMenuOpen(false); }}
               icon={<Globe size={20} />}
               label="2026 Global Trends"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'tithe'} 
               onClick={() => { setCurrentView('tithe'); setIsMobileMenuOpen(false); }}
               icon={<FileText size={20} />}
               label="Wireless Earnings"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'profile'} 
@@ -1346,43 +1451,57 @@ export default function App() {
               }}
               icon={<Users size={20} />}
               label="Artisan Profile"
+              collapsed={isSidebarCollapsed}
             />
             <NavItem 
               active={currentView === 'private-payments'} 
               onClick={() => { setCurrentView('private-payments'); setIsMobileMenuOpen(false); }}
               icon={<Lock size={20} />}
               label="Private Payments"
+              collapsed={isSidebarCollapsed}
             />
             <div className="h-px bg-border my-4" />
-            <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest px-4 mb-2">Resources</p>
+            {!isSidebarCollapsed && <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest px-4 mb-2">Resources</p>}
             
             <a 
               href="/api/download/A0M_Technologies_Package.zip" 
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all group"
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all group",
+                isSidebarCollapsed && "justify-center px-0"
+              )}
               download
+              title={isSidebarCollapsed ? "Download Package" : ""}
             >
-              <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent group-hover:scale-110 transition-transform flex-shrink-0">
                 <Download size={16} />
               </div>
-              <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-widest text-accent">Download Package</p>
-                <p className="text-[10px] text-text-muted truncate">A#0M Technologies</p>
-              </div>
+              {!isSidebarCollapsed && (
+                <div className="min-w-0">
+                  <p className="text-xs font-bold uppercase tracking-widest text-accent">Download Package</p>
+                  <p className="text-[10px] text-text-muted truncate">A#0M Technologies</p>
+                </div>
+              )}
             </a>
 
             <a 
               href="https://g.dev/MaTtYmAdNeSs" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all group"
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all group",
+                isSidebarCollapsed && "justify-center px-0"
+              )}
+              title={isSidebarCollapsed ? "MaTtYmAdNeSs" : ""}
             >
-              <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent group-hover:scale-110 transition-transform flex-shrink-0">
                 <Code2 size={16} />
               </div>
-              <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-widest text-accent">MaTtYmAdNeSs</p>
-              </div>
-              <ExternalLink size={12} className="ml-auto text-text-muted" />
+              {!isSidebarCollapsed && (
+                <div className="min-w-0">
+                  <p className="text-xs font-bold uppercase tracking-widest text-accent">MaTtYmAdNeSs</p>
+                </div>
+              )}
+              {!isSidebarCollapsed && <ExternalLink size={12} className="ml-auto text-text-muted" />}
             </a>
 
             <NavItem 
@@ -1390,115 +1509,96 @@ export default function App() {
               onClick={() => setCurrentView('security-underwrite')}
               icon={<ShieldCheck size={20} />}
               label="Security Underwrite"
-            />
-            <NavItem 
-              active={false} 
-              onClick={() => {}}
-              icon={<Settings size={20} />}
-              label="Settings"
-            />
-            <NavItem 
-              active={false} 
-              onClick={() => {}}
-              icon={<HelpCircle size={20} />}
-              label="Support"
-            />
-            <NavItem 
-              active={false} 
-              onClick={() => {}}
-              icon={<BookOpen size={20} />}
-              label="Documentation"
-            />
-            <NavItem 
-              active={false} 
-              onClick={() => {}}
-              icon={<Users size={20} />}
-              label="Community"
-            />
-            <NavItem 
-              active={false} 
-              onClick={() => {}}
-              icon={<Trophy size={20} />}
-              label="Leaderboard"
+              collapsed={isSidebarCollapsed}
             />
           </nav>
         </div>
 
-        <div className="p-6 border-t border-border bg-card/40 backdrop-blur-md space-y-4 flex-none">
-          <div className="px-4 py-3 bg-accent/5 rounded-xl border border-accent/10 mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <div className={cn(
-                  "w-2 h-2 rounded-full animate-pulse",
-                  wsStatus === 'connected' ? "bg-green-500" : "bg-yellow-500"
-                )} />
-                <span className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Live Presence</span>
+        <div className={cn("p-4 lg:p-6 border-t border-border bg-card/40 backdrop-blur-md space-y-4 flex-none", isSidebarCollapsed && "items-center")}>
+          {!isSidebarCollapsed && (
+            <div className="px-4 py-3 bg-accent/5 rounded-xl border border-accent/10 mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className={cn(
+                    "w-2 h-2 rounded-full animate-pulse",
+                    wsStatus === 'connected' ? "bg-green-500" : "bg-yellow-500"
+                  )} />
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Live Presence</span>
+                </div>
+                <span className="text-[10px] font-mono text-accent">{(presence || []).length} Active</span>
               </div>
-              <span className="text-[10px] font-mono text-accent">{presence.length} Active</span>
+              <div className="flex -space-x-2 overflow-hidden">
+                {(presence || []).slice(0, 5).map((u) => (
+                  <div 
+                    key={u.id} 
+                    className="w-6 h-6 rounded-full bg-card border border-border flex items-center justify-center text-[8px] font-bold uppercase"
+                    title={u.name}
+                  >
+                    {u.name.slice(0, 2)}
+                  </div>
+                ))}
+                {(presence || []).length > 5 && (
+                  <div className="w-6 h-6 rounded-full bg-accent/20 border border-accent/50 flex items-center justify-center text-[8px] font-bold text-accent">
+                    +{(presence || []).length - 5}
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="flex -space-x-2 overflow-hidden">
-              {presence.slice(0, 5).map((u) => (
-                <div 
-                  key={u.id} 
-                  className="w-6 h-6 rounded-full bg-card border border-border flex items-center justify-center text-[8px] font-bold uppercase"
-                  title={u.name}
-                >
-                  {u.name.slice(0, 2)}
-                </div>
-              ))}
-              {presence.length > 5 && (
-                <div className="w-6 h-6 rounded-full bg-accent/20 border border-accent/50 flex items-center justify-center text-[8px] font-bold text-accent">
-                  +{presence.length - 5}
-                </div>
-              )}
-            </div>
-          </div>
+          )}
 
-          <div className="flex items-center gap-3">
-            <img src={user.photoURL || ''} className="w-8 h-8 rounded-full border border-accent/50" alt="User" />
-            <div className="min-w-0">
-              <p className="text-sm font-medium truncate">{user.displayName}</p>
-              <p className="text-[10px] text-text-muted truncate">{user.email}</p>
-            </div>
+          <div className={cn("flex items-center gap-3", isSidebarCollapsed && "justify-center")}>
+            <img src={user.photoURL || ''} className="w-8 h-8 rounded-full border border-accent/50 flex-shrink-0" alt="User" />
+            {!isSidebarCollapsed && (
+              <div className="min-w-0">
+                <p className="text-sm font-medium truncate">{user.displayName}</p>
+                <p className="text-[10px] text-text-muted truncate">{user.email}</p>
+              </div>
+            )}
           </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-2">
+          <div className={cn("flex flex-col gap-3", isSidebarCollapsed && "items-center")}>
+            <div className={cn("flex gap-2 w-full", isSidebarCollapsed && "flex-col")}>
               <button 
                 onClick={() => setIsMusicPlaying(!isMusicPlaying)}
-                className="flex-1 py-2 text-[10px] font-mono uppercase tracking-widest border border-border hover:bg-white/5 transition-colors flex items-center justify-center gap-2"
+                className={cn(
+                  "flex-1 py-2 text-[10px] font-mono uppercase tracking-widest border border-border hover:bg-white/5 transition-colors flex items-center justify-center gap-2",
+                  isSidebarCollapsed && "px-2"
+                )}
+                title={isSidebarCollapsed ? (isMusicPlaying ? 'Pause' : 'Play') : ""}
               >
                 {isMusicPlaying ? <Volume2 size={12} /> : <VolumeX size={12} />}
-                {isMusicPlaying ? 'Pause' : 'Play'}
+                {!isSidebarCollapsed && (isMusicPlaying ? 'Pause' : 'Play')}
               </button>
               <button 
                 onClick={handleLockKeychain}
-                className="p-2 text-text-muted hover:text-green-400 transition-colors border border-border rounded-lg"
+                className="p-2 text-text-muted hover:text-green-400 transition-colors border border-border rounded-lg flex items-center justify-center"
                 title="Lock Sovereign Keychain"
               >
                 <Lock size={16} />
               </button>
               <button 
                 onClick={() => signOut(auth)}
-                className="p-2 text-text-muted hover:text-red-400 transition-colors border border-border rounded-lg"
+                className="p-2 text-text-muted hover:text-red-400 transition-colors border border-border rounded-lg flex items-center justify-center"
                 title="Sign Out"
               >
                 <LogOut size={16} />
               </button>
             </div>
             
-            <div className="flex items-center gap-3 px-2">
-              <VolumeX size={12} className="text-text-muted" />
-              <input 
-                type="range" 
-                min="0" 
-                max="1" 
-                step="0.01" 
-                value={volume} 
-                onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="flex-1 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent"
-              />
-              <Volume2 size={12} className="text-text-muted" />
-            </div>
+            {!isSidebarCollapsed && (
+              <div className="flex items-center gap-3 px-2">
+                <VolumeX size={12} className="text-text-muted" />
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="1" 
+                  step="0.01" 
+                  value={volume} 
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
+                  className="flex-1 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent"
+                />
+                <Volume2 size={12} className="text-text-muted" />
+              </div>
+            )}
           </div>
         </div>
       </aside>
@@ -1506,51 +1606,115 @@ export default function App() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Header */}
-        <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/30 backdrop-blur-md z-40">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] font-mono uppercase tracking-widest text-text-muted">A#0M Network: Connected</span>
+        <header className="h-16 border-b border-border bg-card/30 backdrop-blur-md z-40 flex-none">
+          <div className="max-w-7xl mx-auto w-full h-full flex items-center justify-between px-6">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[10px] font-mono uppercase tracking-widest text-text-muted">A#0M Network: Connected</span>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-4 flex-1">
-            <button 
-              className="lg:hidden p-2 hover:bg-white/5 rounded-lg"
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu size={20} />
-            </button>
-            <div className="relative max-w-md w-full hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-              <input 
-                type="text" 
-                placeholder="Search assets, collections..."
-                className="w-full bg-white/5 border border-border rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-accent/50 transition-colors"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            <div className="flex items-center gap-4 flex-1 px-4">
+              <button 
+                className="lg:hidden p-2 hover:bg-white/5 rounded-lg"
+                onClick={() => setIsMobileMenuOpen(true)}
+              >
+                <Menu size={20} />
+              </button>
+              <div className="relative max-w-md w-full hidden md:block">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                <input 
+                  type="text" 
+                  placeholder="Search assets, collections..."
+                  className="w-full bg-white/5 border border-border rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-accent/50 transition-colors"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-6">
-            <div className="text-right hidden sm:block">
-              <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Balance</p>
-              <p className="text-accent font-mono font-medium">${(userProfile?.balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            <div className="flex items-center gap-6">
+              <div className="text-right hidden sm:block">
+                <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Balance</p>
+                <p className="text-accent font-mono font-medium">${(userProfile?.balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              </div>
+              <button 
+                onClick={() => { setIsCashOutModalOpen(true); setCashOutError(null); }}
+                className="bg-accent text-black px-4 py-2 rounded-lg text-sm font-bold hover:shadow-[0_0_15px_rgba(157,78,221,0.4)] transition-all flex items-center gap-2"
+              >
+                <DollarSign size={16} />
+                Cash Out
+              </button>
             </div>
-            <button 
-              onClick={() => { setIsCashOutModalOpen(true); setCashOutError(null); }}
-              className="bg-accent text-black px-4 py-2 rounded-lg text-sm font-bold hover:shadow-[0_0_15px_rgba(157,78,221,0.4)] transition-all flex items-center gap-2"
-            >
-              <DollarSign size={16} />
-              Cash Out
-            </button>
           </div>
         </header>
 
         {/* View Content */}
-        <div className="flex-1 overflow-y-auto p-6 max-w-7xl mx-auto w-full">
+        <div className="flex-1 overflow-y-auto p-6 pb-32 max-w-7xl mx-auto w-full custom-scrollbar">
           <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}>
             <AnimatePresence mode="wait">
+              {currentView === 'tasks' && (
+                <motion.div
+                  key="tasks"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="space-y-8 pb-12"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-3xl font-display italic tracking-tighter mb-2 uppercase">Artisan Tasks</h2>
+                      <p className="text-text-muted text-sm">Manage and track your specialized tasks within the A#0M ecosystem.</p>
+                    </div>
+                    <div className="w-12 h-12 rounded-2xl bg-accent/20 flex items-center justify-center text-accent">
+                      <ListMusic size={24} />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {filteredTasks.length > 0 ? (
+                      filteredTasks.map(task => (
+                        <div key={task.id} className="glass p-6 rounded-3xl border-border/50 space-y-4 hover:bg-white/5 transition-all">
+                          <div className="flex items-center justify-between">
+                            <span className={cn(
+                              "text-[10px] font-mono px-2 py-0.5 rounded uppercase",
+                              task.status === 'Completed' ? "bg-green-500/20 text-green-400" :
+                              task.status === 'In Progress' ? "bg-blue-500/20 text-blue-400" :
+                              "bg-yellow-500/20 text-yellow-400"
+                            )}>
+                              {task.status}
+                            </span>
+                            <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest">{task.category}</span>
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold mb-2">{task.title}</h3>
+                            <p className="text-sm text-text-muted leading-relaxed">{task.description}</p>
+                          </div>
+                          <div className="flex items-center justify-between pt-4 border-t border-border/30">
+                            <div className="flex items-center gap-2">
+                              <div className={cn(
+                                "w-2 h-2 rounded-full",
+                                task.priority === 'High' ? "bg-red-500" :
+                                task.priority === 'Medium' ? "bg-yellow-500" :
+                                "bg-blue-500"
+                              )} />
+                              <span className="text-[10px] font-mono text-text-muted uppercase">{task.priority} Priority</span>
+                            </div>
+                            <span className="text-[10px] font-mono text-text-muted uppercase">Due: {task.dueDate}</span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-full py-20 text-center space-y-4">
+                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto text-text-muted">
+                          <Search size={32} />
+                        </div>
+                        <p className="text-text-muted font-mono uppercase tracking-widest text-sm">No tasks found matching your search</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
               {currentView === 'leaderboard' && (
                 <motion.div
                   key="leaderboard"
@@ -1600,6 +1764,8 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 className="space-y-6"
               >
+                <SystemMonitor status={systemStatus} wsStatus={wsStatus} onSync={() => sendWsSync('Sovereign Node Manual Sync')} />
+                <APNGatewayDiagnostic />
                 <DeploymentManifest />
                 <SeedKernelUtilityUI />
               </motion.div>
@@ -2550,7 +2716,7 @@ export default function App() {
                               <Gamepad2 size={48} />
                             </div>
                             <h2 className="text-4xl font-display italic uppercase tracking-tighter rainbow-text">
-                              {activeGame.replace('-', ' ').toUpperCase()}
+                              {activeGame?.replace('-', ' ').toUpperCase() || 'LOADING...'}
                             </h2>
                             <p className="text-text-muted font-mono">CONNECTING TO {platformType.toUpperCase()} HOST NODE...</p>
                             
@@ -2596,7 +2762,7 @@ export default function App() {
                               <div className="text-center space-y-4">
                                 <Gamepad2 size={64} className="text-white/20 mx-auto" />
                                 <h2 className="text-2xl font-display italic uppercase tracking-tighter text-white/50">
-                                  {activeGame.replace('-', ' ').toUpperCase()}
+                                  {activeGame?.replace('-', ' ').toUpperCase() || 'LOADING...'}
                                 </h2>
                                 <p className="text-xs font-mono text-green-400">RENDERING ENGINE ACTIVE - FULL PLAYABILITY ENABLED</p>
                               </div>
@@ -4229,6 +4395,32 @@ export default function App() {
             </p>
           </footer>
         </div>
+
+        {/* Core Citation & License Manifest */}
+        <div className="w-full bg-black/90 backdrop-blur-md border-t border-accent/30 p-2 z-40 text-center text-[10px] font-mono text-white/70 flex-none">
+          <div className="max-w-7xl mx-auto w-full">
+            <div className="flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6">
+              <div>
+                <span className="text-accent font-bold uppercase tracking-tighter">CORE CITATION & LICENSE MANIFEST:</span>
+                <span className="ml-2">Recognized Entity: Google | Owner: {A0M_OWNER}</span>
+              </div>
+              <div className="flex gap-4 text-accent font-bold">
+                <span className="text-[8px] opacity-80">{A0M_ISBN}</span>
+                <span className="text-[8px]">{A0M_LICENSE}</span>
+              </div>
+              <div className="flex gap-4">
+                <span>START: {A0M_START_DATE}</span>
+                <span className="text-white">PRESENT: {new Date().toLocaleString()}</span>
+              </div>
+            </div>
+            <div className="mt-1 text-[8px] opacity-50 flex flex-wrap justify-center gap-x-4">
+              <span>Publisher: {A0M_PUBLISHER}</span>
+              <span>Editor: {A0M_EDITOR}</span>
+              <span>Legal: {A0M_LEGAL_CONTEXT}</span>
+              <span>Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated. // 2026 A#0M TECHNOLOGIES // GOOGLE LLC // Licensed Under © APACHE until 2036</span>
+            </div>
+          </div>
+        </div>
       </main>
 
       {/* Asset Detail Sidebar/Modal */}
@@ -4795,53 +4987,38 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Core Citation & License Manifest */}
-      <div className="fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-md border-t border-accent/30 p-2 z-[9999] text-center text-[10px] font-mono text-white/70">
-        <div className="flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6">
-          <div>
-            <span className="text-accent font-bold uppercase tracking-tighter">CORE CITATION & LICENSE MANIFEST:</span>
-            <span className="ml-2">Recognized Entity: Google | Owner: {A0M_OWNER}</span>
-          </div>
-          <div className="flex gap-4 text-accent font-bold">
-            <span className="text-[8px] opacity-80">{A0M_ISBN}</span>
-            <span className="text-[8px]">{A0M_LICENSE}</span>
-          </div>
-          <div className="flex gap-4">
-            <span>START: {A0M_START_DATE}</span>
-            <span className="text-white">PRESENT: {new Date().toLocaleString()}</span>
-          </div>
-        </div>
-        <div className="mt-1 text-[8px] opacity-50 flex flex-wrap justify-center gap-x-4">
-          <span>Publisher: {A0M_PUBLISHER}</span>
-          <span>Editor: {A0M_EDITOR}</span>
-          <span>Legal: {A0M_LEGAL_CONTEXT}</span>
-          <span>Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated. // 2026 A#0M TECHNOLOGIES // GOOGLE LLC // Licensed Under © APACHE until 2036</span>
-        </div>
-      </div>
       <PAILChatInterface />
     </div>
     </ErrorBoundary>
   );
 }
 
-function NavItem({ active, icon, label, onClick }: { active: boolean, icon: React.ReactNode, label: string, onClick: () => void }) {
+function NavItem({ active, icon, label, onClick, collapsed }: { active: boolean, icon: React.ReactNode, label: string, onClick: () => void, collapsed?: boolean }) {
   return (
     <button 
       onClick={() => {
         playClickSound();
         onClick();
       }}
-      title={`Navigate to ${label}`}
+      title={collapsed ? label : `Navigate to ${label}`}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group",
+        "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group relative",
         active 
           ? "bg-accent text-black font-bold" 
-          : "text-text-muted hover:bg-white/5 hover:text-white"
+          : "text-text-muted hover:bg-white/5 hover:text-white",
+        collapsed && "justify-center px-0"
       )}
     >
       <span className={cn(active ? "text-black" : "group-hover:text-accent transition-colors")}>{icon}</span>
-      <span className="text-sm">{label}</span>
-      {active && <motion.div layoutId="activeNav" className="ml-auto"><ChevronRight size={16} /></motion.div>}
+      {!collapsed && <span className="text-sm truncate">{label}</span>}
+      {active && !collapsed && <motion.div layoutId="activeNav" className="ml-auto"><ChevronRight size={16} /></motion.div>}
+      
+      {collapsed && active && (
+        <motion.div 
+          layoutId="activeNavCollapsed" 
+          className="absolute right-0 w-1 h-6 bg-black rounded-l-full"
+        />
+      )}
     </button>
   );
 }
