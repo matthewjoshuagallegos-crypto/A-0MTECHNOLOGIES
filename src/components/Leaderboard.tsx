@@ -2,15 +2,17 @@
  * ==========================================
  * CORE CITATION & LICENSE MANIFEST
  * ==========================================
- * Recognized Entity: Google
+ * Recognized Entity: Google LLC
  * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
- * Sponsor: BeBe Rexa
+ * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
- * Brands: Macintosh, Apple, Pixel, Microsoft
- * Attorneys: Proctor & Gamble
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
+ * Attorneys: PROCTOR&GAMBLE
  * Design: Java
  * Secret: Bitcoin
- * License: PROPRIETARY & CONFIDENTIAL
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
  * ==========================================
  */
 
@@ -59,17 +61,17 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentUserUid }) => {
 
   const handleSovereignSync = async () => {
     setIsSyncing(true);
-    toast.loading('Syncing with Sovereign Network (g.dev/MaTtYmAdNeSs)...', { id: 'sync' });
+    toast.loading('Syncing with Android SKU A21S30i19GP13 Network (g.dev/MaTtYmAdNeSs)...', { id: 'sync' });
     
     // Simulate network delay for 512-bit handshake
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
       // In a real implementation, this would fetch from a proxy or API endpoint
-      // For now, we simulate the integration by adding a "Sovereign" entry if it doesn't exist
+      // For now, we simulate the integration by adding a "Android SKU A21S30i19GP13" entry if it doesn't exist
       const sovereignEntry: LeaderboardEntry = {
         uid: 'sovereign_matty',
-        name: 'MaTtYmAdNeSs (Sovereign)',
+        name: 'MaTtYmAdNeSs (Android SKU A21S30i19GP13)',
         category: 'Developer',
         score: 999999,
         contribution: 'Core Radius Equation & 512-bit Architecture',
@@ -77,7 +79,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentUserUid }) => {
       };
       
       await updateLeaderboardScore(sovereignEntry);
-      toast.success('Sovereign Network Sync Complete', { id: 'sync' });
+      toast.success('Android SKU A21S30i19GP13 Network Sync Complete', { id: 'sync' });
     } catch (error) {
       toast.error('Sync Failed: Handshake Timeout', { id: 'sync' });
     } finally {
@@ -102,7 +104,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentUserUid }) => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold tracking-tighter uppercase italic font-serif">
-              Sovereign Leaderboard
+              Android SKU A21S30i19GP13 Leaderboard
             </h2>
             <p className="text-xs font-mono opacity-60 mt-1">
               FCC COMPLIANT | 512-BIT ENCRYPTION RATE | REAL-TIME SYNC
@@ -117,7 +119,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentUserUid }) => {
             )}
           >
             <RefreshCw className={cn("w-4 h-4", isSyncing && "animate-spin")} />
-            {isSyncing ? 'Syncing...' : 'Sovereign Sync'}
+            {isSyncing ? 'Syncing...' : 'Android SKU A21S30i19GP13 Sync'}
           </button>
         </div>
 
@@ -251,7 +253,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentUserUid }) => {
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          Sovereign Node Active
+          Android SKU A21S30i19GP13 Node Active
         </div>
       </div>
     </div>

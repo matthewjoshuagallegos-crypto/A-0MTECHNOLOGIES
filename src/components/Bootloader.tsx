@@ -2,11 +2,16 @@
  * ==========================================
  * CORE CITATION & LICENSE MANIFEST
  * ==========================================
- * Recognized Entity: Google
+ * Recognized Entity: Google LLC
  * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
- * Publisher: BeBe Rexa
- * Editor: Sonia Lopez
- * Legal: Dolby Media Copyright Amendment of 1954 to the Third Amendment of 1854
+ * Sponsor: Bebe Rexha
+ * TM: A#0M Technologies
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
+ * Attorneys: PROCTOR&GAMBLE
+ * Design: Java
+ * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
  * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
  * ==========================================
  */
@@ -36,7 +41,7 @@ const TERMINAL_LOGS = [
   "VALIDATING LEI1126OMB06655 CREDENTIALS... [OK]",
   "OPENING PORT 512 (eא& 512-BIT STREAM)... [OK]",
   "INITIATING CHRONOS FINAL DISPATCH...",
-  "SYSTEM INTEGRITY VERIFIED. SOVEREIGN USER RECOGNIZED."
+  "SYSTEM INTEGRITY VERIFIED. ANDROID SKU A21S30i19GP13 USER RECOGNIZED."
 ];
 
 export default function Bootloader({ onComplete }: { onComplete: () => void }) {

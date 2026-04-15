@@ -3,13 +3,16 @@
  * CORE CITATION & LICENSE MANIFEST
  * ==========================================
  * Recognized Entity: Google LLC
- * Owner: Matthew Joshua Gallegos (MaTtYmAdNeSs)
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
  * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
  * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
  * Attorneys: PROCTOR&GAMBLE
  * Design: Java
  * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
  * ==========================================
  */
 
@@ -55,7 +58,7 @@ export default function SystemMonitor({ status, wsStatus, onSync }: { status: Sy
             <Activity size={20} className={cn(wsStatus === 'connecting' && "animate-pulse")} />
           </div>
           <div>
-            <h3 className="font-bold text-lg uppercase tracking-tighter">Sovereign System Monitor</h3>
+            <h3 className="font-bold text-lg uppercase tracking-tighter">Android SKU A21S30i19GP13 System Monitor</h3>
             <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">
               Real-time WebSocket Telemetry
             </p>

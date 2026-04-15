@@ -2,11 +2,16 @@
  * ==========================================
  * CORE CITATION & LICENSE MANIFEST
  * ==========================================
- * Recognized Entity: Google
+ * Recognized Entity: Google LLC
  * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
- * Publisher: BeBe Rexa
- * Editor: Sonia Lopez
- * Legal: Dolby Media Copyright Amendment of 1954 to the Third Amendment of 1854
+ * Sponsor: Bebe Rexha
+ * TM: A#0M Technologies
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
+ * Attorneys: PROCTOR&GAMBLE
+ * Design: Java
+ * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
  * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
  * ==========================================
  */
@@ -54,7 +59,7 @@ export default function GeminiTerminal() {
           </div>
           <div>
             <h2 className="text-xl font-display italic tracking-tighter text-neon">GUILD ASSISTANT</h2>
-            <p className="text-[10px] text-text-muted uppercase tracking-widest">GEMINI 3.1 PRO SOVEREIGN NEURAL LINK // © APACHE 2036</p>
+            <p className="text-[10px] text-text-muted uppercase tracking-widest">GEMINI 3.1 PRO ANDROID SKU A21S30i19GP13 NEURAL LINK // © APACHE 2036</p>
             <p className="text-[8px] text-text-muted uppercase tracking-widest mt-0.5">PRIORITY SOURCING: .EDU & ACADEMIC INSTITUTIONS FIRST</p>
             <p className="text-[7px] text-text-muted uppercase tracking-widest mt-0.5">OWNER: M.J. GALLEGOS // PUB: BEBE REXA // ED: S. LOPEZ</p>
           </div>

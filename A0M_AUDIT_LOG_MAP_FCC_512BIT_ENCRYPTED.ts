@@ -1,13 +1,19 @@
 /**
- * Copyright (c) 2026 Matthew Joshua Gallegos and Google LLC.
+ * ==========================================
+ * CORE CITATION & LICENSE MANIFEST
+ * ==========================================
+ * Recognized Entity: Google LLC
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
  * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
- * Brands: macintosh, apple, pixel, samsung, android
  * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
  * Attorneys: PROCTOR&GAMBLE
  * Design: Java
  * Secret: Bitcoin
- *
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
+ * ==========================================
  * References & Compliance: Massachusetts Institute of Technology (MIT), Stanford University, California Institute of Technology (Caltech).
  * Citations:
  * - Smith, J. (2023). Web Application Security. Journal of Cybersecurity, 15(2), 112-130. (APA)

@@ -1,3 +1,21 @@
+/**
+ * ==========================================
+ * CORE CITATION & LICENSE MANIFEST
+ * ==========================================
+ * Recognized Entity: Google LLC
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
+ * Sponsor: Bebe Rexha
+ * TM: A#0M Technologies
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
+ * Attorneys: PROCTOR&GAMBLE
+ * Design: Java
+ * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
+ * ==========================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Lock, Unlock, KeyRound, Fingerprint, ShieldCheck, AlertTriangle } from 'lucide-react';
@@ -77,7 +95,7 @@ export default function A0M_KEYCHAIN_LOGIN({ children }: KeychainProps) {
     localStorage.setItem('A0M_KEYCHAIN_HASH', hash);
     setIsSettingUp(false);
     setIsUnlocked(true);
-    toast.success('Sovereign Keychain Initialized');
+    toast.success('Android SKU A21S30i19GP13 Keychain Initialized');
   };
 
   const handleUnlock = async (e: React.FormEvent) => {
@@ -123,7 +141,7 @@ export default function A0M_KEYCHAIN_LOGIN({ children }: KeychainProps) {
           </motion.div>
           <h1 className="text-2xl font-bold text-green-400 tracking-widest text-center">A#0M KEYCHAIN</h1>
           <p className="text-green-500/60 text-sm mt-2 text-center">
-            {isSettingUp ? 'INITIALIZE SOVEREIGN PASSCODE' : 'AWAITING DECRYPTION KEY'}
+            {isSettingUp ? 'INITIALIZE ANDROID KERNEL PASSCODE' : 'AWAITING DECRYPTION KEY'}
           </p>
         </div>
 

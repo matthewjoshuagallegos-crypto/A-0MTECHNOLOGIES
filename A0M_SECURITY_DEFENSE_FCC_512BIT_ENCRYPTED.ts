@@ -1,13 +1,19 @@
 /**
- * Copyright (c) 2026 Matthew Joshua Gallegos and Google LLC.
+ * ==========================================
+ * CORE CITATION & LICENSE MANIFEST
+ * ==========================================
+ * Recognized Entity: Google LLC
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
  * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
- * Brands: macintosh, apple, pixel, samsung, android
  * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
  * Attorneys: PROCTOR&GAMBLE
  * Design: Java
  * Secret: Bitcoin
- *
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
+ * ==========================================
  * References & Compliance: Massachusetts Institute of Technology (MIT), Stanford University, California Institute of Technology (Caltech).
  * Citations:
  * - Smith, J. (2026). Post-Quantum Web Security. Journal of Advanced Cybersecurity, 18(1), 45-62. (APA)
@@ -118,7 +124,7 @@ const hashFile = (filePath: string): string | null => {
   }
 };
 
-export const startFIM = (filesToMonitor: string[]) => {
+export const startFIM = (filesToMonitor: string[], onAlert?: (file: string) => void) => {
   console.log('[FIM] Starting File Integrity Monitoring (512-bit compliant architecture)...');
   
   // Initial hashing
@@ -137,9 +143,13 @@ export const startFIM = (filesToMonitor: string[]) => {
       const storedHash = fileHashes.get(file);
       
       if (currentHash && storedHash && currentHash !== storedHash) {
-        writeAuditLog('CRITICAL', `[FIM ALERT] File Integrity Compromised! File modified: ${file}`);
-        // In a real system, this would trigger an immediate lockdown or alert to admins
-        fileHashes.set(file, currentHash); // Update hash to prevent continuous spam, but alert is sent
+        writeAuditLog('WARN', `[FIM ALERT] File Integrity Compromised! File modified: ${file}`);
+        // Trigger non-critical alert callback if provided
+        if (onAlert) {
+          onAlert(file);
+        }
+        // Update hash to prevent continuous spam, but alert is sent
+        fileHashes.set(file, currentHash);
       }
     });
   }, 60000); // Check every minute

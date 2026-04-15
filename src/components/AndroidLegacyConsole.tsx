@@ -4,10 +4,10 @@
  * ==========================================
  * Recognized Entity: Google
  * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
- * Sponsor: BeBe Rexa
+ * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
- * Brands: Macintosh, Apple, Pixel, Microsoft
  * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel
  * Attorneys: Proctor & Gamble
  * Design: Java
  * Secret: Bitcoin
@@ -36,7 +36,14 @@ import {
   Waves,
   Monitor,
   Volume2,
-  Wifi
+  VolumeX,
+  Wifi,
+  LayoutDashboard,
+  ShoppingBag,
+  Wallet,
+  Shield,
+  Globe2,
+  Database
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import NetworkPerformanceMetrics from './NetworkPerformanceMetrics';
@@ -48,9 +55,15 @@ interface LibraryStatus {
   icon: React.ReactNode;
 }
 
-const AndroidLegacyConsole: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'home' | 'gaming' | 'studio' | 'monitoring'>('home');
+interface AndroidLegacyConsoleProps {
+  setCurrentView?: (view: any) => void;
+}
+
+const AndroidLegacyConsole: React.FC<AndroidLegacyConsoleProps> = ({ setCurrentView }) => {
+  const [activeTab, setActiveTab] = useState<'home' | 'gaming' | 'studio' | 'monitoring' | 'apps'>('home');
   const [isBooted, setIsBooted] = useState(false);
+  const [volume, setVolume] = useState(75);
+  const [isMuted, setIsMuted] = useState(false);
   const [libraries, setLibraries] = useState<LibraryStatus[]>([
     { name: 'Google Play Services', status: 'online', version: 'v26.4.12', icon: <Play size={16} /> },
     { name: 'PlayStation Library', status: 'online', version: 'v6.0.0', icon: <Gamepad2 size={16} /> },
@@ -72,7 +85,7 @@ const AndroidLegacyConsole: React.FC = () => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] font-mono font-bold tracking-widest uppercase">A#0M SOVEREIGN NODE // ACTIVE</span>
+            <span className="text-[10px] font-mono font-bold tracking-widest uppercase">A#0M ANDROID SKU A21S30i19GP13 NODE // ACTIVE</span>
           </div>
           <div className="h-4 w-px bg-white/10" />
           <span className="text-[10px] font-mono text-text-muted uppercase">ANDROID_LEGACY_ENTERPRISE_GAMING_CONSOLE_HOME_STUDIO_TV_DEVICE</span>
@@ -114,11 +127,17 @@ const AndroidLegacyConsole: React.FC = () => {
             onClick={() => setActiveTab('monitoring')} 
             label="Monitor"
           />
+          <NavIcon 
+            icon={<Globe size={24} />} 
+            active={activeTab === 'apps'} 
+            onClick={() => setActiveTab('apps')} 
+            label="Apps"
+          />
           <div className="mt-auto">
             <NavIcon 
               icon={<Settings size={24} />} 
               active={false} 
-              onClick={() => {}} 
+              onClick={() => setCurrentView?.('profile')} 
               label="Config"
             />
           </div>
@@ -141,18 +160,24 @@ const AndroidLegacyConsole: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-transparent opacity-50" />
                     <div className="relative z-10">
                       <h1 className="text-6xl font-display font-black italic tracking-tighter rainbow-text mb-4">
-                        SOVEREIGN<br />ENTERPRISE
+                        ANDROID<br />ENTERPRISE
                       </h1>
                       <p className="text-lg text-text-muted max-w-md mb-8 leading-relaxed">
                         Welcome to the first A#0M Android Legacy Enterprise Gaming Console. 
-                        Your home studio and TV device are now fully synchronized under Sovereign Authority.
+                        Your home studio and TV device are now fully synchronized under Android Kernel Authority.
                       </p>
                       <div className="flex gap-4">
-                        <button className="gold-button !px-8 !py-4 flex items-center gap-3">
+                        <button 
+                          onClick={() => setCurrentView?.('gaming-platform')}
+                          className="gold-button !px-8 !py-4 flex items-center gap-3"
+                        >
                           <Play size={20} />
                           LAUNCH SESSION
                         </button>
-                        <button className="px-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 font-bold transition-all">
+                        <button 
+                          onClick={() => setCurrentView?.('dashboard')}
+                          className="px-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 font-bold transition-all"
+                        >
                           QUICK ACCESS
                         </button>
                       </div>
@@ -167,7 +192,13 @@ const AndroidLegacyConsole: React.FC = () => {
                     </h3>
                     <div className="space-y-4">
                       {libraries.map((lib, i) => (
-                        <div key={`${lib.name}-${i}`} className="flex items-center justify-between p-3 bg-black/40 rounded-xl border border-white/5 group hover:border-accent/30 transition-all">
+                        <div 
+                          key={`${lib.name}-${i}`} 
+                          onClick={() => {
+                            import('react-hot-toast').then(t => t.default.success(`SYNCING ${lib.name.toUpperCase()}...`));
+                          }}
+                          className="flex items-center justify-between p-3 bg-black/40 rounded-xl border border-white/5 group hover:border-accent/30 transition-all cursor-pointer"
+                        >
                           <div className="flex items-center gap-3">
                             <div className="text-accent/70 group-hover:text-accent transition-colors">
                               {lib.icon}
@@ -253,7 +284,14 @@ const AndroidLegacyConsole: React.FC = () => {
                         <span className="px-3 py-1 bg-emerald-500/20 text-emerald-500 rounded-full text-[10px] font-mono border border-emerald-500/20">STATUS: OPTIMIZED</span>
                       </div>
                     </div>
-                    <button className="gold-button !px-8">MANAGE PIPELINE</button>
+                    <button 
+                      onClick={() => {
+                        import('react-hot-toast').then(t => t.default.success('STEAM PIPELINE OPTIMIZATION COMPLETE'));
+                      }}
+                      className="gold-button !px-8"
+                    >
+                      MANAGE PIPELINE
+                    </button>
                   </div>
                 </div>
               </motion.div>
@@ -321,7 +359,13 @@ const AndroidLegacyConsole: React.FC = () => {
                         Windows Media Core STE
                       </h3>
                       <div className="aspect-video bg-black rounded-xl border border-white/5 flex items-center justify-center group relative overflow-hidden">
-                        <Play size={48} className="text-white/20 group-hover:text-accent transition-colors cursor-pointer" />
+                        <Play 
+                          size={48} 
+                          className="text-white/20 group-hover:text-accent transition-colors cursor-pointer" 
+                          onClick={() => {
+                            import('react-hot-toast').then(t => t.default.success('INITIALIZING MEDIA STREAM...'));
+                          }}
+                        />
                         <div className="absolute bottom-4 left-4 right-4 flex items-center gap-4">
                           <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
                             <div className="w-1/3 h-full bg-accent" />
@@ -349,11 +393,17 @@ const AndroidLegacyConsole: React.FC = () => {
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
-                          <Volume2 size={16} className="text-text-muted" />
-                          <div className="flex-1 mx-4 h-1 bg-white/10 rounded-full">
-                            <div className="w-3/4 h-full bg-accent" />
+                          <button onClick={() => setIsMuted(!isMuted)}>
+                            {isMuted ? <VolumeX size={16} className="text-red-500" /> : <Volume2 size={16} className="text-text-muted" />}
+                          </button>
+                          <div className="flex-1 mx-4 h-1 bg-white/10 rounded-full relative cursor-pointer" onClick={(e) => {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            setVolume(Math.round((x / rect.width) * 100));
+                          }}>
+                            <div className="h-full bg-accent transition-all" style={{ width: `${isMuted ? 0 : volume}%` }} />
                           </div>
-                          <span className="text-xs font-bold">75%</span>
+                          <span className="text-xs font-bold">{isMuted ? 0 : volume}%</span>
                         </div>
                       </div>
                     </div>
@@ -373,12 +423,26 @@ const AndroidLegacyConsole: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-4xl font-display font-black italic tracking-tighter uppercase">Network Intelligence</h2>
-                    <p className="text-xs font-mono text-text-muted uppercase tracking-widest mt-1">Sovereign Node Monitoring // 512-Bit Encrypted Data Stream</p>
+                    <p className="text-xs font-mono text-text-muted uppercase tracking-widest mt-1">Android SKU A21S30i19GP13 Node Monitoring // 512-Bit Encrypted Data Stream</p>
                   </div>
-                  <div className="flex gap-2">
-                    <button className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-xs font-bold uppercase tracking-widest">Export Logs</button>
-                    <button className="px-4 py-2 bg-accent text-black rounded-xl font-bold text-xs uppercase tracking-widest">Refresh Node</button>
-                  </div>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => {
+                          import('react-hot-toast').then(t => t.default.success('LOGS EXPORTED TO ENCRYPTED STORAGE'));
+                        }}
+                        className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-xs font-bold uppercase tracking-widest"
+                      >
+                        Export Logs
+                      </button>
+                      <button 
+                        onClick={() => {
+                          import('react-hot-toast').then(t => t.default.success('NODE REFRESHED: ALL SYSTEMS NOMINAL'));
+                        }}
+                        className="px-4 py-2 bg-accent text-black rounded-xl font-bold text-xs uppercase tracking-widest"
+                      >
+                        Refresh Node
+                      </button>
+                    </div>
                 </div>
 
                 <NetworkPerformanceMetrics />
@@ -391,7 +455,7 @@ const AndroidLegacyConsole: React.FC = () => {
                     </h3>
                     <div className="space-y-3">
                       <AuditItem label="Encryption" status="AES-512 ACTIVE" />
-                      <AuditItem label="Firewall" status="SOVEREIGN_SHIELD_ON" />
+                      <AuditItem label="Firewall" status="ANDROID_SHIELD_ON" />
                       <AuditItem label="Auth Layer" status="BIOMETRIC_VERIFIED" />
                       <AuditItem label="IP Masking" status="GLOBAL_STEALTH_ACTIVE" />
                     </div>
@@ -402,13 +466,42 @@ const AndroidLegacyConsole: React.FC = () => {
                       System Console
                     </h3>
                     <div className="bg-black/60 rounded-xl p-4 font-mono text-[10px] text-emerald-500/80 h-32 overflow-y-auto">
-                      <p>{">"} INITIALIZING SOVEREIGN_KERNEL_V2026...</p>
+                      <p>{">"} INITIALIZING ANDROID_KERNEL_A21S30i19GP13...</p>
                       <p>{">"} SYNCING WITH GOOGLE PLAY SERVICES...</p>
                       <p>{">"} ESTABLISHING STEAM PIPELINE...</p>
                       <p>{">"} SANTZA REVERB ENGINE: READY</p>
                       <p className="animate-pulse">{">"} LISTENING ON PORT 512...</p>
                     </div>
                   </div>
+                </div>
+              </motion.div>
+            )}
+            {activeTab === 'apps' && (
+              <motion.div 
+                key="apps"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-4xl font-display font-black italic tracking-tighter uppercase">Android App Store</h2>
+                    <p className="text-xs font-mono text-text-muted uppercase tracking-widest mt-1">Enterprise Grade Applications // A#0M Certified</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                  <AppIcon icon={<LayoutDashboard size={32} />} label="Dashboard" color="text-blue-400" onClick={() => setCurrentView?.('dashboard')} />
+                  <AppIcon icon={<ShoppingBag size={32} />} label="Market" color="text-emerald-400" onClick={() => setCurrentView?.('marketplace')} />
+                  <AppIcon icon={<Wallet size={32} />} label="Portfolio" color="text-amber-400" onClick={() => setCurrentView?.('portfolio')} />
+                  <AppIcon icon={<Shield size={32} />} label="Iron Safe" color="text-zinc-400" onClick={() => setCurrentView?.('safe')} />
+                  <AppIcon icon={<Zap size={32} />} label="AI Studio" color="text-purple-400" onClick={() => setCurrentView?.('ai-studio')} />
+                  <AppIcon icon={<Globe2 size={32} />} label="Imager" color="text-cyan-400" onClick={() => setCurrentView?.('global-imager')} />
+                  <AppIcon icon={<Database size={32} />} label="Chronos" color="text-indigo-400" onClick={() => setCurrentView?.('chronos-archive')} />
+                  <AppIcon icon={<Terminal size={32} />} label="Shell" color="text-red-400" onClick={() => setCurrentView?.('developer-shell')} />
+                  <AppIcon icon={<Cloud size={32} />} label="Cloud" color="text-sky-400" onClick={() => setCurrentView?.('cloud-orchestrator')} />
+                  <AppIcon icon={<Settings size={32} />} label="Settings" color="text-zinc-500" onClick={() => setCurrentView?.('profile')} />
                 </div>
               </motion.div>
             )}
@@ -474,6 +567,9 @@ const NavIcon: React.FC<{ icon: React.ReactNode; active: boolean; onClick: () =>
 const GameCard: React.FC<{ title: string; platform: string; rating: string; image: string }> = ({ title, platform, rating, image }) => (
   <motion.div 
     whileHover={{ scale: 1.02 }}
+    onClick={() => {
+      import('react-hot-toast').then(t => t.default.success(`LAUNCHING ${title.toUpperCase()}...`));
+    }}
     className="premium-card overflow-hidden group cursor-pointer"
   >
     <div className="aspect-video relative overflow-hidden">
@@ -527,6 +623,20 @@ const AuditItem: React.FC<{ label: string; status: string }> = ({ label, status 
     <span className="text-[9px] font-mono text-text-muted uppercase">{label}</span>
     <span className="text-[9px] font-mono text-accent font-bold">{status}</span>
   </div>
+);
+
+const AppIcon: React.FC<{ icon: React.ReactNode; label: string; color: string; onClick?: () => void }> = ({ icon, label, color, onClick }) => (
+  <motion.button 
+    whileHover={{ scale: 1.05, y: -5 }}
+    whileTap={{ scale: 0.95 }}
+    onClick={onClick}
+    className="flex flex-col items-center gap-3 p-6 bg-zinc-900/50 border border-white/5 rounded-3xl hover:bg-white/5 hover:border-white/10 transition-all group"
+  >
+    <div className={cn("p-4 rounded-2xl bg-white/5 group-hover:bg-white/10 transition-colors", color)}>
+      {icon}
+    </div>
+    <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted group-hover:text-white transition-colors">{label}</span>
+  </motion.button>
 );
 
 export default AndroidLegacyConsole;

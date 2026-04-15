@@ -3,13 +3,16 @@
  * CORE CITATION & LICENSE MANIFEST
  * ==========================================
  * Recognized Entity: Google LLC
- * Owner: Matthew Joshua Gallegos (MaTtYmAdNeSs)
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
  * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
  * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
  * Attorneys: PROCTOR&GAMBLE
  * Design: Java
  * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
  * ==========================================
  */
 
@@ -53,7 +56,7 @@ export default function CommandLog() {
     // Mock initial logs
     const initialLogs: LogEntry[] = [
       { id: '1', timestamp: new Date().toISOString(), level: 'SECURE', source: 'GATEWAY', message: '512-Bit Encryption Handshake Successful' },
-      { id: '2', timestamp: new Date().toISOString(), level: 'INFO', source: 'SYSTEM', message: 'Sovereign Node v2026.4 Initialized' },
+      { id: '2', timestamp: new Date().toISOString(), level: 'INFO', source: 'SYSTEM', message: 'Android SKU A21S30i19GP13 Node v2026.4 Initialized' },
       { id: '3', timestamp: new Date().toISOString(), level: 'INFO', source: 'APN', message: 'LTE-USA Tunnel Established: a0m.lteusa.network' },
     ];
     setLogs(initialLogs);
@@ -81,7 +84,7 @@ export default function CommandLog() {
       };
 
       setLogs(prev => [newLog, ...prev].slice(0, 500));
-    }, 3000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -98,7 +101,7 @@ export default function CommandLog() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `a0m_sovereign_logs_${new Date().getTime()}.json`;
+    a.download = `a0m_android_logs_${new Date().getTime()}.json`;
     a.click();
   };
 
@@ -114,7 +117,7 @@ export default function CommandLog() {
             <Terminal size={20} />
           </div>
           <div>
-            <h3 className="font-black text-sm uppercase tracking-tighter italic">Sovereign Command Log</h3>
+            <h3 className="font-black text-sm uppercase tracking-tighter italic">Android SKU A21S30i19GP13 Command Log</h3>
             <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">A#0M CAPTIVE PORTAL // REAL-TIME AUDIT</p>
           </div>
         </div>

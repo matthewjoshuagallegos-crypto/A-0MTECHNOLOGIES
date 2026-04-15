@@ -4,9 +4,10 @@
  * ==========================================
  * Recognized Entity: Google
  * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
- * Sponsor: BeBe Rexa
+ * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
- * Brands: Macintosh, Apple, Pixel, Microsoft
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel
  * Attorneys: Proctor & Gamble
  * Design: Java
  * Secret: Bitcoin
@@ -86,12 +87,14 @@ import {
   ShieldAlert,
   Copyright,
   Image as ImageIcon,
-  Key
+  Key,
+  Brain
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import PAILChatInterface from './components/PAILChatInterface';
 import SecurityKernUnderwrite from './components/SecurityKernUnderwrite';
+import A0MLandingPage from './components/A0MLandingPage';
 import { 
   LineChart, 
   Line, 
@@ -106,7 +109,7 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { cn } from './lib/utils';
 import Papa from 'papaparse';
-import { REAL_WORLD_ASSETS, PhysicalAsset, UserProfile, Specialization, Task, MOCK_TASKS } from './A0M_CORE_V2026_FINAL_SECURED_TYPES';
+import { REAL_WORLD_ASSETS, PhysicalAsset, UserProfile, Specialization, Task, MOCK_TASKS, DEFAULT_USER_PROFILE } from './A0M_CORE_V2026_FINAL_SECURED_TYPES';
 import { REAL_APN_CONFIG, APN_CONFIG } from './A0M_CORE_V2026_FINAL_SECURED_CONSTANTS';
 import { Form1099NEC } from './components/Form1099NEC';
 import { ArtisanWorkshop } from './components/ArtisanWorkshop';
@@ -130,6 +133,7 @@ import RadialDashboard from './components/RadialDashboard';
 import ThemeSettings from './components/ThemeSettings';
 import { BackupManager } from './components/BackupManager';
 import RootNodeMap from './components/RootNodeMap';
+import SovereignCloudEngine from './components/SovereignCloudEngine';
 import DeveloperServer from './components/DeveloperServer';
 import ErrorBoundary from './components/ErrorBoundary';
 import { withAutoFix } from './lib/autoFix';
@@ -209,7 +213,7 @@ const A0M_PUBLISHER = "BeBe Rexa";
 const A0M_EDITOR = "Sonia Lopez";
 const A0M_LEGAL_CONTEXT = "Dolby Media Copyright Amendment of 1954 to the Third Amendment of 1854";
 
-type View = 'dashboard' | 'marketplace' | 'portfolio' | 'earnings' | 'monetization' | 'storage' | 'playlist' | 'safe' | 'creations' | 'tithe' | 'messages' | 'appraiser' | 'artisan-workshop' | 'gemini' | 'developer-shell' | 'developer-server' | 'security-underwrite' | 'profile' | 'ai-studio' | 'deployment' | 'global-imager' | 'root-node-map' | 'gaming-platform' | 'private-payments' | 'chronos-archive' | 'leaderboard' | 'gaming-market' | 'global-trends' | 'tasks' | 'android-legacy-console';
+type View = 'dashboard' | 'marketplace' | 'portfolio' | 'earnings' | 'monetization' | 'storage' | 'playlist' | 'safe' | 'creations' | 'tithe' | 'messages' | 'appraiser' | 'artisan-workshop' | 'gemini' | 'developer-shell' | 'developer-server' | 'security-underwrite' | 'profile' | 'ai-studio' | 'deployment' | 'global-imager' | 'root-node-map' | 'gaming-platform' | 'private-payments' | 'chronos-archive' | 'leaderboard' | 'gaming-market' | 'global-trends' | 'tasks' | 'android-legacy-console' | 'cloud-orchestrator' | 'ai-reasoning' | 'conversational-cli' | 'svelte-engine';
 
 const PLAYLIST = [
   { name: "Neon Horizon", artist: "A#0M Collective", duration: "3:45", source: "A#0M Records", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", cite: "Gallegos, M. J. (2026). Neon Horizon [Audio track]. A#0M Records." },
@@ -248,6 +252,9 @@ import GlobalTrendsDashboard from './components/GlobalTrendsDashboard';
 
 import ChronosArchive from './components/ChronosArchive';
 import Leaderboard from './components/Leaderboard';
+import { AIQueryInterface } from './components/com.apple.macintosh.pixel.fcc.compliant.512bit.encryption.AIQueryInterface';
+import { ConversationalCLI } from './components/com.apple.macintosh.pixel.fcc.compliant.512bit.encryption.ConversationalCLI';
+import { SvelteWrapper } from './components/SvelteWrapper';
 
 import AndroidLegacyConsole from './components/AndroidLegacyConsole';
 import { generateKey, encryptData, decryptData } from './A0M_CORE_V2026_FINAL_SECURED_CRYPTO';
@@ -265,15 +272,16 @@ export default function App() {
     return match ? parseFloat(match[1]) : 0;
   };
   const [user, loading] = useAuthState(auth);
+  const [showLanding, setShowLanding] = useState(true);
   
   useEffect(() => {
     if (user && user.email !== 'matthewjoshuagallegos@gmail.com') {
       auth.signOut();
-      toast.error('UNAUTHORIZED DEVICE. SOVEREIGN USER ONLY.');
+      toast.error('UNAUTHORIZED DEVICE. ANDROID SKU A21S30i19GP13 USER ONLY.');
     }
   }, [user]);
 
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_USER_PROFILE);
   const [presence, setPresence] = useState<{ id: string, name: string }[]>([]);
   const [wsStatus, setWsStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
   const [systemStatus, setSystemStatus] = useState<{
@@ -298,7 +306,7 @@ export default function App() {
       wsRef.current = socket;
 
       socket.onopen = () => {
-        console.log('[WS] Connected to Sovereign Gateway');
+        console.log('[WS] Connected to Android SKU A21S30i19GP13 Gateway');
         setWsStatus('connected');
         socket.send(JSON.stringify({ type: 'ping' }));
       };
@@ -313,6 +321,11 @@ export default function App() {
           } else if (payload.type === 'sync') {
             console.log('[WS] Sync received:', payload.payload);
             toast.success(`SYNC RECEIVED: ${payload.payload.message || 'Data update'}`);
+          } else if (payload.type === 'fim_alert') {
+            toast.error(`SECURITY ALERT: ${payload.payload.message}`, {
+              duration: 5000,
+              icon: '🛡️'
+            });
           }
         } catch (e) {
           console.error('[WS] Error parsing message:', e);
@@ -350,7 +363,7 @@ export default function App() {
 
   const [currentView, setCurrentView] = useState<View>(() => {
     const saved = localStorage.getItem('a0m_current_view');
-    return (saved as View) || 'dashboard';
+    return (saved as View) || 'android-legacy-console';
   });
 
   // Persist view changes
@@ -614,13 +627,15 @@ export default function App() {
             ...prev,
             balance: doc.data().balance
           }));
+        } else {
+          setUserProfile(DEFAULT_USER_PROFILE);
         }
       }, (error) => {
         handleFirestoreError(error, OperationType.GET, 'users');
       });
       return () => unsub();
     } else {
-      setUserProfile(null);
+      setUserProfile(DEFAULT_USER_PROFILE);
     }
   }, [user]);
 
@@ -1004,6 +1019,10 @@ export default function App() {
   }
 
   if (!user) {
+    if (showLanding) {
+      return <A0MLandingPage onExplore={() => setShowLanding(false)} />;
+    }
+
     const handleEmailAuth = async (e: React.FormEvent) => {
       e.preventDefault();
       setAuthError(null);
@@ -1037,13 +1056,24 @@ export default function App() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="glass p-8 md:p-12 rounded-[2rem] max-w-md w-full text-center relative z-10"
+          style={{
+            backgroundColor: '#f112ea'
+          }}
         >
-          {authView !== 'main' && (
+          {authView !== 'main' ? (
             <button 
               onClick={() => { setAuthView('main'); setAuthError(null); }}
               className="absolute top-8 left-8 text-text-muted hover:text-white transition-colors"
             >
               <ArrowLeft size={20} />
+            </button>
+          ) : (
+            <button 
+              onClick={() => setShowLanding(true)}
+              className="absolute top-8 left-8 text-text-muted hover:text-white transition-colors flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest"
+            >
+              <ArrowLeft size={14} />
+              Portal
             </button>
           )}
 
@@ -1076,8 +1106,8 @@ export default function App() {
                 onClick={() => withAutoFix(() => signInWithPopup(auth, googleProvider)).then((result) => {
                   if (result && result.user && result.user.email !== 'matthewjoshuagallegos@gmail.com') {
                     auth.signOut();
-                    toast.error('UNAUTHORIZED DEVICE. SOVEREIGN USER ONLY.');
-                    setAuthError('UNAUTHORIZED DEVICE. SOVEREIGN USER ONLY.');
+                    toast.error('UNAUTHORIZED DEVICE. ANDROID SKU A21S30i19GP13 USER ONLY.');
+                    setAuthError('UNAUTHORIZED DEVICE. ANDROID SKU A21S30i19GP13 USER ONLY.');
                   } else {
                     toast.success('Logged in with Google');
                   }
@@ -1150,6 +1180,9 @@ export default function App() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent transition-colors"
                   placeholder="name@example.com"
+                  style={{
+                    backgroundColor: '#afdade'
+                  }}
                 />
               </div>
               {authView !== 'forgot-password' && (
@@ -1179,6 +1212,11 @@ export default function App() {
               <button 
                 type="submit"
                 className="w-full bg-accent text-black py-4 rounded-xl font-bold text-lg hover:shadow-[0_0_25px_rgba(157,78,221,0.6)] transition-all mt-4"
+                style={{
+                  backgroundColor: '#afdade',
+                  minWidth: '2048px',
+                  minHeight: '2048px'
+                }}
               >
                 {authView === 'email-login' ? 'Sign In' : authView === 'forgot-password' ? 'Reset Password' : 'Create Account'}
               </button>
@@ -1208,7 +1246,18 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="flex h-screen bg-transparent overflow-hidden relative">
+      <div 
+        className="flex h-screen bg-transparent overflow-hidden relative"
+        style={{
+          borderColor: '#16e343',
+          backgroundColor: '#760ed5',
+          fontFamily: '"Courier New"',
+          fontWeight: 'bold',
+          textDecorationLine: 'underline',
+          fontStyle: 'normal',
+          textAlign: 'center'
+        }}
+      >
         {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
         <CosmoBackground />
       <audio 
@@ -1232,7 +1281,12 @@ export default function App() {
               <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
                 <Zap className="text-black w-6 h-6 fill-current" />
               </div>
-              {!isSidebarCollapsed && <h1 className="text-2xl font-display font-black italic tracking-tighter rainbow-text truncate">A#0M</h1>}
+              {!isSidebarCollapsed && (
+                <div>
+                  <h1 className="text-2xl font-display font-black italic tracking-tighter rainbow-text truncate leading-none">A#0M</h1>
+                  <p className="text-[8px] font-mono text-accent uppercase tracking-widest mt-1">Wireless World OS</p>
+                </div>
+              )}
             </div>
             <button 
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -1249,7 +1303,19 @@ export default function App() {
             </button>
           </div>
 
-          <nav className={cn("space-y-2", isSidebarCollapsed && "flex flex-col items-center")}>
+          <nav 
+            className={cn("space-y-2 p-2 border-4", isSidebarCollapsed && "flex flex-col items-center")}
+            style={{
+              borderStyle: 'groove',
+              borderColor: '#37f409',
+              backgroundColor: '#640ba4',
+              fontFamily: '"Times New Roman"',
+              textAlign: 'justify',
+              textDecorationLine: 'underline',
+              fontWeight: 'bold',
+              color: '#48e914'
+            }}
+          >
             <NavItem 
               active={currentView === 'chronos-archive'} 
               onClick={() => { setCurrentView('chronos-archive'); setIsMobileMenuOpen(false); }}
@@ -1276,6 +1342,27 @@ export default function App() {
               onClick={() => { setCurrentView('ai-studio'); setIsMobileMenuOpen(false); }}
               icon={<Zap size={20} />}
               label="AI Studio"
+              collapsed={isSidebarCollapsed}
+            />
+            <NavItem 
+              active={currentView === 'ai-reasoning'} 
+              onClick={() => { setCurrentView('ai-reasoning'); setIsMobileMenuOpen(false); }}
+              icon={<Brain size={20} />}
+              label="AI Reasoning"
+              collapsed={isSidebarCollapsed}
+            />
+            <NavItem 
+              active={currentView === 'conversational-cli'} 
+              onClick={() => { setCurrentView('conversational-cli'); setIsMobileMenuOpen(false); }}
+              icon={<Terminal size={20} />}
+              label="A#0M CLI"
+              collapsed={isSidebarCollapsed}
+            />
+            <NavItem 
+              active={currentView === 'svelte-engine'} 
+              onClick={() => { setCurrentView('svelte-engine'); setIsMobileMenuOpen(false); }}
+              icon={<Cpu size={20} />}
+              label="Svelte Engine"
               collapsed={isSidebarCollapsed}
             />
             <NavItem 
@@ -1582,7 +1669,7 @@ export default function App() {
               <button 
                 onClick={handleLockKeychain}
                 className="p-2 text-text-muted hover:text-green-400 transition-colors border border-border rounded-lg flex items-center justify-center"
-                title="Lock Sovereign Keychain"
+                title="Lock Android SKU A21S30i19GP13 Keychain"
               >
                 <Lock size={16} />
               </button>
@@ -1748,7 +1835,17 @@ export default function App() {
                 </motion.div>
               )}
               {currentView === 'android-legacy-console' && (
-              <AndroidLegacyConsole />
+              <AndroidLegacyConsole setCurrentView={setCurrentView} />
+            )}
+            {currentView === 'cloud-orchestrator' && (
+              <motion.div 
+                key="cloud-orchestrator"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <SovereignCloudEngine />
+              </motion.div>
             )}
             {currentView === 'gaming-platform' && (
               <motion.div 
@@ -1757,7 +1854,17 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <GamingPlatform isHostNetworkActive={isHostNetworkActive} setIsHostNetworkActive={setIsHostNetworkActive} activeGame={activeGame} setActiveGame={setActiveGame} isApnBridged={isApnBridged} setCurrentView={setCurrentView} />
+                <GamingPlatform 
+                  isHostNetworkActive={isHostNetworkActive} 
+                  setIsHostNetworkActive={setIsHostNetworkActive} 
+                  activeGame={activeGame} 
+                  setActiveGame={setActiveGame} 
+                  isApnBridged={isApnBridged} 
+                  setCurrentView={setCurrentView}
+                  userProfile={userProfile}
+                  toggleGuildMonetization={toggleGuildMonetization}
+                  user={user}
+                />
               </motion.div>
             )}
             {currentView === 'ai-studio' && (
@@ -1770,6 +1877,31 @@ export default function App() {
                 <AIStudioInterface />
               </motion.div>
             )}
+            {currentView === 'ai-reasoning' && (
+              <AIQueryInterface />
+            )}
+            {currentView === 'conversational-cli' && (
+              <motion.div 
+                key="conversational-cli"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-[calc(100vh-8rem)]"
+              >
+                <ConversationalCLI />
+              </motion.div>
+            )}
+            {currentView === 'svelte-engine' && (
+              <motion.div 
+                key="svelte-engine"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-[calc(100vh-8rem)]"
+              >
+                <SvelteWrapper />
+              </motion.div>
+            )}
             {currentView === 'deployment' && (
               <motion.div 
                 key="deployment"
@@ -1778,7 +1910,7 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 className="space-y-6"
               >
-                <SystemMonitor status={systemStatus} wsStatus={wsStatus} onSync={() => sendWsSync('Sovereign Node Manual Sync')} />
+                <SystemMonitor status={systemStatus} wsStatus={wsStatus} onSync={() => sendWsSync('Android SKU A21S30i19GP13 Node Manual Sync')} />
                 <NetworkPerformanceMetrics />
                 <APNGatewayDiagnostic />
                 <APNProfileManager />
@@ -1816,6 +1948,27 @@ export default function App() {
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-8"
               >
+                {/* Wireless World Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-accent/10 border border-accent/20 p-6 rounded-3xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-8 opacity-5">
+                    <Globe size={120} />
+                  </div>
+                  <div className="relative z-10">
+                    <h2 className="text-3xl font-display font-black italic tracking-tighter uppercase">Wireless World Dashboard</h2>
+                    <p className="text-xs font-mono text-accent uppercase tracking-widest mt-1">Engineered for the Wireless World // Android SKU A21S30i19GP13</p>
+                  </div>
+                  <div className="relative z-10 flex items-center gap-4">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-green-500/20 rounded-full border border-green-500/30">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      <span className="text-[10px] font-mono font-bold text-green-400 uppercase tracking-widest">LTE-USA ACTIVE</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-blue-500/20 rounded-full border border-blue-500/30">
+                      <ShieldCheck size={12} className="text-blue-400" />
+                      <span className="text-[10px] font-mono font-bold text-blue-400 uppercase tracking-widest">512-BIT SECURE</span>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Top Dashboard Section: Profile, Playlist & Invite */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <PayoutDeepLink />
@@ -1953,7 +2106,7 @@ export default function App() {
                       <div className="bg-white/5 p-6 rounded-2xl border border-border hover:border-accent/50 transition-colors">
                         <span className="text-[10px] font-mono text-purple-400 uppercase tracking-widest mb-2 block">Lunar Node</span>
                         <h4 className="font-bold mb-2">Moon-Base Storage</h4>
-                        <p className="text-xs text-text-muted leading-relaxed">Physical asset vaults successfully deployed at Shackleton Crater for ultimate sovereign safety.</p>
+                        <p className="text-xs text-text-muted leading-relaxed">Physical asset vaults successfully deployed at Shackleton Crater for ultimate Android SKU A21S30i19GP13 safety.</p>
                       </div>
                     </div>
                   </div>
@@ -1984,7 +2137,10 @@ export default function App() {
                   <div className="bg-card border border-border rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="text-lg font-medium">Market Overview</h3>
-                      <select className="bg-bg border border-border rounded px-2 py-1 text-xs font-mono">
+                      <select 
+                        onChange={(e) => toast.success(`MARKET OVERVIEW: ${e.target.value.toUpperCase()}`)}
+                        className="bg-bg border border-border rounded px-2 py-1 text-xs font-mono"
+                      >
                         <option>7 Days</option>
                         <option>30 Days</option>
                       </select>
@@ -2219,11 +2375,17 @@ export default function App() {
                         className="w-full bg-black/40 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-sm focus:outline-none focus:border-accent/50 transition-colors"
                       />
                     </div>
-                    <button className="p-2 bg-black/40 border border-white/10 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-2 px-3">
+                    <button 
+                      onClick={() => toast.success('FILTERS APPLIED')}
+                      className="p-2 bg-black/40 border border-white/10 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-2 px-3"
+                    >
                       <Filter size={16} />
                       <span className="text-sm hidden sm:inline">Filters</span>
                     </button>
-                    <select className="bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-accent/50 transition-colors appearance-none cursor-pointer">
+                    <select 
+                      onChange={(e) => toast.success(`SORTED BY: ${e.target.value.toUpperCase()}`)}
+                      className="bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-accent/50 transition-colors appearance-none cursor-pointer"
+                    >
                       <option>Sort: Trending</option>
                       <option>Price: Low to High</option>
                       <option>Price: High to Low</option>
@@ -2378,7 +2540,8 @@ export default function App() {
                             <button 
                               onClick={async () => {
                                 const analysis = await analyzeAsset(asset.name, asset.category, asset.rarity);
-                                alert(analysis);
+                                toast.success('ANALYSIS COMPLETE');
+                                console.log('Analysis:', analysis);
                               }}
                               className="text-[10px] font-mono uppercase tracking-widest text-accent hover:text-white"
                             >
@@ -2412,8 +2575,8 @@ export default function App() {
                 <div className="bg-gradient-to-br from-accent/20 to-purple-600/20 border border-accent/30 rounded-3xl p-8 relative overflow-hidden">
                   <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div className="max-w-xl">
-                      <h2 className="text-4xl font-display italic mb-4">Trade Your Craft</h2>
-                      <p className="text-text-muted mb-6">Earn passive income by securely sharing your masked trading cash balances. Our Master-crafted workshop processes your cash balances to provide market insights, and you get paid in real-time.</p>
+                      <h2 className="text-4xl font-display italic mb-4">Data Monetization</h2>
+                      <p className="text-text-muted mb-6">You can monetize your data.</p>
                       <div className="flex items-center gap-6">
                         <div>
                           <p className="text-[10px] font-mono text-accent uppercase tracking-widest">Total Earned</p>
@@ -3079,7 +3242,7 @@ export default function App() {
 
                           <div className="pt-4">
                             <button 
-                              onClick={() => alert("Generating Wireless Compensation Form (PDF)...")}
+                              onClick={() => toast.success("GENERATING WIRELESS COMPENSATION FORM (PDF)...")}
                               className="w-full py-4 rounded-2xl bg-accent text-black font-bold text-sm uppercase tracking-widest hover:shadow-[0_0_20px_rgba(157,78,221,0.4)] transition-all flex items-center justify-center gap-2"
                             >
                               <FileText size={18} />
@@ -3340,14 +3503,20 @@ export default function App() {
                         
                         <div className="space-y-6">
                           <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 transition-colors cursor-pointer">
+                            <div 
+                              onClick={() => toast.success('WIRE TRANSFER PROTOCOL SELECTED')}
+                              className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-accent/50 transition-colors cursor-pointer"
+                            >
                               <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mb-3">
                                 <Globe2 size={20} />
                               </div>
                               <p className="font-bold">Wire Transfer</p>
                               <p className="text-[10px] text-text-muted mt-1">Global SWIFT Network</p>
                             </div>
-                            <div className="p-4 rounded-xl bg-accent/10 border border-accent/30 cursor-pointer">
+                            <div 
+                              onClick={() => toast.success('CRYPTO VAULT SELECTED')}
+                              className="p-4 rounded-xl bg-accent/10 border border-accent/30 cursor-pointer"
+                            >
                               <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent mb-3">
                                 <Lock size={20} />
                               </div>
@@ -3376,7 +3545,10 @@ export default function App() {
                                 />
                               </div>
                             </div>
-                            <button className="w-full py-4 bg-accent text-black font-bold rounded-xl hover:shadow-[0_0_20px_rgba(157,78,221,0.5)] transition-all flex items-center justify-center gap-2">
+                            <button 
+                              onClick={() => toast.success('SECURE TRANSFER INITIATED. AWAITING CONFIRMATION...')}
+                              className="w-full py-4 bg-accent text-black font-bold rounded-xl hover:shadow-[0_0_20px_rgba(157,78,221,0.5)] transition-all flex items-center justify-center gap-2"
+                            >
                               <Lock size={18} />
                               INITIATE SECURE TRANSFER
                             </button>
@@ -3800,7 +3972,7 @@ export default function App() {
                             };
                             setSecureFiles(prev => [newFile, ...prev]);
                             const extractedCash = extractCash(content);
-                            setUserProfile(prev => prev ? { ...prev, balance: (prev.balance || 0) + extractedCash } : null);
+                            setUserProfile(prev => prev ? { ...prev, balance: (prev.balance || 0) + extractedCash } : DEFAULT_USER_PROFILE);
                           };
                           reader.readAsText(file);
                         }
@@ -4255,7 +4427,7 @@ export default function App() {
                 <iframe 
                   src="/google.explorer.html" 
                   className="w-full h-full border-none"
-                  title="Sovereign Explorer"
+                  title="Android SKU A21S30i19GP13 Explorer"
                 />
               </motion.div>
             )}

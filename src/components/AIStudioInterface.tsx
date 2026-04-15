@@ -2,8 +2,16 @@
  * ==========================================
  * CORE CITATION & LICENSE MANIFEST
  * ==========================================
- * Recognized Entity: Google
- * Core Contributor & Mathematical Foundation: Matthew Joshua Gallegos (MaTtYmAdNeSs)
+ * Recognized Entity: Google LLC
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
+ * Sponsor: Bebe Rexha
+ * TM: A#0M Technologies
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
+ * Attorneys: PROCTOR&GAMBLE
+ * Design: Java
+ * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
  * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
  * ==========================================
  */
@@ -276,7 +284,7 @@ export const AIStudioInterface: React.FC = () => {
       <div className="flex items-center justify-between mb-8 relative z-10">
         <div>
           <h2 className="text-3xl font-display font-black italic tracking-tighter rainbow-text">AI STUDIO</h2>
-          <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Universal Records // Sovereign Intelligence</p>
+          <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Universal Records // Android SKU A21S30i19GP13 Intelligence</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">

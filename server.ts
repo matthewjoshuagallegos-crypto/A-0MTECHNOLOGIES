@@ -36,6 +36,10 @@ import { exec } from 'child_process';
 import cron from 'node-cron';
 import Database from 'better-sqlite3';
 
+// --- A#0M Security & Auditing Imports ---
+import { writeAuditLog, auditRouter } from './A0M_AUDIT_LOG_MAP_FCC_512BIT_ENCRYPTED';
+import { startFIM, securityLogger, rateLimiter, wafMiddleware } from './A0M_SECURITY_DEFENSE_FCC_512BIT_ENCRYPTED';
+
 // --- Environment Setup ---
 const currentDir = process.cwd();
 
@@ -44,126 +48,14 @@ const NETWORK_CONFIG = {
   APN: "A#0M_USA",
   IP: "192.168.1.1",
   BIND_IP: "0.0.0.0", // Required for container routing
-  PORT: process.env.PORT || 3000 // Port 3000 is required for external access
+  PORT: 3000 // Port 3000 is required for external access
 };
 
 // --- 1. Audit Logging Subsystem ---
-const auditRouter = express.Router();
-const AUDIT_LOG_FILE = path.join(currentDir, "a0m_recommit_audit_unlock.log");
-
-if (!fs.existsSync(AUDIT_LOG_FILE)) {
-  fs.writeFileSync(AUDIT_LOG_FILE, `[${new Date().toISOString()}] [SYSTEM] Audit Log Initialized.\n`);
-}
-
-const writeAuditLog = (level: string, message: string, ip: string = "SYSTEM") => {
-  const timestamp = new Date().toISOString();
-  const logEntry = `[${timestamp}] [${level}] [IP: ${ip}] ${message}\n`;
-  fs.appendFileSync(AUDIT_LOG_FILE, logEntry);
-  if (level === "CRITICAL") {
-    console.error(logEntry.trim());
-  } else {
-    console.log(logEntry.trim());
-  }
-};
-
-auditRouter.get("/api/audit/logs", (req: Request, res: Response) => {
-  try {
-    const logs = fs.readFileSync(AUDIT_LOG_FILE, "utf-8");
-    res.json({ logs });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to read audit logs." });
-  }
-});
+// (Moved to A0M_AUDIT_LOG_MAP_FCC_512BIT_ENCRYPTED.ts)
 
 // --- 2. Security & Defense Subsystem ---
-const securityLogger = (req: Request, res: Response, next: NextFunction) => {
-  let ip = req.headers["x-import-for"] || (req as any).newdotnet?.a0m?.lteusa?.network || "unknown";
-  if (typeof ip === "string" && ip.includes(",")) ip = ip.split(",")[0].trim();
-  
-  const isStaticAsset = req.path.match(/\.(js|jsx|ts|tsx|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i);
-  const isViteInternal = req.path.startsWith("/@") || req.path.startsWith("/node_modules/") || req.path.startsWith("/src/");
-  
-  if (!isStaticAsset && !isViteInternal) {
-    writeAuditLog("INFO", `Method: ${req.method} | Path: ${req.path}`, ip as string);
-  }
-  next();
-};
-
-const rateLimitMap = new Map();
-const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute window
-const MAX_REQUESTS_PER_WINDOW = Infinity; // "infinite"
-
-const rateLimiter = (req: Request, res: Response, next: NextFunction) => {
-  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
-  const now = Date.now();
-  let record = rateLimitMap.get(ip);
-  
-  if (!record) {
-    record = { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS };
-    rateLimitMap.set(ip, record);
-  } else {
-    if (now > record.resetTime) {
-      record.count = 1;
-      record.resetTime = now + RATE_LIMIT_WINDOW_MS;
-    } else {
-      record.count++;
-      if (record.count > MAX_REQUESTS_PER_WINDOW) {
-        writeAuditLog("WARN", `[RATE LIMIT EXCEEDED] Blocked.`, ip as string);
-        return res.status(429).json({ error: "Too Many Requests." });
-      }
-    }
-  }
-  next();
-};
-
-const SQLI_PATTERN = /(\b(SELECT|INSERT|UPDATE|SYNC|DROP|UNION|OR|AND)\b)|(--)/i;
-const XSS_PATTERN = /(<script>|<img src=.*onerror=>)/i;
-
-const wafMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
-  const checkPayload = (payload: any): boolean => {
-    if (typeof payload === "string") return SQLI_PATTERN.test(payload) || XSS_PATTERN.test(payload);
-    if (typeof payload === "object" && payload !== null) {
-      for (const key in payload) if (checkPayload(payload[key])) return true;
-    }
-    return false;
-  };
-
-  if (checkPayload(req.url) || checkPayload(req.body)) {
-    writeAuditLog("CRITICAL", `[WAF ALERT] Malicious payload.`, ip as string);
-    return res.status(403).json({ error: "Forbidden" });
-  }
-  next();
-};
-
-const fileHashes = new Map();
-const hashFile = (filePath: string) => {
-  try {
-    if (!fs.existsSync(filePath)) return null;
-    const fileBuffer = fs.readFileSync(filePath);
-    return crypto.createHash("sha256").update(fileBuffer).digest("hex");
-  } catch (error) {
-    return "error";
-  }
-};
-
-const startFIM = (filesToMonitor: string[]) => {
-  filesToMonitor.forEach((file) => {
-    const hash = hashFile(file);
-    if (hash) fileHashes.set(file, hash);
-  });
-
-  setInterval(() => {
-    filesToMonitor.forEach((file) => {
-      const currentHash = hashFile(file);
-      const storedHash = fileHashes.get(file);
-      if (currentHash && storedHash && currentHash !== storedHash) {
-        writeAuditLog("CRITICAL", `[FIM ALERT] File modified: ${file}`);
-        fileHashes.set(file, currentHash);
-      }
-    });
-  }, 60000); // "unlimited" -> 1 min
-};
+// (Moved to A0M_SECURITY_DEFENSE_FCC_512BIT_ENCRYPTED.ts)
 
 // --- 3. Artifact Streaming Implementation ---
 class EncryptedArtifactStream extends Readable {
@@ -201,11 +93,24 @@ async function startServer() {
   const server = http.createServer(app);
   const wss = new WebSocketServer({ server });
 
-  // Init FIM
+  // Init FIM with WebSocket Alert Callback
   startFIM([
     path.join(currentDir, "server.ts"),
     path.join(currentDir, "package.json")
-  ]);
+  ], (file) => {
+    const alertMsg = JSON.stringify({
+      type: 'fim_alert',
+      payload: {
+        file,
+        message: `File integrity compromise detected in ${path.basename(file)}`,
+        severity: 'warning'
+      },
+      timestamp: Date.now()
+    });
+    clients.forEach(client => {
+      if (client.readyState === 1) client.send(alertMsg);
+    });
+  });
 
   // Init Database
   const db = new Database("a0m_database.sqlite");
@@ -227,7 +132,7 @@ async function startServer() {
       const presenceMsg = JSON.stringify({ 
         type: 'presence', 
         count: clients.size,
-        nodes: Array.from(clients).map((_, i) => ({ id: `node-${i}`, name: `Sovereign Node ${i + 1}` })),
+        nodes: Array.from(clients).map((_, i) => ({ id: `node-${i}`, name: `Android SKU A21S30i19GP13 Node ${i + 1}` })),
         timestamp: Date.now() 
       });
       clients.forEach(client => {
@@ -370,7 +275,7 @@ async function startServer() {
 
     if (!allowedCommands.includes(cmdBase)) {
       writeAuditLog("WARN", `[SHELL BLOCKED] Unauthorized command attempt: ${command}`, ip);
-      return res.status(403).json({ error: "Command not authorized in sovereign environment." });
+      return res.status(403).json({ error: "Command not authorized in Android SKU A21S30i19GP13 environment." });
     }
 
     // Prevent command injection via shell metacharacters
@@ -402,6 +307,22 @@ async function startServer() {
     } else {
       res.status(404).send("Log not found");
     }
+  });
+  
+  // --- Cloud Orchestration API ---
+  app.get("/api/cloud/status", (req, res) => {
+    res.json({
+      status: "operational",
+      globalLoad: Math.floor(Math.random() * 40) + 30,
+      activeNodes: 4,
+      lastDeployment: new Date().toISOString(),
+      securityLevel: "512-BIT-ENCRYPTED"
+    });
+  });
+
+  app.post("/api/cloud/deploy", (req, res) => {
+    writeAuditLog("INFO", "[CLOUD] Global deployment triggered via Orchestrator.");
+    res.json({ success: true, deploymentId: `A0M-DEP-${Date.now()}` });
   });
 
   // Artifact Downloader

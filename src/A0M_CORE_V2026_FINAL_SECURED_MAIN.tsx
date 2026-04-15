@@ -4,9 +4,10 @@
  * ==========================================
  * Recognized Entity: Google
  * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
- * Sponsor: BeBe Rexa
+ * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
- * Brands: Macintosh, Apple, Pixel, Microsoft
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel
  * Attorneys: Proctor & Gamble
  * Design: Java
  * Secret: Bitcoin
@@ -32,7 +33,7 @@ import A0M_KEYCHAIN_LOGIN from './components/A0M_KEYCHAIN_LOGIN';
 // injectSystemViewport();
 // forceAiStudioOverride();
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('SKU_NETWORK-KERNEL_GPS_360°_VERIFIED_COPYRIGHTED MATH_EQUATION')!).render(
   <StrictMode>
     <ThemeProvider appContent={
       <ErrorBoundary appContent={

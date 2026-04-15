@@ -1,3 +1,21 @@
+/**
+ * ==========================================
+ * CORE CITATION & LICENSE MANIFEST
+ * ==========================================
+ * Recognized Entity: Google LLC
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
+ * Sponsor: Bebe Rexha
+ * TM: A#0M Technologies
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
+ * Attorneys: PROCTOR&GAMBLE
+ * Design: Java
+ * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
+ * ==========================================
+ */
+
 import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '../lib/utils';
 import { 
@@ -21,11 +39,33 @@ import {
   X
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { normalizeDisplay, getEllipticalGPS, cryptexEncrypt, SQRT_PI_CONSTANT } from '../lib/cryptex';
 
-const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGame, setActiveGame, isApnBridged, setCurrentView }: { isHostNetworkActive: boolean, setIsHostNetworkActive: (active: boolean) => void, activeGame: string | null, setActiveGame: (game: string | null) => void, isApnBridged: boolean, setCurrentView: (view: any) => void }) => {
+const GamingPlatform = ({ 
+  isHostNetworkActive, 
+  setIsHostNetworkActive, 
+  activeGame, 
+  setActiveGame, 
+  isApnBridged, 
+  setCurrentView,
+  userProfile,
+  toggleGuildMonetization,
+  user
+}: { 
+  isHostNetworkActive: boolean, 
+  setIsHostNetworkActive: (active: boolean) => void, 
+  activeGame: string | null, 
+  setActiveGame: (game: string | null) => void, 
+  isApnBridged: boolean, 
+  setCurrentView: (view: any) => void,
+  userProfile?: any,
+  toggleGuildMonetization?: any,
+  user?: any
+}) => {
   const [sessionActive, setSessionActive] = useState(false);
   const [latency, setLatency] = useState(0);
   const [fps, setFps] = useState(0);
+  const [gpsData, setGpsData] = useState({ x: 0, y: 0, z: 0, radius: 0 });
   const [logs, setLogs] = useState([]);
   const [activeStream, setActiveStream] = useState('403_CONTROL');
   const [deploymentServer, setDeploymentServer] = useState('production-01.a0m.network');
@@ -78,6 +118,10 @@ const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGam
       const interval = setInterval(() => {
         setLatency(Math.floor(Math.random() * (8 - 2 + 1) + 2));
         setFps(Math.floor(Math.random() * (240 - 144 + 1) + 144));
+        
+        // Update Elliptical GPS
+        const time = Date.now() / 1000;
+        setGpsData(getEllipticalGPS(34.4048, -103.2052, 1200, time));
       }, 1000);
       return () => clearInterval(interval);
     }
@@ -93,7 +137,7 @@ const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGam
             <Cpu className="text-blue-500" size={24} />
           </div>
           <div>
-            <h1 className="text-lg font-black tracking-tighter text-white uppercase italic">Sovereign Cloud Gaming Platform v2026.4</h1>
+            <h1 className="text-lg font-black tracking-tighter text-white uppercase italic">Android SKU A21S30i19GP13 Cloud Gaming Platform v2026.4</h1>
             <p className="text-[10px] text-zinc-500 font-mono tracking-widest uppercase">
               Property Under Strict Copyright to A#0M TECHNOLOGIES // LEI1126OMB06655 // ISBN 978-0-13-468599-1
             </p>
@@ -137,6 +181,11 @@ const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGam
             <MetricItem label="LATENCY" value={sessionActive ? `${latency}ms` : '--'} color="text-blue-400" />
             <MetricItem label="STREAM" value={activeStream} color="text-amber-400" />
             <MetricItem 
+              label="GPS RADIUS" 
+              value={sessionActive ? `${gpsData.radius.toFixed(2)}m` : '--'} 
+              color="text-cyan-400" 
+            />
+            <MetricItem 
               label="RADIUS" 
               value={!isHostNetworkActive ? 'activate a0m.lteusa.network? ' : (isApnBridged ? '100 Gbps (A#0M_NEURAL)' : '10 Gbps')} 
               color={!isHostNetworkActive ? 'text-zinc-500' : (isApnBridged ? 'text-purple-400' : 'text-blue-400')} 
@@ -168,10 +217,16 @@ const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGam
               <Cast size={14} /> Cast Targets
             </h2>
             <div className="space-y-2">
-              <button className="w-full text-left p-2 rounded bg-black/40 border border-white/5 text-[10px] hover:border-blue-500/50 transition-colors">
+              <button 
+                onClick={() => addLog(`CASTING TO TOSHIBA_43_ENT_DISPLAY_01...`, "info")}
+                className="w-full text-left p-2 rounded bg-black/40 border border-white/5 text-[10px] hover:border-blue-500/50 transition-colors"
+              >
                 TOSHIBA_43_ENT_DISPLAY_01
               </button>
-              <button className="w-full text-left p-2 rounded bg-black/40 border border-white/5 text-[10px] hover:border-blue-500/50 transition-colors">
+              <button 
+                onClick={() => addLog(`CASTING TO GOOGLE_NEST_HUB_GPLAY...`, "info")}
+                className="w-full text-left p-2 rounded bg-black/40 border border-white/5 text-[10px] hover:border-blue-500/50 transition-colors"
+              >
                 GOOGLE_NEST_HUB_GPLAY
               </button>
             </div>
@@ -200,9 +255,21 @@ const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGam
                 <div className="z-10 text-center">
                   <div className="text-4xl font-black italic text-white tracking-tighter mb-2">STREAMING LIVE</div>
                   <div className="text-[10px] font-mono text-blue-400 bg-blue-900/20 px-3 py-1 rounded-full border border-blue-500/30">
-                    ENC: eא&-AES_512 // PORT403
+                    ENC: CRYPTEX-UINT-512 // PORT403
+                  </div>
+                  <div className="mt-4 flex gap-2 justify-center">
+                    <div className="text-[8px] font-mono text-white/40">√π = {SQRT_PI_CONSTANT}</div>
+                    <div className="text-[8px] font-mono text-white/40">GPS: {gpsData.x.toFixed(0)}, {gpsData.y.toFixed(0)}</div>
                   </div>
                 </div>
+                {/* Pixelated Static Overlay */}
+                <div 
+                  className="absolute inset-0 pointer-events-none opacity-20"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                    filter: `brightness(${normalizeDisplay(1)}) contrast(150%)`
+                  }}
+                />
                 {/* CRT Scanline Effect */}
                 <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_2px,3px_100%] opacity-30"></div>
               </div>
@@ -224,9 +291,24 @@ const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGam
           {/* Controls Bar */}
           <div className="bg-zinc-900 border border-white/10 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex gap-4">
-              <ControlIcon icon={<Gamepad2 size={18} />} label="Controller" active={sessionActive} />
-              <ControlIcon icon={<Monitor size={18} />} label="Video" active={sessionActive} />
-              <ControlIcon icon={<Cast size={18} />} label="Cast" active={sessionActive} />
+              <ControlIcon 
+                icon={<Gamepad2 size={18} />} 
+                label="Controller" 
+                active={sessionActive} 
+                onClick={() => sessionActive && addLog("CONTROLLER SYNCED", "success")}
+              />
+              <ControlIcon 
+                icon={<Monitor size={18} />} 
+                label="Video" 
+                active={sessionActive} 
+                onClick={() => sessionActive && addLog("VIDEO SETTINGS OPTIMIZED", "success")}
+              />
+              <ControlIcon 
+                icon={<Cast size={18} />} 
+                label="Cast" 
+                active={sessionActive} 
+                onClick={() => sessionActive && addLog("CASTING TO PRIMARY DISPLAY", "info")}
+              />
             </div>
             
             <div className="flex-1 flex items-center gap-2 w-full md:w-auto">
@@ -286,11 +368,43 @@ const GamingPlatform = ({ isHostNetworkActive, setIsHostNetworkActive, activeGam
               <h3 className="text-[10px] font-bold text-red-400 uppercase tracking-tighter italic">FCC Compliance Advisory</h3>
             </div>
             <p className="text-[9px] text-zinc-400 leading-relaxed italic mb-4">
-              Property Under Strict Copyright to A#0M TECHNOLOGIES. All streaming via Port 512 is protected under the Sovereign User Honor code.
+              Property Under Strict Copyright to A#0M TECHNOLOGIES. All streaming via Port 512 is protected under the Android SKU A21S30i19GP13 User Honor code.
             </p>
             <div className="flex items-center gap-2 text-white">
               <Copyright size={12} />
               <span className="text-[10px] font-bold">2026 A#0M TECH</span>
+            </div>
+          </div>
+
+          <div className="bg-accent/10 border border-accent/20 p-5 rounded-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Activity className="text-accent" size={18} />
+                <h3 className="text-[10px] font-bold text-accent uppercase tracking-tighter italic">Data Monetization</h3>
+              </div>
+              {userProfile && toggleGuildMonetization && user && (
+                <button 
+                  onClick={() => toggleGuildMonetization(user.uid, !userProfile.monetizationActive)}
+                  className={cn(
+                    "w-10 h-5 rounded-full p-0.5 transition-colors relative",
+                    userProfile.monetizationActive ? "bg-accent" : "bg-white/10"
+                  )}
+                >
+                  <motion.div 
+                    animate={{ x: userProfile.monetizationActive ? 20 : 0 }}
+                    className="w-4 h-4 bg-white rounded-full shadow-lg"
+                  />
+                </button>
+              )}
+            </div>
+            <p className="text-[9px] text-zinc-400 leading-relaxed italic mb-4">
+              Earn passive income by securely sharing your masked trading cash balances and host network data.
+            </p>
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono text-zinc-500 uppercase">Status</span>
+              <span className={cn("text-[10px] font-bold uppercase", userProfile?.monetizationActive ? "text-accent" : "text-zinc-500")}>
+                {userProfile?.monetizationActive ? "Active" : "Paused"}
+              </span>
             </div>
           </div>
         </div>
@@ -358,9 +472,12 @@ const LibraryTag = ({ label }) => (
   </div>
 );
 
-const ControlIcon = ({ icon, label, active }) => (
+const ControlIcon = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick?: () => void }) => (
   <div className={`flex flex-col items-center gap-1 transition-opacity ${active ? 'opacity-100' : 'opacity-20'}`}>
-    <div className="p-2 bg-zinc-800 rounded-xl hover:bg-zinc-700 cursor-pointer border border-white/5">
+    <div 
+      onClick={onClick}
+      className="p-2 bg-zinc-800 rounded-xl hover:bg-zinc-700 cursor-pointer border border-white/5"
+    >
       {icon}
     </div>
     <span className="text-[8px] font-bold text-zinc-500 uppercase">{label}</span>

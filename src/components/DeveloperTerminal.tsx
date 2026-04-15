@@ -2,8 +2,16 @@
  * ==========================================
  * CORE CITATION & LICENSE MANIFEST
  * ==========================================
- * Recognized Entity: Google
- * Core Contributor & Mathematical Foundation: Matthew Joshua Gallegos (MaTtYmAdNeSs)
+ * Recognized Entity: Google LLC
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
+ * Sponsor: Bebe Rexha
+ * TM: A#0M Technologies
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
+ * Attorneys: PROCTOR&GAMBLE
+ * Design: Java
+ * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
  * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
  * ==========================================
  */
@@ -15,6 +23,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import 'xterm/css/xterm.css';
+import { SEAMLESS_KERNEL_STYLE } from '../lib/cryptex';
 
 interface LogEntry {
   timestamp: string;
@@ -91,9 +100,9 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
       term.open(terminalRef.current);
       fitAddon.fit();
 
-      term.writeln('\x1b[1;33mA#0M SOVEREIGN SHELL v2026.4\x1b[0m');
+      term.writeln('\x1b[1;33mA#0M ANDROID SKU A21S30i19GP13 SHELL v2026.4\x1b[0m');
       term.writeln('Authorized Access Only. 512-Bit Encryption Active.');
-      term.write('\r\n\x1b[1;33msovereign@a0m:_\x1b[0m ');
+      term.write('\r\n\x1b[1;33mandroid@a0m:_\x1b[0m ');
 
       let currentLine = '';
       term.onData(async (data) => {
@@ -103,7 +112,7 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
             await handleTerminalCommand(currentLine, term);
           }
           currentLine = '';
-          term.write('\x1b[1;33msovereign@a0m:_\x1b[0m ');
+          term.write('\x1b[1;33mandroid@a0m:_\x1b[0m ');
         } else if (data === '\u007f') { // Backspace
           if (currentLine.length > 0) {
             currentLine = currentLine.slice(0, -1);
@@ -171,7 +180,7 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
   const simulateCaptivePortalBoot = async () => {
     const bootSequence = [
       "INITIALIZING A#0M CAPTIVE PORTAL...",
-      "ESTABLISHING SOVEREIGN AUTHORITY PROTOCOLS...",
+      "ESTABLISHING ANDROID SKU A21S30i19GP13 AUTHORITY PROTOCOLS...",
       "VERIFYING FCC COMPLIANCE [512-BIT ENCRYPTION]...",
       "HANDSHAKE: GOOGLE LLC [AUTHORIZED]",
       "SPONSOR CHECK: BEBE REXHA [CONFIRMED]",
@@ -196,11 +205,11 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
       "ISBN: 61 1C 5E 93 A7 6F 10 C2 23 62 39 34 33 31 34 32 63 31 31 65 39 30 38 35 65 0A 1C 00",
       "START DATE: 07/06/2026 4:30A.M.",
       "RADIUS SHOCK AXIOM: VERIFIED",
-      "CAPTIVE PORTAL ONLINE. SOVEREIGN AUTHORITY GRANTED."
+      "CAPTIVE PORTAL ONLINE. ANDROID SKU A21S30i19GP13 AUTHORITY GRANTED."
     ];
 
     for (const msg of bootSequence) {
-      addLog(`[SOVEREIGN] ${msg}`);
+      addLog(`[ANDROID_KERNEL] ${msg}`);
       await new Promise(resolve => setTimeout(resolve, 150));
     }
   };
@@ -221,8 +230,8 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
         response = 'Available commands: help, glossary, libraries, installable-enhancements, packages, downloadable-apps, extensions, add-ons, apk, media-downloads, uploads, fix-all, captive-portal';
         break;
       case 'captive-portal':
-      case 'sovereign-authority':
-        response = 'Initiating A#0M CAPTIVE PORTAL - SOVEREIGN AUTHORITY boot sequence...';
+      case 'android-authority':
+        response = 'Initiating A#0M CAPTIVE PORTAL - ANDROID SKU A21S30i19GP13 AUTHORITY boot sequence...';
         simulateCaptivePortalBoot();
         break;
       case 'glossary':
@@ -357,7 +366,10 @@ export default function DeveloperTerminal({ totalEarnings, externalLogs }: { tot
   };
 
   return (
-    <div className="glass p-6 rounded-3xl border-border h-full flex flex-col font-mono text-sm">
+    <div 
+      style={SEAMLESS_KERNEL_STYLE}
+      className="p-6 flex flex-col font-mono text-sm h-full"
+    >
       <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">

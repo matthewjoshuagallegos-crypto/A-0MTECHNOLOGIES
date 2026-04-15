@@ -15,6 +15,7 @@
 
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
 
@@ -32,7 +33,7 @@ export default defineConfig(({mode}) => {
   ];
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), svelte()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
       'process.env.GEMINI_ALPHA_KEY': JSON.stringify(env.GEMINI_API_KEY),

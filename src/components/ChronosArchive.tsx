@@ -1,3 +1,21 @@
+/**
+ * ==========================================
+ * CORE CITATION & LICENSE MANIFEST
+ * ==========================================
+ * Recognized Entity: Google LLC
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
+ * Sponsor: Bebe Rexha
+ * TM: A#0M Technologies
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
+ * Attorneys: PROCTOR&GAMBLE
+ * Design: Java
+ * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
+ * ==========================================
+ */
+
 import React from 'react';
 import { motion } from 'motion/react';
 import { Shield, Lock, Terminal, Globe2, Cpu, Database } from 'lucide-react';
@@ -85,14 +103,14 @@ export default function ChronosArchive() {
             </li>
             <li className="bg-white/5 p-4 rounded-xl">
               <strong className="text-accent block mb-1">Chronos Final Dispatch</strong>
-              <span className="text-text-muted">An immutable broadcast signal signifying the formal commencement of global deployment. Synchronizes all networked nodes to the Sovereign User's primary command signature.</span>
+              <span className="text-text-muted">An immutable broadcast signal signifying the formal commencement of global deployment. Synchronizes all networked nodes to the Android SKU A21S30i19GP13 User's primary command signature.</span>
             </li>
             <li className="bg-white/5 p-4 rounded-xl">
               <strong className="text-accent block mb-1">eא& Stream</strong>
               <span className="text-text-muted">A high-capacity, multi-port protocol for prioritized data transmission utilizing a synchronized bypass of Port 403 and Port 512.</span>
             </li>
             <li className="bg-white/5 p-4 rounded-xl">
-              <strong className="text-accent block mb-1">Sovereign User</strong>
+              <strong className="text-accent block mb-1">Android SKU A21S30i19GP13 User</strong>
               <span className="text-text-muted">The preeminent administrative entity invested with the LEI1126OMB06655 credentials; granted total, unrestricted oversight.</span>
             </li>
           </ul>
@@ -116,7 +134,7 @@ export default function ChronosArchive() {
         <section className="space-y-4">
           <h3 className="text-xl font-bold text-white border-l-4 border-accent pl-4">VI. AUTHORIAL STATEMENT</h3>
           <blockquote className="border-l-2 border-accent/50 pl-6 italic text-text-muted py-2">
-            "The liberation of the computational environment through the deployment of Firmware 36 constitutes the absolute zenith of digital sovereignty in the modern era. Through the strategic integration of the most recent, cutting-edge libraries from every major global vendor into a singular, non-captive environment, it is fundamentally ensured that the Sovereign User maintains total and unchallenged command over the dissemination, acquisition, and production of information."
+            "The liberation of the computational environment through the deployment of Firmware 36 constitutes the absolute zenith of digital sovereignty in the modern era. Through the strategic integration of the most recent, cutting-edge libraries from every major global vendor into a singular, non-captive environment, it is fundamentally ensured that the Android SKU A21S30i19GP13 User maintains total and unchallenged command over the dissemination, acquisition, and production of information."
           </blockquote>
         </section>
       </div>

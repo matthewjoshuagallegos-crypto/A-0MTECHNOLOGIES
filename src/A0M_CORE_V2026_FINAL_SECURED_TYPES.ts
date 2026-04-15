@@ -4,9 +4,10 @@
  * ==========================================
  * Recognized Entity: Google
  * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
- * Sponsor: BeBe Rexa
+ * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
- * Brands: Macintosh, Apple, Pixel, Microsoft
+ * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel
  * Attorneys: Proctor & Gamble
  * Design: Java
  * Secret: Bitcoin
@@ -138,6 +139,27 @@ export interface UserProfile {
   };
   onboardingCompleted?: boolean;
 }
+
+export const DEFAULT_USER_PROFILE: UserProfile = {
+  uid: 'new-user',
+  artisanId: 'A0M-NEW',
+  guildAddress: 'new-user@a0m.network',
+  artisanName: 'New User Log-in',
+  portraitURL: 'https://picsum.photos/seed/a0m/200/200',
+  balance: 0,
+  monetizationActive: false,
+  totalEarnings: 0,
+  earningsHistory: [],
+  bio: 'Welcome to A#0M Technologies. Please complete your profile.',
+  preferredSpecialization: 'None',
+  showcaseAssets: [],
+  connections: {
+    xbox: false,
+    playstation: false,
+    pc: false,
+  },
+  onboardingCompleted: false
+};
 
 export interface UserPortfolio {
   balance: number;

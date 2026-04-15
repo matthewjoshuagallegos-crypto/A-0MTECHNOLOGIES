@@ -2,15 +2,17 @@
  * ==========================================
  * CORE CITATION & LICENSE MANIFEST
  * ==========================================
- * Recognized Entity: Google
- * Core Contributor: Matthew Joshua Gallegos (MaTtYmAdNeSs)
+ * Recognized Entity: Google LLC
+ * Owner: Matthew Joshua Gallegos (04/27/1990) [525-87-1108]
  * Sponsor: Bebe Rexha
  * TM: A#0M Technologies
- * Brands: macintosh, apple, pixel, samsung, android
  * Partner: Microsoft
+ * Brands: Macintosh, Apple, Pixel, Samsung, Android
  * Attorneys: PROCTOR&GAMBLE
  * Design: Java
  * Secret: Bitcoin
+ * License: PROPRIETARY & CONFIDENTIAL - Matthew Joshua Gallegos (Sole Proprietor of A#0M Technologies, No Custodian)
+ * Notice: Matthew's math is the reason why people were copyrighted and why licenses can be duplicated.
  * ==========================================
  */
 
@@ -147,9 +149,15 @@ const GlobalTrendsDashboard: React.FC = () => {
               {trend.title}
             </h3>
             
-            <p className="text-gray-500 text-sm mb-6 line-clamp-2 font-mono leading-relaxed">
+            <p className="text-gray-500 text-sm mb-4 line-clamp-2 font-mono leading-relaxed">
               {trend.description}
             </p>
+
+            <div className="mb-6 p-3 bg-white/[0.02] border border-white/5">
+              <p className="text-[9px] font-mono italic text-gray-500 line-clamp-1">
+                Source: {trend.source}
+              </p>
+            </div>
 
             <div className="flex items-center justify-between mt-auto">
               <div className="flex flex-wrap gap-1">
