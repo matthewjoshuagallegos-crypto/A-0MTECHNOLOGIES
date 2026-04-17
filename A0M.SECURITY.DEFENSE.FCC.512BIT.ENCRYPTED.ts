@@ -25,6 +25,16 @@ import crypto from 'crypto';
 import fs from 'fs';
 import { writeAuditLog } from './A0M_AUDIT_LOG_MAP_FCC_512BIT_ENCRYPTED';
 
+// --- Global Broadcast Hook ---
+let broadcastCallback: ((msg: string) => void) | null = null;
+export const setSecurityBroadcastHandler = (handler: (msg: string) => void) => {
+  broadcastCallback = handler;
+};
+
+const broadcastToSecurity = (msg: string) => {
+  if (broadcastCallback) broadcastCallback(msg);
+};
+
 // --- 1. Security Logging and Auditing ---
 export const securityLogger = (req: Request, res: Response, next: NextFunction) => {
   let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
@@ -64,19 +74,34 @@ export const rateLimiter = (req: Request, res: Response, next: NextFunction) => 
       record.resetTime = now + RATE_LIMIT_WINDOW_MS;
     } else {
       record.count++;
-      if (record.count > MAX_REQUESTS_PER_WINDOW) {
+    if (record.count > MAX_REQUESTS_PER_WINDOW) {
         writeAuditLog('WARN', `[RATE LIMIT EXCEEDED] Blocked.`, ip as string);
+        
+        // Broadcast to security dashboard if possible
+        const alertMsg = JSON.stringify({
+          type: 'security_alert',
+          payload: {
+            type: 'RATE_LIMIT',
+            ip: ip as string,
+            message: 'Multiple rapid request attempts blocked.',
+            severity: 'warning'
+          },
+          timestamp: Date.now()
+        });
+        broadcastToSecurity(alertMsg);
+
         return res.status(429).json({ error: 'Too Many Requests. Please try again later.' });
-      }
+    }
     }
   }
   next();
 };
 
-// --- 3. Web Application Firewall (WAF) ---
+// --- 3. Web Application Firewall (WAF) & Knox Integration ---
 // Refined patterns to prevent false positives on common words like "OR" or "AND" in URLs
 const SQLI_PATTERN = /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION)\b)|(--)/i;
 const XSS_PATTERN = /(<script>|<img src=.*onerror=>)/i;
+const KNOX_VIOLATION_PATTERN = /(\b(linux|kernel_exploit|root_access|sudo)\b)/i;
 
 export const wafMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
@@ -84,7 +109,7 @@ export const wafMiddleware = (req: Request, res: Response, next: NextFunction) =
   const checkPayload = (payload: any): boolean => {
     if (typeof payload === 'string') {
       // For URLs, we only check for more obvious SQLi patterns to avoid blocking legitimate paths
-      return SQLI_PATTERN.test(payload) || XSS_PATTERN.test(payload);
+      return SQLI_PATTERN.test(payload) || XSS_PATTERN.test(payload) || KNOX_VIOLATION_PATTERN.test(payload);
     }
     if (typeof payload === 'object' && payload !== null) {
       for (const key in payload) {
@@ -96,12 +121,31 @@ export const wafMiddleware = (req: Request, res: Response, next: NextFunction) =
 
   const isMaliciousUrl = checkPayload(req.url);
   const isMaliciousBody = req.body ? checkPayload(req.body) : false;
+  const isKnoxViolation = KNOX_VIOLATION_PATTERN.test(req.headers['user-agent'] || '');
 
-  if (isMaliciousUrl || isMaliciousBody) {
-    writeAuditLog('CRITICAL', `[WAF ALERT] Malicious payload detected. Request blocked. URL: ${req.url} | Body: ${JSON.stringify(req.body)}`, ip as string);
+  if (isMaliciousUrl || isMaliciousBody || isKnoxViolation) {
+    const reason = isKnoxViolation ? 'Knox Security Integrity Violation' : 'Malicious payload detected';
+    writeAuditLog('CRITICAL', `[SECURITY ALERT] ${reason}. Request blocked. URL: ${req.url} | UA: ${req.headers['user-agent']}`, ip as string);
+    
+    // Broadcast to security dashboard
+    const alertMsg = JSON.stringify({
+      type: 'security_alert',
+      payload: {
+        type: 'WAF_BLOCK',
+        ip: ip as string,
+        message: `${reason}. Threat neutralized.`,
+        severity: 'critical',
+        details: isKnoxViolation ? 'Knox/Linux Env Block' : req.url
+      },
+      timestamp: Date.now()
+    });
+    broadcastToSecurity(alertMsg);
+
     return res.status(403).json({ 
-      error: 'Forbidden: Malicious payload detected.',
-      details: isMaliciousUrl ? 'URL contains suspicious patterns' : 'Request body contains suspicious patterns'
+      error: `Forbidden: ${reason}.`,
+      details: isMaliciousUrl ? 'URL contains suspicious patterns' : 
+               isKnoxViolation ? 'Environment identified as non-compliant/unsecured' :
+               'Request body contains suspicious patterns'
     });
   }
   

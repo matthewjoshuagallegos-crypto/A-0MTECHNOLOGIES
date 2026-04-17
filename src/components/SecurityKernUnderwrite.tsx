@@ -40,7 +40,7 @@ interface UnderwriteStep {
   details: string;
 }
 
-export default function SecurityKernUnderwrite() {
+export default function SecurityKernUnderwrite({ onComplete }: { onComplete?: () => void }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
@@ -48,12 +48,14 @@ export default function SecurityKernUnderwrite() {
 
   const [steps, setSteps] = useState<UnderwriteStep[]>([
     { id: '1', label: 'NEURAL KERNEL AUTHENTICATION', status: 'pending', details: 'Verifying 512-bit A#0M RSA Signature...' },
-    { id: '2', label: 'FCC COMPLIANCE SCAN', status: 'pending', details: 'Checking North American Wireless Systems Spectrum...' },
-    { id: '3', label: 'QUALCOMMAC HARDWARE HANDSHAKE', status: 'pending', details: 'Validating Silicon-Level Encryption Gates...' },
-    { id: '4', label: 'PAIL ARCHITECTURE INTEGRITY', status: 'pending', details: 'Mapping Modular Neural-First Programming Infrastructure...' },
-    { id: '5', label: 'GPS RADIUS COORDINATION', status: 'pending', details: 'Calculating Geographic Coordinating GPS Radius Equation...' },
-    { id: '6', label: 'BITCOIN SECRET HANDSHAKE', status: 'pending', details: 'Verifying Decentralized Ledger Authorization...' },
-    { id: '7', label: 'FINAL ANDROID SKU A21S30i19GP13 UNDERWRITE', status: 'pending', details: 'Issuing Advanced Congressional Testing License...' }
+    { id: '2', label: 'KNOX INTEGRITY VERIFICATION', status: 'pending', details: 'Scrutinizing Samsung Enterprise Knox 4.1.2 Security Stack...' },
+    { id: '3', label: 'FCC COMPLIANCE SCAN', status: 'pending', details: 'Checking North American Wireless Systems Spectrum...' },
+    { id: '4', label: 'QUALCOMMAC HARDWARE HANDSHAKE', status: 'pending', details: 'Validating Silicon-Level Encryption Gates...' },
+    { id: '5', label: 'SAMSUNG TEE TRUSTZONE AUDIT', status: 'pending', details: 'Establishing Trusted Execution Environment for Android SKU A21S30i19GP13...' },
+    { id: '6', label: 'PAIL ARCHITECTURE INTEGRITY', status: 'pending', details: 'Mapping Modular Neural-First Programming Infrastructure...' },
+    { id: '7', label: 'GPS RADIUS COORDINATION', status: 'pending', details: 'Calculating Geographic Coordinating GPS Radius Equation...' },
+    { id: '8', label: 'BITCOIN SECRET HANDSHAKE', status: 'pending', details: 'Verifying Decentralized Ledger Authorization...' },
+    { id: '9', label: 'FINAL ANDROID SKU A21S30i19GP13 UNDERWRITE', status: 'pending', details: 'Issuing Advanced Congressional Testing License...' }
   ]);
 
   const startUnderwrite = async () => {
@@ -80,6 +82,7 @@ export default function SecurityKernUnderwrite() {
 
     setIsProcessing(false);
     setIsComplete(true);
+    if (onComplete) onComplete();
   };
 
   return (

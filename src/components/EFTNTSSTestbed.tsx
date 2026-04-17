@@ -52,7 +52,7 @@ const OS_PROVIDERS = [
   { id: 'android', name: 'Android (Google)', icon: '🤖', color: '#3ddc84', patch: 'Security Patch: 2026-01-05', thermal: 'Optimized' },
   { id: 'ios', name: 'iOS (Apple)', icon: '🍎', color: '#f5f5f7', patch: 'Security Patch: 19.2.1', thermal: 'Balanced' },
   { id: 'windows', name: 'Windows (Microsoft)', icon: '🪟', color: '#00a4ef', patch: 'Security Patch: KB5043', thermal: 'High-Perf' },
-  { id: 'samsung', name: 'One UI (Samsung)', icon: '🌌', color: '#1428a0', patch: 'Security Patch: Knox 4.1', thermal: 'Aggressive' }
+  { id: 'samsung', name: 'One UI (Samsung)', icon: '🌌', color: '#1428a0', patch: 'Security Patch: Knox 512-R4 (2026.4)', thermal: 'Aggressive' }
 ];
 
 export default function EFTNTSSTestbed() {

@@ -38,7 +38,7 @@ import Database from 'better-sqlite3';
 
 // --- A#0M Security & Auditing Imports ---
 import { writeAuditLog, auditRouter } from './A0M_AUDIT_LOG_MAP_FCC_512BIT_ENCRYPTED';
-import { startFIM, securityLogger, rateLimiter, wafMiddleware } from './A0M_SECURITY_DEFENSE_FCC_512BIT_ENCRYPTED';
+import { startFIM, securityLogger, rateLimiter, wafMiddleware, setSecurityBroadcastHandler } from './A0M_SECURITY_DEFENSE_FCC_512BIT_ENCRYPTED';
 
 // --- Environment Setup ---
 const currentDir = process.cwd();
@@ -93,6 +93,16 @@ async function startServer() {
   const server = http.createServer(app);
   const wss = new WebSocketServer({ server });
 
+  // --- WebSocket Real-Time Communication ---
+  const clients = new Set<any>();
+
+  // Hook into security defense telemetry
+  setSecurityBroadcastHandler((msg: string) => {
+    clients.forEach(client => {
+      if (client.readyState === 1) client.send(msg);
+    });
+  });
+
   // Init FIM with WebSocket Alert Callback
   startFIM([
     path.join(currentDir, "server.ts"),
@@ -120,8 +130,6 @@ async function startServer() {
     CREATE TABLE IF NOT EXISTS files (id TEXT PRIMARY KEY, user_id TEXT, filename TEXT, content TEXT, size INTEGER);
   `);
 
-  // --- WebSocket Real-Time Communication ---
-  const clients = new Set<any>();
   wss.on('connection', (ws, req) => {
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
     writeAuditLog("INFO", `[WS CONNECT] New client connected.`, ip as string);

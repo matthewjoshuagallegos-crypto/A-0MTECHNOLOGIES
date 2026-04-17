@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 // @ts-ignore
+import { mount, unmount } from 'svelte';
+// @ts-ignore
 import SvelteEngineComponent from './com.apple.macintosh.pixel.fcc.compliant.512bit.encryption.SvelteEngine.svelte';
 
 export function SvelteWrapper() {
@@ -8,8 +10,8 @@ export function SvelteWrapper() {
 
   useEffect(() => {
     if (containerRef.current && !svelteInstance.current) {
-      // Mount the Svelte component
-      svelteInstance.current = new SvelteEngineComponent({
+      // Mount the Svelte component using Svelte 5 API
+      svelteInstance.current = mount(SvelteEngineComponent, {
         target: containerRef.current,
         props: {
           title: "A#0M Svelte Engine (V2026)"
@@ -19,7 +21,7 @@ export function SvelteWrapper() {
 
     return () => {
       if (svelteInstance.current) {
-        svelteInstance.current.$destroy();
+        unmount(svelteInstance.current);
         svelteInstance.current = null;
       }
     };

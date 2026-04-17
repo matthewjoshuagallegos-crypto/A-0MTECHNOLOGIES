@@ -2,6 +2,27 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Fields: 
+    //   - artisanId: string (immutable)
+    //   - artisanName: string (length 1-100)
+    //   - guildAddress: string (valid email)
+    //   - balance: number (min 0)
+    //   - createdAt: timestamp
+    //
+    // Collection: messages
+    // Fields:
+    //   - userId: string (matches auth.uid)
+    //   - userName: string (length 1-100)
+    //   - text: string (length 1-1000)
+    //   - timestamp: timestamp
+    //
+    // ===============================================================
+
+    // ===============================================================
     // Helper Functions
     // ===============================================================
     function isAuthenticated() {
@@ -23,6 +44,10 @@ service cloud.firestore {
 
     function isValidEmail(email) {
       return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isRecent(time) {
+      return time is timestamp && Math.abs(request.time.toMillis() - time.toMillis()) < 600000; // 10 mins
     }
 
     // ===============================================================
@@ -51,10 +76,10 @@ service cloud.firestore {
     }
 
     function isValidAPNProfile(data) {
-      return data.name is string && data.name.size() > 0 &&
-             data.apn is string && data.apn.size() > 0 &&
-             data.mcc is string && data.mcc.size() > 0 &&
-             data.mnc is string && data.mnc.size() > 0;
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.apn is string && data.apn.size() > 0 && data.apn.size() < 200 &&
+             data.mcc is string && data.mcc.matches("^\\d{3}$") &&
+             data.mnc is string && data.mnc.matches("^\\d{2,3}$");
     }
 
     // ===============================================================
@@ -64,7 +89,10 @@ service cloud.firestore {
     // APN Profiles
     match /apn_profiles/{profileId} {
       allow read: if isAuthenticated();
-      allow write: if isAuthenticated() && isValidAPNProfile(request.resource.data);
+      allow create: if isAuthenticated() && isValidAPNProfile(request.resource.data);
+      allow update: if isAuthenticated() && isValidAPNProfile(request.resource.data) &&
+                      request.resource.data.name == resource.data.name;
+      allow delete: if isSuperAdmin();
     }
 
     // User Profiles
@@ -80,6 +108,7 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated() && isValidMessage(request.resource.data) &&
                       request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSuperAdmin();
     }
 
     // User Files
@@ -103,6 +132,7 @@ service cloud.firestore {
     match /leaderboard/{entryId} {
       allow read: if isAuthenticated();
       allow create, update: if (isOwner(entryId) || isSuperAdmin()) && isValidLeaderboardEntry(request.resource.data);
+      allow delete: if isSuperAdmin();
     }
 
     // Global Lockdown for everything else
