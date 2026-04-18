@@ -1,4 +1,6 @@
 {
   "name": "A#0M TECHNOLOGIES",
-  "description": "A high-performance high-speed cellular data management gaming host network that connects wirelessly to your gaming profile and platform and AI Studio and technology development for avid gamers, developers, technicians, music artists and professional investors. Now featuring 2026 Global Trends Intelligence Mapping across Software, Hardware, Gaming, and Wireless sectors. Join us to spread inventive American Pioneering, Micro and Nano Engineering value, and secure the way development, logged not debugged and change the world."
+  "description": "A high-performance high-speed cellular data management gaming host network that connects wirelessly to your gaming profile and platform and AI Studio and technology development for avid gamers, developers, technicians, music artists and professional investors. Now featuring 2026 Global Trends Intelligence Mapping across Software, Hardware, Gaming, and Wireless sectors. Join us to spread inventive American Pioneering, Micro and Nano Engineering value, and secure the way development, logged not debugged and change the world.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": []
 }

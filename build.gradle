@@ -1,0 +1,27 @@
+// A#0M Secure Kernel Android Build Pipeline
+// Architecture: Android 21 / Level 21
+// Component: build.gradle
+// Status: Initializing...
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'com.android.application' version '8.2.0'
+}
+
+android {
+    namespace 'com.a0m.core.app'
+    compileSdkVersion 34
+    defaultConfig {
+        applicationId "com.a0m.core.app"
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0"
+    }
+}
