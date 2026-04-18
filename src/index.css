@@ -26,43 +26,88 @@
   --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Cormorant Garamond", serif;
   
-  --color-bg: #050505;
-  --color-card: #0A0A0A;
-  --color-accent: #D4AF37; /* Gold */
-  --color-accent-silver: #C0C0C0;
+  --color-bg: #020202;
+  --color-card: #080808;
+  --color-accent: #D4AF37; /* Sovereign Gold */
+  --color-accent-dim: rgba(212, 175, 55, 0.15);
+  --color-accent-silver: #E5E5E5;
   --color-text-primary: #FFFFFF;
-  --color-text-secondary: #A1A1AA;
-  --color-border: #1A1A1A;
+  --color-text-secondary: #71717A;
+  --color-border: #161616;
+  --color-line: rgba(255, 255, 255, 0.03);
 }
 
 @layer base {
   body {
-    @apply bg-[var(--color-bg)] text-[var(--color-text-primary)] font-sans antialiased min-h-screen pb-12;
-    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    @apply bg-[var(--color-bg)] text-[var(--color-text-primary)] font-sans antialiased min-h-screen overflow-hidden;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "tnum";
   }
 }
 
 @layer components {
-  .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  .kernel-grid {
+    background-image: 
+      linear-gradient(var(--color-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* TV OS UTILITIES */
+  .tv-focus {
+    @apply transition-all duration-300 outline-none;
+  }
+  .tv-focus:hover, .tv-focus:focus {
+     @apply scale-[1.03] border-[3px] border-white z-10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] relative;
+  }
+
+  .tv-scroll-row {
+     @apply flex gap-10 overflow-x-auto pb-12 snap-x snap-mandatory pt-6 px-16;
+     scrollbar-width: none;
+  }
+  .tv-scroll-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tv-item {
+     @apply snap-center shrink-0 w-[640px] h-[360px] bg-zinc-900 bg-cover bg-center rounded-3xl overflow-hidden relative cursor-pointer border-[4px] border-transparent transition-all duration-300 outline-none;
   }
   
-  .rainbow-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-accent)] via-white to-[var(--color-accent-silver)];
-    background-size: 200% 200%;
-    animation: gradient-x 10s ease infinite;
+  .tv-item:focus, .tv-item:hover {
+     @apply border-white scale-[1.05] z-20 shadow-[0_40px_80px_rgba(0,0,0,0.6)];
+  }
+
+  .mask-bottom {
+     mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  .glass {
+    @apply bg-black/40 backdrop-blur-2xl border border-white/5;
+  }
+  
+  .sourcing-label {
+    @apply text-[9px] font-black uppercase tracking-[0.4em] text-[var(--color-text-secondary)] italic;
   }
 
   .premium-card {
-    @apply bg-[var(--color-card)] border border-[var(--color-border)] rounded-3xl overflow-hidden transition-all duration-500 hover:border-[var(--color-accent)]/30 hover:shadow-[0_0_50px_rgba(212,175,55,0.1)];
+    @apply bg-[var(--color-card)] border border-[var(--color-border)] rounded-sm overflow-hidden transition-all duration-700 hover:border-[var(--color-accent)]/20 hover:shadow-[0_0_80px_rgba(212,175,55,0.05)];
+  }
+
+  .instrument-border {
+    @apply border border-white/5 relative;
+  }
+
+  .instrument-border::before {
+    content: '';
+    @apply absolute -top-px -left-px w-2 h-2 border-t border-l border-accent/40;
+  }
+
+  .instrument-border::after {
+    content: '';
+    @apply absolute -bottom-px -right-px w-2 h-2 border-b border-r border-accent/40;
   }
 
   .gold-button {
-    @apply bg-[var(--color-accent)] text-black font-bold uppercase tracking-[0.2em] px-8 py-4 rounded-full transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] active:scale-95;
-  }
-  
-  .data-value {
-    @apply font-mono;
+    @apply bg-[var(--color-accent)] text-black font-black uppercase tracking-[0.3em] px-10 py-5 rounded-none transition-all hover:bg-white hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] active:scale-[0.98] text-[10px];
   }
 }
 

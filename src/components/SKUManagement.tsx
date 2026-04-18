@@ -43,66 +43,67 @@ export default function SKUManagement() {
 
   return (
     <div className="flex flex-col h-full bg-black p-8 overflow-y-auto custom-scrollbar">
-      <div className="flex justify-between items-end mb-12 border-b border-white/5 pb-8">
+      <div className="flex justify-between items-end mb-12 border-b border-white/5 pb-8 relative">
+        <div className="absolute top-0 right-0 p-1 bg-accent/20 text-accent text-[8px] font-black uppercase tracking-widest">Sector: Registry</div>
         <div>
-          <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-2">Registry Module</h2>
-          <h1 className="text-4xl font-black tracking-tight text-white italic">SECURE KERNEL UPGRADES</h1>
+          <p className="sourcing-label mb-2">Registry Module</p>
+          <h1 className="text-5xl font-black tracking-tighter text-white uppercase font-display">Kernel Upgrades</h1>
         </div>
-        <div className="text-right">
+        <div className="text-right flex flex-col items-end gap-1">
           <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Protocol: 512-BIT AES-GCM</p>
-          <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Authority: Matthew Joshua Gallegos</p>
+          <p className="text-[10px] font-mono text-accent uppercase tracking-widest">Authority: Matthew Joshua Gallegos</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Upgrade Initiation Form */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="premium-card p-8 bg-zinc-900/30 backdrop-blur-md">
-            <h3 className="text-[11px] font-bold uppercase tracking-widest text-[#D4AF37] mb-6 flex items-center gap-3">
+          <div className="instrument-border p-8 bg-zinc-950/20">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-8 flex items-center gap-3">
               <Rocket className="w-4 h-4" /> Initiate Upgrade
             </h3>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <label className="text-[9px] uppercase tracking-widest text-gray-500 block mb-2">Target Architecture</label>
+                <label className="text-[8px] uppercase tracking-[0.2em] text-gray-500 block mb-3 font-black">Target Architecture</label>
                 <input 
                   type="text" 
                   value={target}
                   onChange={(e) => setTarget(e.target.value)}
-                  className="w-full bg-black border border-white/10 p-3 text-sm font-mono text-white focus:border-accent outline-none transition-all rounded"
+                  className="w-full bg-black border border-white/5 p-4 text-xs font-mono text-white focus:border-accent/40 outline-none transition-all"
                 />
               </div>
               <div>
-                <label className="text-[9px] uppercase tracking-widest text-gray-500 block mb-2">Component Version</label>
+                <label className="text-[8px] uppercase tracking-[0.2em] text-gray-500 block mb-3 font-black">Component Version</label>
                 <input 
                   type="text" 
                   value={version}
                   onChange={(e) => setVersion(e.target.value)}
-                  className="w-full bg-black border border-white/10 p-3 text-sm font-mono text-white focus:border-accent outline-none transition-all rounded"
+                  className="w-full bg-black border border-white/5 p-4 text-xs font-mono text-white focus:border-accent/40 outline-none transition-all"
                 />
               </div>
               <button 
                 onClick={handleInitiate}
                 disabled={isInitiating}
                 className={cn(
-                  "w-full mt-4 flex items-center justify-center gap-3 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-md shadow-lg",
+                  "w-full mt-4 flex items-center justify-center gap-4 py-5 font-black uppercase tracking-[0.4em] transition-all text-[10px]",
                   isInitiating 
-                    ? "bg-accent/10 text-accent/50 cursor-not-allowed" 
-                    : "bg-accent text-black hover:bg-white hover:scale-[1.02]"
+                    ? "bg-accent/5 text-accent/30 cursor-not-allowed border border-white/5" 
+                    : "bg-accent text-black hover:bg-white active:scale-[0.98]"
                 )}
               >
                 <Cpu className={cn("w-4 h-4", isInitiating && "animate-spin")} />
-                {isInitiating ? "Serializing Pipeline..." : "Deploy SKU Upgrade"}
+                {isInitiating ? "Serializing..." : "Deploy SKU"}
               </button>
             </div>
           </div>
 
-          <div className="p-8 border border-white/5 rounded-3xl bg-zinc-900/10">
+          <div className="p-8 instrument-border bg-zinc-950/10">
              <div className="flex items-start gap-4">
-               <ShieldCheck className="w-8 h-8 text-accent mt-1" />
+               <ShieldCheck className="w-8 h-8 text-accent/50 mt-1" />
                <div>
-                  <h4 className="text-white font-bold text-sm mb-1 uppercase tracking-tight">FCC Compliance Active</h4>
-                  <p className="text-[10px] text-gray-500 leading-relaxed font-mono">All upgrades initiated through this interface are 512-bit encrypted and adhere to A#0M Technologies security benchmarks.</p>
+                  <h4 className="text-white font-black text-[10px] mb-2 uppercase tracking-widest leading-none">FCC Compliance Active</h4>
+                  <p className="text-[10px] text-gray-600 leading-relaxed font-mono italic">All upgrades are 512-bit encrypted and adhere to Matthew's 2026 security benchmarks.</p>
                </div>
              </div>
           </div>
@@ -110,12 +111,12 @@ export default function SKUManagement() {
 
         {/* SKU Registry List */}
         <div className="lg:col-span-2">
-          <div className="premium-card bg-zinc-900/20">
+          <div className="instrument-border bg-zinc-950/20">
             <div className="p-8 border-b border-white/5 flex justify-between items-center bg-black/40">
-               <h3 className="text-[11px] font-bold uppercase tracking-widest text-white flex items-center gap-3">
-                <Activity className="w-4 h-4 text-accent" /> Active Upgrade Registry
+               <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-white flex items-center gap-3">
+                <Activity className="w-4 h-4 text-accent" /> Upgrade Registry
               </h3>
-              <span className="text-[9px] font-mono text-gray-500">{skus.length} ACTIVE UPGRADES</span>
+              <span className="text-[10px] font-mono text-gray-600 font-bold uppercase tracking-widest">{skus.length} Active Segments</span>
             </div>
 
             <div className="overflow-x-auto">

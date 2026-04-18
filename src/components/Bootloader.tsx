@@ -12,13 +12,13 @@ export default function Bootloader({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0);
 
   const steps = useMemo(() => [
-    { text: "SERIALIZING KERNEL PARAMETERS...", delay: 200 },
-    { text: "INITIALIZING 512-BIT ENCRYPTION HANDSHAKE", delay: 500 },
-    { text: "DECRYPTING BOOT SECTOR: SKU A21S30i19GP13", delay: 800 },
-    { text: "ENGAGING FCC COMPLIANCE ENGINE", delay: 1000 },
-    { text: "CONNECTING TO VAI INTELLIGENCE SHARD", delay: 1500 },
-    { text: "SOCIETY AUTHENTICATION GRANTED", delay: 1800 },
-    { text: "BOOT SEQUENCE SUCCESSFUL", delay: 2000 }
+    { text: "SERIALIZING KERNEL PARAMETERS [ULTIMATE]...", delay: 100 },
+    { text: "INITIALIZING 512-BIT ENCRYPTION HANDSHAKE", delay: 250 },
+    { text: "DECRYPTING BOOT SECTOR: SKU A21S30i19GP13", delay: 400 },
+    { text: "ENGAGING FCC COMPLIANCE ENGINE", delay: 550 },
+    { text: "CONNECTING TO VAI INTELLIGENCE SHARD", delay: 700 },
+    { text: "SOCIETY AUTHENTICATION GRANTED", delay: 850 },
+    { text: "ULTIMATE BOOT SEQUENCE SUCCESSFUL", delay: 1000 }
   ], []);
 
   useEffect(() => {

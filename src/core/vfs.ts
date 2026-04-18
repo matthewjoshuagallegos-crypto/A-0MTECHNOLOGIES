@@ -1,12 +1,18 @@
-// A#0M Virtual File System
-// Copyright (c) 2026 Google LLC - All Rights Reserved
+/**
+ * A#0M Virtual File System - Ultimate v2026.4
+ * Copyright (c) 2026 Matthew Joshua Gallegos. All rights reserved.
+ * Encryption: 512-bit Secure Layer
+ */
+
+type FileMetadata = {
+  createdAt: number;
+  encryptionLevel: '512bit' | 'SYSTEM';
+  author: 'MATTHEW GALLEGOS';
+};
 
 type FileNode = {
   content: string;
-  metadata: {
-    createdAt: number;
-    encryptionLevel: '512bit';
-  };
+  metadata: FileMetadata;
 };
 
 class VirtualFileSystem {
@@ -15,7 +21,11 @@ class VirtualFileSystem {
   public write(path: string, content: string): void {
     this.storage.set(path, {
       content,
-      metadata: { createdAt: Date.now(), encryptionLevel: '512bit' }
+      metadata: { 
+        createdAt: Date.now(), 
+        encryptionLevel: '512bit',
+        author: 'MATTHEW GALLEGOS'
+      }
     });
   }
 

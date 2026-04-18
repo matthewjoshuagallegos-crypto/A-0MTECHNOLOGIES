@@ -16,37 +16,38 @@ export default function Messenger() {
 
   return (
     <div className="p-10 bg-black h-full flex flex-col">
-      <header className="mb-12 flex justify-between items-center">
+      <header className="mb-12 flex justify-between items-end border-b border-white/5 pb-8">
         <div>
-          <h2 className="text-[10px] font-black uppercase tracking-[0.8em] text-accent mb-2">Courier Stream</h2>
-          <h1 className="text-4xl font-black text-white italic tracking-tighter uppercase">Authority Comms</h1>
+          <p className="sourcing-label mb-2">Segment: Messenger-Link</p>
+          <h1 className="text-5xl font-black text-white tracking-tighter uppercase font-display">Courier Stream</h1>
         </div>
-        <div className="flex gap-4">
-           <div className="flex flex-col items-end">
-              <p className="text-[9px] font-black text-green-500 uppercase flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> Stream: Encrypted
+        <div className="flex gap-8">
+           <div className="text-right">
+              <p className="text-[10px] font-black text-accent uppercase tracking-widest flex items-center justify-end gap-2">
+                 <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" /> Channel: Encrypted
               </p>
-              <p className="text-[8px] font-mono text-gray-500">Latency: 1.4ms</p>
+              <p className="text-[8px] font-mono text-gray-600 mt-1 italic">Handshake: 0xFF2A1C</p>
            </div>
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar space-y-8 pr-6 mb-10">
+      <div className="flex-1 overflow-y-auto custom-scrollbar space-y-10 pr-6 mb-10">
         {messages.map((msg, i) => (
-          <div key={i} className="flex gap-6 group">
-             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black ${
-               msg?.role === 'AUTHORITY' ? 'bg-accent text-black' : msg?.role === 'INTELLIGENCE' ? 'bg-white/10 text-white' : 'bg-zinc-900 text-gray-500'
-             }`}>
-                {msg?.user?.[0]}
+          <div key={i} className="flex gap-8 group">
+             <div className="w-px bg-white/5 relative">
+                <div className="absolute top-0 left-[-4px] w-2 h-2 rounded-full bg-accent/40" />
              </div>
              <div className="flex-1">
-                <div className="flex items-center gap-4 mb-2">
-                   <h5 className="text-sm font-black text-white tracking-widest">{msg?.user}</h5>
-                   <span className="text-[8px] font-mono bg-white/5 px-2 py-0.5 rounded text-gray-500 uppercase tracking-tighter border border-white/5">{msg?.role}</span>
-                   <span className="text-[9px] font-mono text-gray-700 ml-auto">{msg?.time}</span>
+                <div className="flex items-center gap-4 mb-3">
+                   <h5 className="text-[10px] font-black text-white tracking-[0.3em] uppercase">{msg?.user}</h5>
+                   <div className="h-px flex-1 bg-white/5" />
+                   <span className="text-[8px] font-mono text-gray-700 italic">{msg?.time}</span>
                 </div>
-                <div className="p-6 bg-zinc-900/30 rounded-3xl border border-white/5 group-hover:border-accent/20 transition-all">
-                   <p className="text-sm text-gray-400 font-mono leading-relaxed">{msg?.text || ''}</p>
+                <div className="p-8 bg-zinc-950/20 instrument-border group-hover:bg-zinc-950/40 transition-all duration-500">
+                   <p className="text-[13px] text-gray-400 font-mono leading-relaxed tracking-tight">{msg?.text || ''}</p>
+                </div>
+                <div className="mt-2 flex gap-4">
+                   <span className="text-[7px] font-mono text-accent/40 uppercase tracking-widest">Target: {msg?.role}</span>
                 </div>
              </div>
           </div>

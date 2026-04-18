@@ -16,11 +16,13 @@ const execAsync = promisify(exec);
 
 // BACKGROUND BOOTLOADER SIMULATION
 function startBackgroundTasks() {
-  console.log("A#0M BACKGROUND KERNEL: Initialized");
+  console.log("-----------------------------------------");
+  console.log("A#0M BACKGROUND KERNEL: Initialized [ULTIMATE SYNC]");
+  console.log("-----------------------------------------");
   
   // SECURE SYNC every minute
   cron.schedule('* * * * *', () => {
-    console.log(`[${new Date().toISOString()}] System: 512-bit Security Handshake Synchronized.`);
+    console.log(`[${new Date().toISOString()}] System: 512-bit Security Handshake Synchronized (ULTIMATE)`);
   });
 
   // SKU COMPLIANCE CHECK every 5 minutes

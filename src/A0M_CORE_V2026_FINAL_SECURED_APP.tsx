@@ -9,7 +9,8 @@ import {
   Folder, FileText, ChevronRight, ChevronDown, 
   Terminal as TerminalIcon, Save, Shield, Cpu, 
   Map as MapIcon, Database, Zap, Rocket,
-  ShoppingCart, MessageSquare, Trophy, Music, Radio, Settings, Power
+  ShoppingCart, MessageSquare, Trophy, Music, Radio, Settings, Power,
+  Activity, Globe, HardDrive, Lock
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -44,7 +45,7 @@ export default function App() {
   const [currentPath, setCurrentPath] = useState<string | undefined>(undefined);
   const [fileContent, setFileContent] = useState('');
   const [terminalOutput, setTerminalOutput] = useState<string[]>([
-    'A#0M AUTHORITY OS v2026.4.18 [SECURE]',
+    'A#0M AUTHORITY OS v2026.4.18 [ULTIMATE SYNC]',
     'Copyright (c) 2026 Matthew Joshua Gallegos. All Rights Reserved.',
     'System: 512-Bit Encryption rate detected.',
     'System: Localizing kernel parameters...',
@@ -239,6 +240,18 @@ export default function App() {
         <aside className="w-72 bg-card border-r border-border p-6 overflow-y-auto custom-scrollbar shadow-inner flex flex-col gap-10">
           <section>
             <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-600 mb-6 flex items-center gap-2">
+              <Activity className="w-3 h-3 text-accent" /> Segment Metrics
+            </h3>
+            <div className="space-y-4 px-2">
+               <HealthIndicator label="SHARD UPLINK" value="STABLE" status="on" />
+               <HealthIndicator label="512-BIT ENCRYPTION" value="ENGAGED" status="on" />
+               <HealthIndicator label="GPS RADIUS" value="RADIUS_VERIFIED" status="warning" />
+               <HealthIndicator label="AUTHORITY GATE" value="AUTHENTICATED" status="on" />
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-600 mb-6 flex items-center gap-2">
               <Database className="w-3 h-3" /> System Core
             </h3>
             <div className="space-y-1">
@@ -362,15 +375,37 @@ function NavButton({ icon, label, active, onClick }: { icon: any, label: string,
     <div 
       onClick={onClick}
       className={cn(
-        "flex items-center gap-4 py-3 px-4 cursor-pointer transition-all duration-300 rounded-2xl group",
-        active ? "bg-accent text-black font-black shadow-[0_0_20px_rgba(212,175,55,0.2)]" : "text-gray-500 hover:text-white hover:bg-white/5"
+        "flex items-center gap-4 py-3 px-4 cursor-pointer transition-all duration-500 border border-transparent group",
+        active ? "bg-white/5 border-white/10 text-white font-black" : "text-gray-500 hover:text-white"
       )}
     >
-      <div className={cn("transition-transform duration-300 group-hover:scale-110", active ? "text-black" : "group-hover:text-accent")}>
+      <div className={cn("transition-all duration-500", active ? "text-accent scale-110" : "group-hover:text-accent")}>
         {icon}
       </div>
-      <span className="text-[11px] font-black uppercase tracking-[0.2em]">{label}</span>
-      {active && <div className="ml-auto w-1.5 h-1.5 bg-black rounded-full" />}
+      <span className="text-[10px] font-black uppercase tracking-[0.3em]">{label}</span>
+      {active && <div className="ml-auto w-1 h-3 bg-accent animate-pulse" />}
+    </div>
+  );
+}
+
+function HealthIndicator({ label, value, status }: { label: string, value: string, status: 'on' | 'off' | 'warning' }) {
+  return (
+    <div className="flex flex-col gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
+       <div className="flex justify-between items-center">
+          <span className="text-[7px] font-black text-gray-500 uppercase tracking-widest leading-none">{label}</span>
+          <div className={cn(
+            "w-1 h-1 rounded-full",
+            status === 'on' ? 'bg-green-500 shadow-[0_0_5px_#22c55e]' : 
+            status === 'warning' ? 'bg-yellow-500 shadow-[0_0_5px_#eab308]' : 'bg-red-500'
+          )} />
+       </div>
+       <div className="bg-zinc-950/50 border border-white/5 p-2 flex justify-between items-center group overflow-hidden relative">
+          <div className="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
+          <span className="text-[9px] font-mono text-gray-300 uppercase leading-none truncate pr-2">{value}</span>
+          <div className="flex gap-0.5">
+             {[1,2,3,4].map(i => <div key={i} className="w-0.5 h-1.5 bg-accent/20" />)}
+          </div>
+       </div>
     </div>
   );
 }
