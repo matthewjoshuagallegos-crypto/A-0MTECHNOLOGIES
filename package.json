@@ -1,12 +1,19 @@
 {
   "name": "a0m-technologies",
   "private": true,
-  "version": "0.0.0",
+  "description": "com.a#0m.package.app // A#0M Authority Console - FCC Compliant 512-bit Secure Gaming Environment",
+  "version": "1.0.0",
+  "author": "Matthew Joshua Gallegos (Author, Creator, Engineer) & Google LLC",
+  "license": "A#0M Technologies TM",
   "type": "module",
+  "bin": {
+    "a0m": "./cli.js"
+  },
   "scripts": {
     "start": "node dist/server.cjs",
     "dev": "tsx server.ts",
     "build": "vite build && esbuild server.ts --bundle --platform=node --target=node18 --outfile=dist/server.cjs --external:express --external:vite --external:stripe --external:ws --external:node-cron --external:better-sqlite3",
+    "postbuild": "echo '[!] COMPILING com.a#0m.package.app' && cp dist/index.html dist/com.a#0m.package.app.html && echo '[+] INSTALLABLE TARGETS GENERATED IN dist/'",
     "publish": "npm run build && echo 'Applet published successfully'",
     "preview": "vite preview",
     "clean": "rm -rf dist",

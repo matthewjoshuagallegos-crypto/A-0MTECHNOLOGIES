@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wifi, Gamepad2, Coins, Settings, Radio, Activity, Music, Layers, DownloadCloud, Store, Server, Check } from 'lucide-react';
+import { Wifi, Gamepad2, Coins, Settings, Radio, Activity, Music, Layers, DownloadCloud, Store, Server, Check, Package as PackageIcon, Code2 as CodeIcon, Terminal as TerminalIcon } from 'lucide-react';
 import GamingHub from './components/console/GamingHub';
 import DataVault from './components/console/DataVault';
 import NetworkConnect from './components/console/NetworkConnect';
@@ -8,6 +8,9 @@ import MediaStation from './components/console/MediaStation';
 import RendererEngine from './components/console/RendererEngine';
 import LibraryMigration from './components/console/LibraryMigration';
 import MarketStorefront from './components/console/MarketStorefront';
+import DevKit from './components/console/DevKit';
+import BuildStation from './components/console/BuildStation';
+import TerminalView from './components/console/TerminalView';
 import { useA0M } from './core/A0MContext';
 
 export default function ConsoleOS() {
@@ -26,6 +29,9 @@ export default function ConsoleOS() {
     { id: 'STORE', icon: <Store className="w-6 h-6"/>, label: 'Store' },
     { id: 'MIGRATE', icon: <DownloadCloud className="w-6 h-6"/>, label: 'Migration' },
     { id: 'RENDERER', icon: <Layers className="w-6 h-6"/>, label: '15-Grade' },
+    { id: 'BUILD', icon: <PackageIcon className="w-6 h-6"/>, label: 'Deploy' },
+    { id: 'DEV KIT', icon: <CodeIcon className="w-6 h-6"/>, label: 'Dev Kit' },
+    { id: 'TERMINAL', icon: <TerminalIcon className="w-6 h-6"/>, label: 'Kernel' },
     { id: 'GAMES', icon: <Gamepad2 className="w-6 h-6"/>, label: 'Library' },
     { id: 'DATA VAULT', icon: <Coins className="w-6 h-6"/>, label: 'Yield' },
   ];
@@ -102,6 +108,9 @@ export default function ConsoleOS() {
               {view === 'STORE' && <MarketStorefront />}
               {view === 'MIGRATE' && <LibraryMigration />}
               {view === 'RENDERER' && <RendererEngine />}
+              {view === 'BUILD' && <BuildStation />}
+              {view === 'DEV KIT' && <DevKit />}
+              {view === 'TERMINAL' && <TerminalView />}
               {view === 'SETTINGS' && (
                 <div className="h-full flex items-center justify-center flex-col opacity-50">
                   <Settings className="w-32 h-32 mb-8 animate-[spin_10s_linear_infinite]" />
@@ -112,6 +121,22 @@ export default function ConsoleOS() {
             </motion.div>
          </AnimatePresence>
       </main>
+
+      {/* Sovereign Legal Footer */}
+      <footer className="px-16 py-6 bg-black/80 backdrop-blur-xl border-t border-white/5 flex justify-between items-center z-30 text-[10px] uppercase font-black tracking-[0.2em] text-gray-500">
+         <div className="flex gap-10">
+            <span>© 2026 A#0M Technologies / Google LLC</span>
+            <span className="text-white">Author, Creator & Engineer: Matthew Joshua Gallegos</span>
+            <span>Sponsor: Bebe Rexha</span>
+         </div>
+         <div className="flex gap-10 text-right">
+            <span>Attorney: Proctor & Gamble</span>
+            <span>Design: Java</span>
+            <span>Secret: Bitcoin</span>
+            <span>Arch: Macintosh / Apple / Pixel / Microsoft</span>
+            <span className="text-accent">Encryption: 512-bit AES // FCC Compliant</span>
+         </div>
+      </footer>
     </div>
   );
 }

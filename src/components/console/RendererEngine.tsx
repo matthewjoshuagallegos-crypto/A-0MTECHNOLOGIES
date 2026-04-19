@@ -179,6 +179,10 @@ export default function RendererEngine() {
                    Modern high-fidelity graphics are achieved via <span className="text-accent font-bold">Unreal Engine 4</span> executing a 3D prepass for scene depth, granting cheap screen-space effects and photorealistic performance equivalent to Street Fighter.
                  </p>
                  <p>
+                    <strong className="text-white block mb-1 uppercase tracking-widest">Networking & Core (Kernel Sync):</strong>
+                    Real-time fighting requires <span className="text-accent font-bold">GGPO Rollback Netcode</span>. The A#0M Kernel decoupling rendering from deterministic logic to ensure frame-perfect sync across the LTE Private Network.
+                 </p>
+                 <p>
                    <strong className="text-white block mb-1 uppercase tracking-widest">Analog Digitization (L12-L15):</strong>
                    The imager completely implements the classic Mortal Kombat digitization system. It utilizes <span className="text-accent font-bold">High8 camcorder</span> analog feeds to shoot physical footage, which is then digitized, scalar-processed, and color-shifted into 2D sprites rendered precisely over modern UE4 bounding boxes.
                  </p>

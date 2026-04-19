@@ -1,5 +1,6 @@
 /**
  * A#0M Core Server Engine - v2026.4
+ * Author, Creator & Engineer: Matthew Joshua Gallegos
  * Copyright (c) 2026 Matthew Joshua Gallegos. All rights reserved.
  * Corp: Google LLC | Partner: Microsoft
  */

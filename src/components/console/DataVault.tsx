@@ -1,5 +1,5 @@
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { DollarSign, Activity, Database, Server, ChevronRight, RefreshCw } from 'lucide-react';
+import { DollarSign, Activity, Database, Server, ChevronRight, RefreshCw, Network } from 'lucide-react';
 import { useA0M } from '../../core/A0MContext';
 
 const data = [
@@ -74,6 +74,17 @@ export default function DataVault() {
          {/* Stats Sidebar */}
          <div className="space-y-10 overflow-y-auto pr-4 custom-scrollbar">
             
+            <div className="bg-zinc-900 rounded-[2rem] p-8 border border-white/5 tv-focus group flex flex-col justify-center" tabIndex={0}>
+               <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-6">
+                 <Network className="w-8 h-8 text-blue-500" />
+               </div>
+               <p className="text-gray-400 text-xl font-bold mb-2 uppercase tracking-widest">Network Stability</p>
+               <p className="text-6xl font-mono font-black text-white group-focus:text-blue-400 transition-colors">0.2 MS</p>
+               <div className="mt-4 flex items-center text-sm font-bold text-gray-500 uppercase">
+                 <ChevronRight className="w-4 h-4" /> GGPO Rollback Active
+               </div>
+            </div>
+
             <div className="bg-zinc-900 rounded-[2rem] p-8 border border-white/5 tv-focus group flex flex-col justify-center" tabIndex={0}>
                <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mb-6">
                  <Database className="w-8 h-8 text-accent" />

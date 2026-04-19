@@ -1,0 +1,49 @@
+// Required Gradle parameters for Android TV (LTE Enterprise target)
+// Package: com.lteenterprise.realmscollide
+// A#0M Authority Console - Build Specification v2026.4.18
+
+android {
+    compileSdkVersion 33
+    buildToolsVersion "33.0.0"
+
+    defaultConfig {
+        applicationId "com.lteenterprise.realmscollide"
+        minSdkVersion 26 // Minimum for modern Android TV (Oreo)
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+        
+        // Ensure the game runs in landscape and supports controllers
+        ndk {
+            abiFilters 'arm64-v8a' // 64-bit architecture for high-end mobile/TV chips (Snapdragon/Tegra)
+        }
+
+        // TV Leanback Support
+        manifestPlaceholders = [
+            supportsLeanback: "true",
+            touchscreenRequired: "false"
+        ]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // Standard UE4 dependencies, plus AndroidX for modern TV support
+    implementation 'androidx.leanback:leanback:1.0.2' 
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    
+    // GGPO Rollback Netcode Native Bridge
+    implementation project(':ggpo-android-lib')
+}
