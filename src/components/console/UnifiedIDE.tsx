@@ -143,6 +143,7 @@ export default function UnifiedIDE() {
 
     term.writeln('\x1b[1;33mA#0M INTEGRATED KERNEL SHELL v2026.4\x1b[0m');
     term.write('A#0M > ');
+    term.focus();
 
     const inputBuffer = { current: '' };
     const commandHistory: string[] = [];
@@ -479,7 +480,7 @@ export default function UnifiedIDE() {
               <TerminalIcon className="w-3 h-3" />
               <span>Kernel Console</span>
             </div>
-            <div ref={terminalRef} className="h-full w-full opacity-80 group-hover:opacity-100 transition-opacity" onTouchStart={() => xtermRef.current?.focus()} />
+            <div ref={terminalRef} className="h-full w-full opacity-80 group-hover:opacity-100 transition-opacity" onTouchStart={() => xtermRef.current?.focus()} onClick={() => xtermRef.current?.focus()} />
           </div>
 
         </div>
