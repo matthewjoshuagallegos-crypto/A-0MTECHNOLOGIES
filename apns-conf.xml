@@ -1,0 +1,48 @@
+<apns version="2026">
+    <apn carrier="A0M USA ATT"
+         mcc="310"
+         mnc="410"
+         apn="a0m.att.lte"
+         port="80"
+         proxy="192.168.1.1"
+         protocol="IPV4V6"
+         roaming_protocol="IPV4V6"
+         type="default,mms,supl,hipri"
+         bearer_bitmask="LTE|NR"
+         carrier_enabled="true" />
+    
+    <apn carrier="A0M USA TMobile"
+         mcc="310"
+         mnc="260"
+         apn="a0m.tmo.lte"
+         port="80"
+         proxy="192.168.1.1"
+         protocol="IPV4V6"
+         roaming_protocol="IPV4V6"
+         type="default,mms,supl,hipri"
+         bearer_bitmask="LTE|NR"
+         carrier_enabled="true" />
+    
+    <apn carrier="A0M USA Verizon"
+         mcc="310"
+         mnc="004"
+         apn="a0m.vzw.lte"
+         port="80"
+         proxy="192.168.1.1"
+         protocol="IPV4V6"
+         roaming_protocol="IPV4V6"
+         type="default,mms,supl,hipri"
+         bearer_bitmask="LTE|NR"
+         carrier_enabled="true" />
+
+    <apn carrier="LTEUSA.Fast.MetroPCSByT-Mobile"
+         mcc="310"
+         mnc="260"
+         apn="USA-LTEFAST.METROBYT-MOBILE"
+         port="80"
+         protocol="IPV4V6"
+         roaming_protocol="IPV4V6"
+         type="default,mms,supl,hipri"
+         bearer_bitmask="LTE|HIGHSPEED_STREAMING_DATA_ULTRA4K_HD"
+         carrier_enabled="true" />
+</apns>

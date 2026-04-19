@@ -29,7 +29,17 @@ export default function TerminalView() {
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
     term.open(terminalRef.current);
-    fitAddon.fit();
+    
+    // Safety delay for DOM layout stabilization before fitting
+    setTimeout(() => {
+      if (terminalRef.current && terminalRef.current.clientWidth > 0) {
+        try {
+          fitAddon.fit();
+        } catch (e) {
+          console.warn('XTerm fit failed gracefully', e);
+        }
+      }
+    }, 100);
 
     term.writeln('\x1b[1;33m---------------------------------------------------------\x1b[0m');
     term.writeln('\x1b[1;37mA#0M AUTHORITY OS v2026.4 [KERNEL INITIALIZED]\x1b[0m');
@@ -105,7 +115,13 @@ export default function TerminalView() {
     setIsReady(true);
 
     const handleResize = () => {
-      fitAddon.fit();
+      if (terminalRef.current && terminalRef.current.clientWidth > 0) {
+        try {
+          fitAddon.fit();
+        } catch (e) {
+          // Graceful handling for hidden terminal resize events
+        }
+      }
     };
     window.addEventListener('resize', handleResize);
 

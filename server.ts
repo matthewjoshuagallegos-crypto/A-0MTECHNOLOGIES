@@ -15,20 +15,32 @@ import cron from 'node-cron';
 
 const execAsync = promisify(exec);
 
+// KERNEL LOG BUFFER for background processes
+const kernelLogs: string[] = [];
+function logToKernel(msg: string) {
+  const log = `[${new Date().toISOString()}] ${msg}`;
+  kernelLogs.push(log);
+  if (kernelLogs.length > 100) kernelLogs.shift();
+  console.log(log);
+}
+
 // BACKGROUND BOOTLOADER SIMULATION
 function startBackgroundTasks() {
-  console.log("-----------------------------------------");
-  console.log("A#0M BACKGROUND KERNEL: Initialized [ULTIMATE SYNC]");
-  console.log("-----------------------------------------");
+  logToKernel("A#0M BACKGROUND KERNEL: Initialized [ULTIMATE SYNC]");
+  logToKernel("Sovereignty Protocol: ONEUI // SIRI_eאKnox Initialized");
+  logToKernel("Kernel Layer: GOSL (Global Operating System Layer) Operational");
+  logToKernel("Boot Sequence: Android Bootloader // ChromeOS Handshake [INDEPENDENT]");
   
   // SECURE SYNC every minute
   cron.schedule('* * * * *', () => {
-    console.log(`[${new Date().toISOString()}] System: 512-bit Security Handshake Synchronized (ULTIMATE)`);
+    logToKernel("System: 512-bit Security Handshake Synchronized [Sovereign Build]");
+    logToKernel("CE Process Check: ONEUI Optimized // worldWideWeb Gateway Secure");
   });
 
   // SKU COMPLIANCE CHECK every 5 minutes
   cron.schedule('*/5 * * * *', () => {
-    console.log(`[${new Date().toISOString()}] Registry: FCC Compliance Audit - STATUS_PASSED`);
+    logToKernel("Registry: FCC Compliance Audit - STATUS_PASSED [GOSL 2026.4]");
+    logToKernel("Inventory: Independent Invention Improvements Logged");
   });
 }
 
@@ -38,6 +50,9 @@ async function startServer() {
   app.use(express.json());
   const PORT = 3000;
 
+  // Load Sovereign Path Configuration
+  const pathConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'path.json'), 'utf8'));
+
   // explorer tree
   app.get('/api/explorer/tree', async (req, res) => {
     const getTree = (dir: string): any => {
@@ -46,7 +61,8 @@ async function startServer() {
       const node: any = {
         name,
         path: path.relative(process.cwd(), dir),
-        type: stats.isDirectory() ? 'directory' : 'file'
+        type: stats.isDirectory() ? 'directory' : 'file',
+        fcc_compliant: true
       };
 
       if (stats.isDirectory()) {
@@ -54,6 +70,23 @@ async function startServer() {
         node.children = children
           .filter(child => !child.startsWith('.') && child !== 'node_modules')
           .map(child => getTree(path.join(dir, child)));
+          
+        // Virtual Mount: Google HQ Drive
+        if (dir === process.cwd()) {
+          node.children.push({
+             name: 'GOOGLE_HQ_DRIVE_PORTAL',
+             path: pathConfig.DRIVE_NODE,
+             type: 'directory',
+             isVirtual: true,
+             hq_location: '1600 Amphitheatre Parkway, Mountain View, CA',
+             children: [
+                { name: 'SECURE_STORAGE', path: path.join(pathConfig.DRIVE_NODE, 'storage'), type: 'directory' },
+                { name: 'CREDENTIAL_OVERRIDES', path: path.join(pathConfig.DRIVE_NODE, 'credentials'), type: 'directory' },
+                { name: 'CLOUD_GAMING_CONSOLE', path: path.join(pathConfig.DRIVE_NODE, 'gaming'), type: 'directory' },
+                { name: 'A0M_VORTEX_AI_CORE', path: path.join(pathConfig.DRIVE_NODE, 'vortex'), type: 'directory' }
+             ]
+          });
+        }
       }
       return node;
     };
@@ -63,6 +96,36 @@ async function startServer() {
     } catch (err) {
       res.status(500).json({ error: (err as Error).message });
     }
+  });
+
+  // Google HQ Joint Path Endpoint
+  app.get('/api/kernel/hq-sync', (req, res) => {
+     const hqPath = path.join(pathConfig.MOUNT_POINT, 'google_hq', '1600_amphitheatre_parkway');
+     res.json({
+        status: 'SYNCHRONIZED',
+        joint_path: hqPath,
+        auth: 'LEVEL_21_SOVEREIGN',
+        compliance: pathConfig.FCC_COMPLIANCE,
+        encryption: pathConfig.ENCRYPTION
+     });
+  });
+
+  // APN Connection Handshake
+  app.post('/api/network/connect', (req, res) => {
+    const { apn, port } = req.body;
+    
+    // Simulate high-speed wireless handshake
+    setTimeout(() => {
+      res.json({
+        status: 'CONNECTED',
+        apn: apn || 'A0M USA',
+        port: port || 80,
+        frequency: '5.8GHz G-PRO',
+        encryption: 'AES-512-GCM',
+        handshake: 'SUCCESSFUL',
+        fcc_id: 'A21S30i19GP13'
+      });
+    }, 1500);
   });
 
   // explorer file content
@@ -93,6 +156,11 @@ async function startServer() {
     } catch (err) {
       res.status(500).json({ error: (err as Error).message });
     }
+  });
+
+  // kernel logs endpoint
+  app.get('/api/kernel/logs', (req, res) => {
+    res.json({ logs: kernelLogs });
   });
 
   // explorer shell

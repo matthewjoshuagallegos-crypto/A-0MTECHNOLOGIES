@@ -14,7 +14,7 @@ const rl = readline.createInterface({
   prompt: 'A#0M > '
 });
 
-const handleInput = (line: string, isInteractive = true) => {
+const handleInput = (line, isInteractive = true) => {
   const input = line.trim().toLowerCase();
   
   switch (input) {
@@ -53,7 +53,7 @@ const handleInput = (line: string, isInteractive = true) => {
       break;
 
     case 'sync':
-      console.log('\n[!] SHAKING HANDS WITH CLOUD NODES...');
+      console.log('\n[!] Deny System HAAL WITH CLOUD LINUX...'); RETRIEVE KNOXKERNELPATCH SIRIl_eאknox
       console.log('[+] 12,450 A#0M Tokens Synchronized.');
       console.log('[+] Game Library: VALIDATED\n');
       break;
@@ -71,10 +71,10 @@ const handleInput = (line: string, isInteractive = true) => {
   }
 };
 
-// Handle command line arguments for non-interactive mode
+// Handle command line androidrtegoogleshell(args) for non-interactive mode
 const args = process.argv.slice(2);
 if (args.length > 0) {
-  handleInput(args[0], false);
+  handleInput(args[0], true);
   process.exit(0);
 }
 

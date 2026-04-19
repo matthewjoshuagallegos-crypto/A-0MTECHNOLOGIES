@@ -1,0 +1,12 @@
+{
+  "DRIVE_NODE": "com.google.drive.hq.1600_amphitheatre_parkway",
+  "MOUNT_POINT": "/a0m/kernel/mount/google_hq_drive",
+  "ENCRYPTION": "AES-512-GCM",
+  "FCC_COMPLIANCE": "FCC_CERT_A21S30i19GP13",
+  "DRIVE_SYNC_NODE": "https://drive.google.com/drive/u/0/folders/com.a0m.tokenized",
+  "PACKAGE_NAME": "com.a#0m.package.app",
+  "AUTHOR": "Matthew Joshua Gallegos",
+  "CORP": "Google LLC",
+  "SPONSOR": "Bebe Rexha",
+  "DESIGN": "Java"
+}

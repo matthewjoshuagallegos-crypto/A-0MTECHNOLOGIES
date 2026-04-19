@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wifi, Gamepad2, Coins, Settings, Radio, Activity, Music, Layers, DownloadCloud, Store, Server, Check, Package as PackageIcon, Code2 as CodeIcon, Terminal as TerminalIcon } from 'lucide-react';
+import { Wifi, Gamepad2, Coins, Settings, Radio, Activity, Music, Layers, DownloadCloud, Store, Server, Check, Package as PackageIcon, Code2 as CodeIcon, Terminal as TerminalIcon, Cpu } from 'lucide-react';
 import GamingHub from './components/console/GamingHub';
 import DataVault from './components/console/DataVault';
 import NetworkConnect from './components/console/NetworkConnect';
@@ -11,6 +11,7 @@ import MarketStorefront from './components/console/MarketStorefront';
 import DevKit from './components/console/DevKit';
 import BuildStation from './components/console/BuildStation';
 import TerminalView from './components/console/TerminalView';
+import UnifiedIDE from './components/console/UnifiedIDE';
 import { useA0M } from './core/A0MContext';
 
 export default function ConsoleOS() {
@@ -30,7 +31,8 @@ export default function ConsoleOS() {
     { id: 'MIGRATE', icon: <DownloadCloud className="w-6 h-6"/>, label: 'Migration' },
     { id: 'RENDERER', icon: <Layers className="w-6 h-6"/>, label: '15-Grade' },
     { id: 'BUILD', icon: <PackageIcon className="w-6 h-6"/>, label: 'Deploy' },
-    { id: 'DEV KIT', icon: <CodeIcon className="w-6 h-6"/>, label: 'Dev Kit' },
+    { id: 'IDE', icon: <CodeIcon className="w-6 h-6"/>, label: 'Sovereign IDE' },
+    { id: 'DEV KIT', icon: <Cpu className="w-6 h-6"/>, label: 'SDK Docs' },
     { id: 'TERMINAL', icon: <TerminalIcon className="w-6 h-6"/>, label: 'Kernel' },
     { id: 'GAMES', icon: <Gamepad2 className="w-6 h-6"/>, label: 'Library' },
     { id: 'DATA VAULT', icon: <Coins className="w-6 h-6"/>, label: 'Yield' },
@@ -109,6 +111,7 @@ export default function ConsoleOS() {
               {view === 'MIGRATE' && <LibraryMigration />}
               {view === 'RENDERER' && <RendererEngine />}
               {view === 'BUILD' && <BuildStation />}
+              {view === 'IDE' && <UnifiedIDE />}
               {view === 'DEV KIT' && <DevKit />}
               {view === 'TERMINAL' && <TerminalView />}
               {view === 'SETTINGS' && (
