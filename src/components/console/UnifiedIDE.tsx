@@ -145,19 +145,43 @@ export default function UnifiedIDE() {
     term.write('A#0M > ');
 
     const inputBuffer = { current: '' };
+    const commandHistory: string[] = [];
+    let historyIndex = -1;
     
     const listener = term.onKey(({ key, domEvent }) => {
       const printable = !domEvent.altKey && !domEvent.ctrlKey && !domEvent.metaKey;
 
       if (domEvent.keyCode === 13) { // Enter
         const cmd = inputBuffer.current;
+        if (cmd.trim()) {
+           commandHistory.push(cmd);
+           historyIndex = commandHistory.length;
+        }
         inputBuffer.current = '';
         term.write('\r\n');
         executeShell(cmd);
+      } else if (domEvent.keyCode === 38) { // ArrowUp
+        domEvent.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          inputBuffer.current = commandHistory[historyIndex];
+          term.write('\r\x1b[K' + 'A#0M > ' + inputBuffer.current);
+        }
+      } else if (domEvent.keyCode === 40) { // ArrowDown
+        domEvent.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          inputBuffer.current = commandHistory[historyIndex];
+          term.write('\r\x1b[K' + 'A#0M > ' + inputBuffer.current);
+        } else {
+          historyIndex = commandHistory.length;
+          inputBuffer.current = '';
+          term.write('\r\x1b[K' + 'A#0M > ');
+        }
       } else if (domEvent.keyCode === 9) { // Tab
         domEvent.preventDefault();
         const input = inputBuffer.current;
-        const commands = ['help', 'build', 'status', 'tasks', 'sync', 'exit', 'ls', 'cat', 'node', 'a0m', 'clear'];
+        const commands = ['help', 'build', 'status', 'tasks', 'sync', 'exit', 'ls', 'cat', 'node', 'a0m', 'clear', 'connect to apn'];
         
         const parts = input.split(' ');
         const lastPart = parts[parts.length - 1];
@@ -304,10 +328,10 @@ export default function UnifiedIDE() {
       const data = await res.json();
       
       if (data.stdout) xtermRef.current?.write(`\x1b[32m${data.stdout.replace(/\n/g, '\r\n')}\x1b[0m`);
-      if (data.stderr) xtermRef.current?.write(`\x1b[31m${data.stderr.replace(/\n/g, '\r\n')}\x1b[0m`);
-      if (data.error) xtermRef.current?.write(`\x1b[31;1mError: ${data.error}\x1b[0m\r\n`);
+      if (data.stderr) xtermRef.current?.writeln(`\r\n\x1b[31;1m[!] STDERR: \x1b[0m\x1b[31m${data.stderr.replace(/\n/g, '\r\n')}\x1b[0m`);
+      if (data.error) xtermRef.current?.writeln(`\r\n\x1b[31;1m[X] KERNEL ERROR: \x1b[0m\x1b[31m${data.error}\x1b[0m\r\n`);
     } catch (err) {
-      xtermRef.current?.write(`\x1b[31mShell Failure: ${err}\x1b[0m\r\n`);
+      xtermRef.current?.writeln(`\r\n\x1b[31;1m[X] SHELL FAILURE: \x1b[0m\x1b[31m${err}\x1b[0m\r\n`);
     }
     
     // Reset Prompt
@@ -455,7 +479,7 @@ export default function UnifiedIDE() {
               <TerminalIcon className="w-3 h-3" />
               <span>Kernel Console</span>
             </div>
-            <div ref={terminalRef} className="h-full w-full opacity-80 group-hover:opacity-100 transition-opacity" />
+            <div ref={terminalRef} className="h-full w-full opacity-80 group-hover:opacity-100 transition-opacity" onTouchStart={() => xtermRef.current?.focus()} />
           </div>
 
         </div>

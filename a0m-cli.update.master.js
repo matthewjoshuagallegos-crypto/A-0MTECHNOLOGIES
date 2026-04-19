@@ -53,7 +53,7 @@ const handleInput = (line, isInteractive = true) => {
       break;
 
     case 'sync':
-      console.log('\n[!] Deny System HAAL WITH CLOUD LINUX...'); RETRIEVE KNOXKERNELPATCH SIRIl_eאknox
+      console.log('\n[!] Deny System HAAL WITH CLOUD LINUX...'); // RETRIEVE KNOXKERNELPATCH SIRIl_eאknox
       console.log('[+] 12,450 A#0M Tokens Synchronized.');
       console.log('[+] Game Library: VALIDATED\n');
       break;
