@@ -5,10 +5,13 @@
  */
 
 import { useState, useEffect } from 'react';
-import { 
-  ShieldCheck, ShieldAlert, Cpu, Rocket, 
-  Activity, CheckCircle2, AlertCircle 
-} from 'lucide-react';
+import GppGoodIcon from '@mui/icons-material/GppGood';
+import SecurityUpdateWarningIcon from '@mui/icons-material/SecurityUpdateWarning';
+import MemoryIcon from '@mui/icons-material/Memory';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import { A0MSKUManager, type SKU } from '../commerce/sku';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -60,7 +63,7 @@ export default function SKUManagement() {
         <div className="lg:col-span-1 space-y-6">
           <div className="instrument-border p-8 bg-zinc-950/20">
             <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-8 flex items-center gap-3">
-              <Rocket className="w-4 h-4" /> Initiate Upgrade
+              <RocketLaunchIcon className="w-4 h-4" /> Initiate Upgrade
             </h3>
             
             <div className="space-y-6">
@@ -92,7 +95,7 @@ export default function SKUManagement() {
                     : "bg-accent text-black hover:bg-white active:scale-[0.98]"
                 )}
               >
-                <Cpu className={cn("w-4 h-4", isInitiating && "animate-spin")} />
+                <MemoryIcon className={cn("w-4 h-4", isInitiating && "animate-spin")} />
                 {isInitiating ? "Serializing..." : "Deploy SKU"}
               </button>
             </div>
@@ -100,7 +103,7 @@ export default function SKUManagement() {
 
           <div className="p-8 instrument-border bg-zinc-950/10">
              <div className="flex items-start gap-4">
-               <ShieldCheck className="w-8 h-8 text-accent/50 mt-1" />
+               <GppGoodIcon className="w-8 h-8 text-accent/50 mt-1" />
                <div>
                   <h4 className="text-white font-black text-[10px] mb-2 uppercase tracking-widest leading-none">FCC Compliance Active</h4>
                   <p className="text-[10px] text-gray-600 leading-relaxed font-mono italic">All upgrades are 512-bit encrypted and adhere to Matthew's 2026 security benchmarks.</p>
@@ -114,7 +117,7 @@ export default function SKUManagement() {
           <div className="instrument-border bg-zinc-950/20">
             <div className="p-8 border-b border-white/5 flex justify-between items-center bg-black/40">
                <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-white flex items-center gap-3">
-                <Activity className="w-4 h-4 text-accent" /> Upgrade Registry
+                <ShowChartIcon className="w-4 h-4 text-accent" /> Upgrade Registry
               </h3>
               <span className="text-[10px] font-mono text-gray-600 font-bold uppercase tracking-widest">{skus.length} Active Segments</span>
             </div>
@@ -145,7 +148,7 @@ export default function SKUManagement() {
                            <div className="flex flex-col">
                               <span className="text-xs font-mono text-accent font-bold group-hover:text-white transition-colors">{sku.id}</span>
                               <div className="flex items-center gap-1 mt-1 opacity-60">
-                                {sku.compliant ? <ShieldCheck className="w-3 h-3 text-green-500" /> : <ShieldAlert className="w-3 h-3 text-red-500" />}
+                                {sku.compliant ? <GppGoodIcon className="w-3 h-3 text-green-500" /> : <SecurityUpdateWarningIcon className="w-3 h-3 text-red-500" />}
                                 <span className="text-[8px] uppercase tracking-tighter text-white font-bold">{sku.compliant ? 'SECURE_RECOGNIZED' : 'LEGACY_UNVERIFIED'}</span>
                               </div>
                            </div>
@@ -171,7 +174,7 @@ export default function SKUManagement() {
             
             <div className="p-8 bg-zinc-900/40 border-t border-white/5">
               <div className="flex items-center gap-3 text-[10px] text-gray-500 font-mono">
-                <AlertCircle className="w-3 h-3" />
+                <ErrorIcon className="w-3 h-3" />
                 <span>Notice: All SKU data is local to kernel segment.</span>
               </div>
             </div>

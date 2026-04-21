@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
-import { DownloadCloud, Play, Code2, Server, CheckCircle2, ChevronRight } from 'lucide-react';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import CodeIcon from '@mui/icons-material/Code';
+import DnsIcon from '@mui/icons-material/Dns';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export default function LibraryMigration() {
   const [migrationState, setMigrationState] = useState<'IDLE' | 'SCANNING' | 'MIGRATING' | 'COMPLETE'>('IDLE');
@@ -7,9 +12,9 @@ export default function LibraryMigration() {
   const [progress, setProgress] = useState(0);
 
   const targets = [
-    { name: 'XBOX NETWORK', icon: <Server className="w-8 h-8 text-green-500" /> },
-    { name: 'PLAYSTATION NETWORK', icon: <Server className="w-8 h-8 text-blue-500" /> },
-    { name: 'STEAM GRID', icon: <Server className="w-8 h-8 text-gray-300" /> },
+    { name: 'XBOX NETWORK', icon: <DnsIcon className="w-8 h-8 text-green-500" /> },
+    { name: 'PLAYSTATION NETWORK', icon: <DnsIcon className="w-8 h-8 text-blue-500" /> },
+    { name: 'STEAM GRID', icon: <DnsIcon className="w-8 h-8 text-gray-300" /> },
   ];
 
   const triggerMigration = () => {
@@ -61,7 +66,7 @@ export default function LibraryMigration() {
                     <p className="text-gray-500 text-sm font-mono mt-1 group-focus:text-accent transition-colors">Waiting for Sync Request</p>
                   </div>
                </div>
-               <ChevronRight className="w-8 h-8 text-gray-600 group-focus:text-white transition-all transform group-focus:translate-x-2" />
+               <ChevronRightIcon className="w-8 h-8 text-gray-600 group-focus:text-white transition-all transform group-focus:translate-x-2" />
             </div>
           ))}
 
@@ -73,7 +78,7 @@ export default function LibraryMigration() {
              }`}
              tabIndex={0}
           >
-             <DownloadCloud className="w-8 h-8" />
+             <CloudDownloadIcon className="w-8 h-8" />
              Initiate Migration Rewrite
           </button>
        </div>
@@ -82,7 +87,7 @@ export default function LibraryMigration() {
        <div className="w-2/3 bg-black border border-white/10 rounded-[3rem] p-10 overflow-hidden flex flex-col relative tv-focus" tabIndex={0}>
           <div className="flex items-center justify-between mb-8 pb-8 border-b border-white/10 flex-shrink-0">
              <div className="flex items-center gap-4">
-                <Code2 className="w-10 h-10 text-accent" />
+                <CodeIcon className="w-10 h-10 text-accent" />
                 <h2 className="text-3xl font-black uppercase">Android Rewrite Compiler</h2>
              </div>
              <div className="text-right">
@@ -108,7 +113,7 @@ export default function LibraryMigration() {
 
           {migrationState === 'COMPLETE' && (
             <div className="absolute inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center z-10 animate-[fadeIn_0.5s_ease-out]">
-               <CheckCircle2 className="w-32 h-32 text-green-500 mb-8 drop-shadow-[0_0_30px_rgba(34,197,94,0.5)]" />
+               <CheckCircleIcon className="w-32 h-32 text-green-500 mb-8 drop-shadow-[0_0_30px_rgba(34,197,94,0.5)]" />
                <h1 className="text-6xl font-black uppercase tracking-tighter text-white mb-4">Library Ported Successfully</h1>
                <p className="text-2xl text-gray-400 font-mono text-center max-w-2xl">
                  Mortal Kombat, Street Fighter 6, and 142 other titles have been successfully rewritten and optimized for the A#0M Android TV Kernel.

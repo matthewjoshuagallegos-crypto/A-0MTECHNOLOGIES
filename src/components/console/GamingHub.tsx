@@ -1,4 +1,7 @@
-import { Play, Plus, HardDriveDownload, Loader2 } from 'lucide-react';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import AddIcon from '@mui/icons-material/Add';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useState } from 'react';
 import NeonDrifter from './games/NeonDrifter';
 import { useA0M } from '../../core/A0MContext';
@@ -55,7 +58,7 @@ export default function GamingHub() {
        {downloadingGame && (
          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center font-sans">
             <div className="bg-zinc-900 border border-white/10 p-16 rounded-[3rem] text-center w-[800px] shadow-2xl">
-               <Loader2 className="w-24 h-24 text-accent animate-spin mx-auto mb-8" />
+               <AutorenewIcon className="w-24 h-24 text-accent animate-spin mx-auto mb-8" />
                <h2 className="text-5xl font-black uppercase tracking-widest text-white mb-4">Allocating Kernel Memory...</h2>
                <p className="text-2xl text-gray-400 font-mono mb-12">Downloading 512-Bit Game Assets</p>
                
@@ -87,13 +90,13 @@ export default function GamingHub() {
                            className="bg-white text-black px-6 py-3 rounded-full flex items-center gap-2 font-bold uppercase focus:ring-4 ring-accent"
                          >
                             {game.downloaded ? (
-                              <><Play className="w-5 h-5 fill-black" /> Play Kernel</>
+                              <><PlayArrowIcon className="w-5 h-5 fill-black" /> Play Kernel</>
                             ) : (
-                              <><HardDriveDownload className="w-5 h-5 text-black" /> Download Node</>
+                              <><CloudDownloadIcon className="w-5 h-5 text-black" /> Download Node</>
                             )}
                          </button>
                          <button className="bg-zinc-800/80 backdrop-blur-md text-white px-6 py-3 rounded-full flex items-center gap-2 font-bold uppercase focus:ring-4 ring-white">
-                            <Plus className="w-5 h-5" /> Details
+                            <AddIcon className="w-5 h-5" /> Details
                          </button>
                       </div>
                     </div>

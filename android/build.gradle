@@ -3,13 +3,13 @@
 // A#0M Authority Console - Build Specification v2026.4.18
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "33.0.0"
+    compileSdkVersion 34 // Upgraded for modern API compatibility
+    buildToolsVersion "34.0.0"
 
     defaultConfig {
         applicationId "com.lteenterprise.realmscollide"
         minSdkVersion 26 // Minimum for modern Android TV (Oreo)
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         
@@ -33,16 +33,17 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        // AGP 8+ Requires Java 17 for internal builds
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
     // Standard UE4 dependencies, plus AndroidX for modern TV support
-    implementation 'androidx.leanback:leanback:1.0.2' 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.leanback:leanback:1.2.0-rc01' // Updated from 1.0.2 for modern 60fps TV rendering
+    implementation 'androidx.appcompat:appcompat:1.7.0' // Updated from 1.6.1 security and bug fixes
+    implementation 'com.google.android.material:material:1.12.0' // Updated from 1.9.0 supporting new Material 3 Tokens
     
     // GGPO Rollback Netcode Native Bridge
     implementation project(':ggpo-android-lib')

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { X, Trophy, Play } from 'lucide-react';
+import CloseIcon from '@mui/icons-material/Close';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 export default function NeonDrifter({ onClose }: { onClose: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -144,12 +146,12 @@ export default function NeonDrifter({ onClose }: { onClose: () => void }) {
          className="absolute top-12 right-12 text-white bg-white/10 p-5 rounded-full hover:bg-white/20 transition-all z-20 outline-none focus:ring-4 ring-white"
          autoFocus={!gameOver}
        >
-         <X className="w-10 h-10" />
+         <CloseIcon className="w-10 h-10" />
        </button>
 
        {gameOver && (
          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 backdrop-blur-md">
-            <Trophy className="w-40 h-40 text-accent mb-10 drop-shadow-[0_0_30px_#D4AF37]" />
+            <EmojiEventsIcon className="w-40 h-40 text-accent mb-10 drop-shadow-[0_0_30px_#D4AF37]" />
             <h1 className="text-8xl font-black text-white uppercase mb-4 tracking-tighter">System Crashed</h1>
             <p className="text-4xl text-gray-400 font-mono mb-16">FINAL SCORE: <span className="text-white">{score}</span></p>
             
@@ -159,7 +161,7 @@ export default function NeonDrifter({ onClose }: { onClose: () => void }) {
                 className="bg-white text-black px-16 py-8 rounded-full font-black text-3xl uppercase tracking-widest hover:scale-110 transition-all outline-none focus:ring-8 ring-accent/50 flex items-center gap-4"
                 autoFocus
               >
-                <Play className="w-8 h-8 fill-black" /> Reboot Protocol
+                <PlayArrowIcon className="w-8 h-8 fill-black" /> Reboot Protocol
               </button>
             </div>
          </div>

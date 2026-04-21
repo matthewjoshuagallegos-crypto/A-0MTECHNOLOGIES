@@ -3,7 +3,12 @@
  * Copyright (c) 2026 Matthew Joshua Gallegos
  */
 
-import { Play, SkipBack, SkipForward, Music, Volume2, ListMusic } from 'lucide-react';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 
 export default function Playlist() {
   const songs = [
@@ -28,7 +33,7 @@ export default function Playlist() {
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300%] h-[300%] border-[20px] border-accent/20 rounded-full animate-[spin_60s_linear_infinite]" />
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250%] h-[250%] border-[10px] border-accent/10 rounded-full animate-[spin_45s_linear_infinite_reverse]" />
               </div>
-              <Music className="w-32 h-32 text-accent mb-12 relative animate-bounce" />
+              <MusicNoteIcon className="w-32 h-32 text-accent mb-12 relative animate-bounce" />
               <div className="text-center relative">
                  <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase">Initializing Waveform...</h3>
                  <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest mt-2">Source: A#0M AUTHORITY BROADCAST</p>
@@ -37,7 +42,7 @@ export default function Playlist() {
 
            <div className="space-y-4">
               <h4 className="text-[11px] font-black uppercase tracking-widest text-[#D4AF37] mb-6 flex items-center gap-3">
-                 <ListMusic className="w-4 h-4" /> SECURE QUEUE
+                 <QueueMusicIcon className="w-4 h-4" /> SECURE QUEUE
               </h4>
               {songs.map((song, i) => (
                 <div key={i} className="flex items-center gap-6 p-4 rounded-2xl hover:bg-white/5 transition-all group cursor-pointer border border-transparent hover:border-white/10">
@@ -57,11 +62,11 @@ export default function Playlist() {
 
       <div className="p-10 bg-zinc-900/50 backdrop-blur-3xl rounded-3xl border border-white/10 flex items-center gap-12 shadow-2xl">
          <div className="flex items-center gap-10">
-            <SkipBack className="w-6 h-6 text-gray-500 hover:text-white cursor-pointer" />
+            <SkipPreviousIcon className="w-6 h-6 text-gray-500 hover:text-white cursor-pointer" />
             <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95 transition-all shadow-[0_0_30px_rgba(212,175,55,0.4)]">
-               <Play className="w-8 h-8 text-black fill-current ml-1" />
+               <PlayArrowIcon className="w-8 h-8 text-black fill-current ml-1" />
             </div>
-            <SkipForward className="w-6 h-6 text-gray-500 hover:text-white cursor-pointer" />
+            <SkipNextIcon className="w-6 h-6 text-gray-500 hover:text-white cursor-pointer" />
          </div>
          
          <div className="flex-1 px-8 border-x border-white/10">
@@ -78,7 +83,7 @@ export default function Playlist() {
          </div>
 
          <div className="flex items-center gap-4">
-            <Volume2 className="w-5 h-5 text-gray-500" />
+            <VolumeUpIcon className="w-5 h-5 text-gray-500" />
             <div className="w-32 h-1 bg-black rounded-full overflow-hidden border border-white/5">
                 <div className="h-full bg-accent w-[80%]" />
             </div>

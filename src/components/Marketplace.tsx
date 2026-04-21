@@ -4,7 +4,12 @@
  */
 
 import { useState } from 'react';
-import { ShoppingCart, Tag, Filter, Search, TrendingUp, Package } from 'lucide-react';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import TagIcon from '@mui/icons-material/Tag';
+import FilterIcon from '@mui/icons-material/Filter';
+import SearchIcon from '@mui/icons-material/Search';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
 
 interface PhysicalAsset {
   id: string;
@@ -32,7 +37,7 @@ export default function Marketplace() {
         </div>
         <div className="flex gap-4">
            <div className="bg-white/5 border border-white/10 flex items-center gap-3 px-4 py-2 rounded-full">
-              <Search className="w-4 h-4 text-gray-500" />
+              <SearchIcon className="w-4 h-4 text-gray-500" />
               <input type="text" placeholder="Search Kernel Shards..." className="bg-transparent text-xs font-mono outline-none text-white w-48" />
            </div>
            <button className="bg-accent text-black font-black uppercase text-[10px] tracking-widest px-6 py-2 rounded-full hover:bg-white transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]">
@@ -66,7 +71,7 @@ export default function Marketplace() {
                     <p className="text-sm font-black text-white">{asset.price.toLocaleString()} A0M</p>
                  </div>
                  <button className="p-2 bg-accent/10 rounded-lg hover:bg-accent text-accent hover:text-black transition-all">
-                    <ShoppingCart className="w-4 h-4" />
+                    <ShoppingCartIcon className="w-4 h-4" />
                  </button>
               </div>
             </div>
@@ -77,7 +82,7 @@ export default function Marketplace() {
       <section className="mt-20 grid grid-cols-1 lg:grid-cols-3 gap-8">
          <div className="lg:col-span-2 p-8 bg-zinc-900/10 rounded-3xl border border-white/5 flex flex-col justify-center">
             <h4 className="text-[11px] font-bold uppercase tracking-widest text-[#D4AF37] mb-4 flex items-center gap-3">
-              <TrendingUp className="w-4 h-4" /> Market Telemetry
+              <TrendingUpIcon className="w-4 h-4" /> Market Telemetry
             </h4>
             <div className="h-48 flex items-end gap-2 overflow-hidden">
                {[40, 60, 30, 80, 50, 90, 70, 45, 85, 30, 50, 75, 95].map((h, i) => (
@@ -86,7 +91,7 @@ export default function Marketplace() {
             </div>
          </div>
          <div className="p-8 premium-card flex flex-col items-center justify-center text-center">
-            <Package className="w-12 h-12 text-accent mb-6" />
+            <Inventory2Icon className="w-12 h-12 text-accent mb-6" />
             <h4 className="text-white font-bold text-lg mb-2">Sovereign Custody</h4>
             <p className="text-[10px] text-gray-500 font-mono leading-relaxed px-4">All marketplace assets are tokenized on-kernel. No third-party custodians are recognized in this segment.</p>
          </div>

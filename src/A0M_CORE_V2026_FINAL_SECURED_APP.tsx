@@ -5,13 +5,28 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { 
-  Folder, FileText, ChevronRight, ChevronDown, 
-  Terminal as TerminalIcon, Save, Shield, Cpu, 
-  Map as MapIcon, Database, Zap, Rocket,
-  ShoppingCart, MessageSquare, Trophy, Music, Radio, Settings, Power,
-  Activity, Globe, HardDrive, Lock
-} from 'lucide-react';
+import FolderIcon from '@mui/icons-material/Folder';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import SaveIcon from '@mui/icons-material/Save';
+import SecurityIcon from '@mui/icons-material/Security';
+import MemoryIcon from '@mui/icons-material/Memory';
+import MapIcon from '@mui/icons-material/Map';
+import StorageIcon from '@mui/icons-material/Storage';
+import BoltIcon from '@mui/icons-material/Bolt';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import RadioIcon from '@mui/icons-material/Radio';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import PublicIcon from '@mui/icons-material/Public';
+import LockIcon from '@mui/icons-material/Lock';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { A0MVAI } from './intelligence/vai';
@@ -40,6 +55,13 @@ interface FileNode {
   children?: FileNode[];
 }
 
+/**
+ * The core Application component for A#0M Captive Portal.
+ * Initializes the booting sequence, parses directory trees, and serves as 
+ * the main router to kernel interface segments (SKU, Marketplace, Terminal, etc.).
+ *
+ * @returns {JSX.Element} The rendered interface of the A#0M environment.
+ */
 export default function App() {
   const [booting, setBooting] = useState(true);
   const [tree, setTree] = useState<FileNode | undefined>(undefined);
@@ -64,6 +86,13 @@ export default function App() {
     terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [terminalOutput]);
 
+  /**
+   * Orchestrates a network call to fetch the VFS (Virtual File System)
+   * tree from the container's backend API.
+   *
+   * @async
+   * @returns {Promise<void>} Resolves when the tree state is updated.
+   */
   const loadTree = async () => {
     try {
       const res = await fetch('/api/explorer/tree');
@@ -74,6 +103,13 @@ export default function App() {
     }
   };
 
+  /**
+   * Retrieves the raw content of a specific path on the disk.
+   * Modifies the UI to focus the explorer frame and decodes the buffer.
+   *
+   * @param {string} path - The absolute or relative path to intercept via backend.
+   * @returns {Promise<void>}
+   */
   const loadFile = async (path: string) => {
     setCurrentPath(path);
     setActiveView('explorer');
@@ -88,6 +124,13 @@ export default function App() {
     }
   };
 
+  /**
+   * Writes the actively edited file content back to the physical device disk.
+   * Manages the React-driven state for UI processing and loading spinners.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
   const saveFile = async () => {
     if (!currentPath) return;
     setIsSaving(true);
@@ -105,6 +148,13 @@ export default function App() {
     }
   };
 
+  /**
+   * Proxies raw shell commands to the backend instance.
+   * Also intercepts 'special' router commands to switch portal views.
+   *
+   * @param {string} cmd - The raw CLI input query
+   * @returns {Promise<void>}
+   */
   const handleCommand = async (cmd: string) => {
     const trimmedCmd = cmd.trim().toLowerCase();
     appendTerminal(`sovereign@a0m:~$ ${cmd}`);
@@ -206,7 +256,7 @@ export default function App() {
         <div className="absolute inset-0 bg-gradient-to-r from-accent/5 to-transparent pointer-events-none" />
         <div className="flex items-center gap-6 relative">
           <div className="p-2 bg-accent/20 rounded-lg border border-accent/20">
-             <Shield className="w-5 h-5 text-accent" />
+             <SecurityIcon className="w-5 h-5 text-accent" />
           </div>
           <div>
              <h1 className="text-[11px] font-black tracking-[0.6em] uppercase text-white leading-none mb-1">
@@ -220,7 +270,7 @@ export default function App() {
         
         <div className="flex items-center gap-10">
            <div className="flex items-center gap-3">
-              <Zap className="w-3 h-3 text-yellow-500" />
+              <BoltIcon className="w-3 h-3 text-yellow-500" />
               <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Latency: 0.1ms</span>
            </div>
            <div className="h-8 w-px bg-white/5" />
@@ -241,7 +291,7 @@ export default function App() {
         <aside className="w-72 bg-card border-r border-border p-6 overflow-y-auto custom-scrollbar shadow-inner flex flex-col gap-10">
           <section>
             <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-600 mb-6 flex items-center gap-2">
-              <Activity className="w-3 h-3 text-accent" /> Segment Metrics
+              <ShowChartIcon className="w-3 h-3 text-accent" /> Segment Metrics
             </h3>
             <div className="space-y-4 px-2">
                <HealthIndicator label="SHARD UPLINK" value="STABLE" status="on" />
@@ -253,25 +303,25 @@ export default function App() {
 
           <section>
             <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-600 mb-6 flex items-center gap-2">
-              <Database className="w-3 h-3" /> System Core
+              <StorageIcon className="w-3 h-3" /> System Core
             </h3>
             <div className="space-y-1">
-              <NavButton icon={<Cpu />} label="Explorer" active={activeView === 'explorer'} onClick={() => setActiveView('explorer')} />
-              <NavButton icon={<Rocket />} label="SKU Registry" active={activeView === 'sku'} onClick={() => setActiveView('sku')} />
-              <NavButton icon={<Radio />} label="Wireless APN" active={activeView === 'apn'} onClick={() => setActiveView('apn')} />
-              <NavButton icon={<Activity />} label="Debug Portal" active={activeView === 'debug'} onClick={() => setActiveView('debug')} />
+              <NavButton icon={<MemoryIcon />} label="Explorer" active={activeView === 'explorer'} onClick={() => setActiveView('explorer')} />
+              <NavButton icon={<RocketLaunchIcon />} label="SKU Registry" active={activeView === 'sku'} onClick={() => setActiveView('sku')} />
+              <NavButton icon={<RadioIcon />} label="Wireless APN" active={activeView === 'apn'} onClick={() => setActiveView('apn')} />
+              <NavButton icon={<ShowChartIcon />} label="Debug Portal" active={activeView === 'debug'} onClick={() => setActiveView('debug')} />
             </div>
           </section>
 
           <section>
             <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-600 mb-6 flex items-center gap-2">
-              <Zap className="w-3 h-3 text-accent" /> Ecosystem
+              <BoltIcon className="w-3 h-3 text-accent" /> Ecosystem
             </h3>
             <div className="space-y-1">
-              <NavButton icon={<ShoppingCart />} label="Marketplace" active={activeView === 'marketplace'} onClick={() => setActiveView('marketplace')} />
-              <NavButton icon={<Trophy />} label="Leaderboard" active={activeView === 'leaderboard'} onClick={() => setActiveView('leaderboard')} />
-              <NavButton icon={<Music />} label="Playlist" active={activeView === 'playlist'} onClick={() => setActiveView('playlist')} />
-              <NavButton icon={<MessageSquare />} label="Courier" active={activeView === 'messenger'} onClick={() => setActiveView('messenger')} />
+              <NavButton icon={<ShoppingCartIcon />} label="Marketplace" active={activeView === 'marketplace'} onClick={() => setActiveView('marketplace')} />
+              <NavButton icon={<EmojiEventsIcon />} label="Leaderboard" active={activeView === 'leaderboard'} onClick={() => setActiveView('leaderboard')} />
+              <NavButton icon={<MusicNoteIcon />} label="Playlist" active={activeView === 'playlist'} onClick={() => setActiveView('playlist')} />
+              <NavButton icon={<ChatBubbleIcon />} label="Courier" active={activeView === 'messenger'} onClick={() => setActiveView('messenger')} />
             </div>
           </section>
 
@@ -283,7 +333,7 @@ export default function App() {
                 </div>
              </div>
              <button className="w-full p-4 bg-red-950/20 text-red-500 rounded-2xl border border-red-500/20 flex items-center justify-center gap-3 hover:bg-red-500 hover:text-white transition-all group">
-                <Power className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                <PowerSettingsNewIcon className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                 <span className="text-[10px] font-black uppercase tracking-widest">Detach Kernel</span>
              </button>
           </div>
@@ -297,7 +347,7 @@ export default function App() {
                  <div className="h-full flex flex-col">
                    <div className="p-6 bg-zinc-950 border-b border-white/5 flex justify-between items-center shadow-xl z-20">
                       <div className="flex items-center gap-4">
-                        <FileText className="w-5 h-5 text-accent" />
+                        <InsertDriveFileIcon className="w-5 h-5 text-accent" />
                         <h4 className="text-sm font-bold text-white font-mono">{currentPath.toUpperCase()}</h4>
                       </div>
                       <button onClick={saveFile} disabled={isSaving} className="gold-button !px-6 !py-2 !text-[9px]">
@@ -313,7 +363,7 @@ export default function App() {
                  </div>
                ) : (
                  <div className="h-full flex flex-col items-center justify-center opacity-40">
-                    <Database className="w-24 h-24 text-accent animate-[pulse_3s_infinite]" />
+                    <StorageIcon className="w-24 h-24 text-accent animate-[pulse_3s_infinite]" />
                     <p className="text-[11px] font-black uppercase tracking-[0.5em] text-accent mt-8">Kernel VFS Active</p>
                     <p className="text-[9px] font-mono text-gray-500 mt-2">Access secure sectors from the system segment</p>
                  </div>
@@ -431,7 +481,7 @@ function TreeNode({ node, onFileClick }: { node: FileNode, onFileClick: (path: s
         )}
       >
         {node.type === 'directory' ? (
-          isOpen ? <ChevronDown className="w-2 h-2" /> : <ChevronRight className="w-2 h-2" />
+          isOpen ? <ExpandMoreIcon className="w-2 h-2" /> : <ChevronRightIcon className="w-2 h-2" />
         ) : <div className="w-2" />}
         <span className="text-[10px] tracking-tight truncate uppercase font-mono">
           {node.name}

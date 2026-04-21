@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Package as PackageIcon, Zap, Cpu, Terminal, CheckCircle2, Loader2, HardDrive, Share2 } from 'lucide-react';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import BoltIcon from '@mui/icons-material/Bolt';
+import MemoryIcon from '@mui/icons-material/Memory';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import SaveIcon from '@mui/icons-material/Save';
+import ShareIcon from '@mui/icons-material/Share';
 import { useA0M } from '../../core/A0MContext';
 
 export default function BuildStation() {
@@ -55,7 +62,7 @@ export default function BuildStation() {
           
           <div className="bg-zinc-900 border border-white/5 rounded-3xl p-8 tv-focus" tabIndex={0}>
              <h3 className="text-xl font-black text-accent uppercase mb-4 flex items-center gap-3">
-                <Cpu className="w-6 h-6" /> ASTC Compression
+                <MemoryIcon className="w-6 h-6" /> ASTC Compression
              </h3>
              <p className="text-gray-400 font-mono text-sm leading-relaxed">
                 Standard format for modern TV chips. Ensures high-res ZBrush/Substance textures remain crisp without exhausting the console's RAM.
@@ -64,7 +71,7 @@ export default function BuildStation() {
 
           <div className="bg-zinc-900 border border-white/5 rounded-3xl p-8 tv-focus" tabIndex={0}>
              <h3 className="text-xl font-black text-white uppercase mb-4 flex items-center gap-3">
-                <Terminal className="w-6 h-6" /> ADB Sideloading
+                <TerminalIcon className="w-6 h-6" /> ADB Sideloading
              </h3>
              <p className="text-gray-400 font-mono text-sm leading-relaxed">
                 Developer Protocol: Connect via Android Debug Bridge and execute <span className="text-accent">adb install -r</span> to push the APK to the enterprise node.
@@ -79,9 +86,9 @@ export default function BuildStation() {
             }`}
           >
             {buildStep === 'IDLE' ? (
-              <><Zap className="w-10 h-10 fill-current" /> Build APK</>
+              <><BoltIcon className="w-10 h-10 fill-current" /> Build APK</>
             ) : (
-              <><Loader2 className="w-10 h-10 animate-spin" /> {buildStep}...</>
+              <><AutorenewIcon className="w-10 h-10 animate-spin" /> {buildStep}...</>
             )}
           </button>
        </div>
@@ -91,7 +98,7 @@ export default function BuildStation() {
           <div className="flex items-center justify-between mb-12 border-b border-white/10 pb-10">
              <div className="flex items-center gap-6">
                 <div className={`p-5 rounded-2xl ${buildStep === 'SUCCESS' ? 'bg-green-500' : 'bg-accent'} text-black shadow-lg`}>
-                  {buildStep === 'SUCCESS' ? <CheckCircle2 className="w-10 h-10" /> : <PackageIcon className="w-10 h-10" />}
+                  {buildStep === 'SUCCESS' ? <CheckCircleIcon className="w-10 h-10" /> : <Inventory2Icon className="w-10 h-10" />}
                 </div>
                 <div>
                    <h3 className="text-3xl font-black uppercase tracking-tight">Deployment Terminal</h3>
@@ -113,7 +120,7 @@ export default function BuildStation() {
              ))}
              {buildStep === 'IDLE' && (
                 <div className="h-full flex flex-col items-center justify-center opacity-20">
-                   <HardDrive className="w-32 h-32 mb-6" />
+                   <SaveIcon className="w-32 h-32 mb-6" />
                    <p className="text-center">Awaiting Build Trigger...<br/>Ready to cook Android (ASTC) content</p>
                 </div>
              )}
@@ -122,7 +129,7 @@ export default function BuildStation() {
           {buildStep === 'SUCCESS' && (
             <div className="absolute inset-0 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center animate-[fadeIn_0.5s_ease-out] z-20">
                <div className="w-40 h-40 bg-green-500 rounded-full flex items-center justify-center mb-10 shadow-[0_0_60px_rgba(34,197,94,0.4)]">
-                 <Share2 className="w-20 h-20 text-black translate-x-1" />
+                 <ShareIcon className="w-20 h-20 text-black translate-x-1" />
                </div>
                <h1 className="text-7xl font-black uppercase tracking-widest text-white mb-6">Device Ready</h1>
                <p className="text-3xl text-gray-300 font-mono text-center max-w-3xl leading-relaxed">

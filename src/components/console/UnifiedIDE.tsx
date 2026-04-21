@@ -1,22 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
-import { 
-  FileCode, 
-  Folder, 
-  ChevronRight, 
-  ChevronDown, 
-  Save, 
-  Play, 
-  Terminal as TerminalIcon, 
-  File, 
-  Cpu, 
-  ShieldCheck, 
-  Search,
-  X,
-  Code2,
-  HardDrive,
-  Wifi,
-  Globe
-} from 'lucide-react';
+import DataObjectIcon from '@mui/icons-material/DataObject';
+import FolderIcon from '@mui/icons-material/Folder';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SaveIcon from '@mui/icons-material/Save';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import MemoryIcon from '@mui/icons-material/Memory';
+import GppGoodIcon from '@mui/icons-material/GppGood';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
+import CodeIcon from '@mui/icons-material/Code';
+import WifiIcon from '@mui/icons-material/Wifi';
+import PublicIcon from '@mui/icons-material/Public';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import 'xterm/css/xterm.css';
@@ -31,6 +28,13 @@ interface FileNode {
   children?: FileNode[];
 }
 
+/**
+ * The Sovereign Unified IDE Component.
+ * Integrates a full Virtual File System (VFS) explorer tree, an active live-editor mapping, 
+ * and a lower-level Terminal emulator (`xterm.js`) directly bound to the backend shell.
+ *
+ * @returns {JSX.Element} The rendered standalone developer environment.
+ */
 export default function UnifiedIDE() {
   const { state, setState } = useA0M();
   const [tree, setTree] = useState<FileNode | null>(null);
@@ -49,11 +53,34 @@ export default function UnifiedIDE() {
   useEffect(() => {
     fetchTree();
     const cleanup = initTerminal();
+    
+    // S = Save shortcut
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        saveFileRef.current();
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    
     return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown);
       cleanup?.();
     };
   }, []);
 
+  const saveFileRef = useRef(saveFile);
+  useEffect(() => {
+    saveFileRef.current = saveFile;
+  }, [saveFile]);
+
+  /**
+   * Contacts the backend to synchronously construct the Virtual File System tree.
+   * Maps directory structure globally for the Sidebar mapping.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
   const fetchTree = async () => {
     setError(null);
     try {
@@ -68,6 +95,11 @@ export default function UnifiedIDE() {
     }
   };
 
+  /**
+   * Modifies the global contextual IDE state with typed content buffer.
+   *
+   * @param {string} newContent - The new raw file text buffer to stage in memory.
+   */
   const setContent = (newContent: string) => {
     setState(prev => ({
       ...prev,
@@ -75,6 +107,11 @@ export default function UnifiedIDE() {
     }));
   };
 
+  /**
+   * Marks a new target node path as the active edited file.
+   *
+   * @param {string | null} newFile - The path string to the focus target.
+   */
   const setActiveFile = (newFile: string | null) => {
     setState(prev => ({
       ...prev,
@@ -82,6 +119,13 @@ export default function UnifiedIDE() {
     }));
   };
 
+  /**
+   * Retrieves file payloads via GET to decode into the primary text editor view.
+   *
+   * @param {string} path - Remote absolute or relative component path.
+   * @async
+   * @returns {Promise<void>}
+   */
   const loadFile = async (path: string) => {
     try {
       const res = await fetch(`/api/explorer/file?path=${encodeURIComponent(path)}`);
@@ -357,13 +401,13 @@ export default function UnifiedIDE() {
         >
           {node.type === 'directory' ? (
             <>
-              {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-              <Folder className={`w-4 h-4 ${isExpanded ? 'text-accent' : 'text-blue-400'}`} />
+              {isExpanded ? <ExpandMoreIcon className="w-3 h-3" /> : <ChevronRightIcon className="w-3 h-3" />}
+              <FolderIcon className={`w-4 h-4 ${isExpanded ? 'text-accent' : 'text-blue-400'}`} />
             </>
           ) : (
             <>
               <div className="w-5" />
-              <FileCode className="w-4 h-4 text-purple-400" />
+              <DataObjectIcon className="w-4 h-4 text-purple-400" />
             </>
           )}
           <span className="text-xs font-mono truncate">{node.name}</span>
@@ -380,12 +424,12 @@ export default function UnifiedIDE() {
       <div className="flex items-center justify-between py-4 mb-4 border-b border-white/5">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3">
-             <Code2 className="w-6 h-6 text-accent" />
+             <CodeIcon className="w-6 h-6 text-accent" />
              <h2 className="text-xl font-black uppercase tracking-tighter text-white">A#0M Unified IDE</h2>
           </div>
           <div className="h-4 w-px bg-white/10" />
           <div className="flex items-center gap-2 text-[10px] font-mono text-gray-500 uppercase tracking-widest">
-            <HardDrive className="w-3 h-3" />
+            <SaveIcon className="w-3 h-3" />
             <span>Root / {activeFile || 'None Selected'}</span>
           </div>
         </div>
@@ -395,12 +439,13 @@ export default function UnifiedIDE() {
              onClick={saveFile}
              disabled={!activeFile || isSaving}
              className="flex items-center gap-2 bg-accent text-black px-4 py-2 rounded-xl text-xs font-black uppercase shadow-lg shadow-accent/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+             title="S = Save"
            >
-             <Save className="w-4 h-4" />
-             {isSaving ? 'Saving...' : 'Save Kernel'}
+             <SaveIcon className="w-4 h-4" />
+             {isSaving ? 'Saving...' : 'Save Kernel (S)'}
            </button>
            <button className="flex items-center gap-2 bg-white/5 text-white px-4 py-2 rounded-xl text-xs font-black uppercase border border-white/5 hover:bg-white/10 transition-all">
-             <Play className="w-4 h-4 text-green-500" />
+             <PlayArrowIcon className="w-4 h-4 text-green-500" />
              Compile
            </button>
         </div>
@@ -413,7 +458,7 @@ export default function UnifiedIDE() {
           <div className="p-5 border-b border-white/5 flex items-center justify-between">
             <span className="text-[10px] font-black uppercase text-gray-500 tracking-widest">Explorer</span>
             <button onClick={fetchTree} className="p-1 hover:bg-white/10 rounded-md transition-all group">
-               <Search className="w-3 h-3 text-gray-600 group-hover:text-accent" />
+               <SearchIcon className="w-3 h-3 text-gray-600 group-hover:text-accent" />
             </button>
           </div>
           <div className="flex-1 overflow-auto p-4 custom-scrollbar">
@@ -445,7 +490,7 @@ export default function UnifiedIDE() {
             <div className="flex items-center justify-between mb-4">
                <div className="flex gap-2">
                   <div className="flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 rounded-lg">
-                    <File className="w-3 h-3 text-accent" />
+                    <InsertDriveFileIcon className="w-3 h-3 text-accent" />
                     <span className="text-[10px] font-mono text-accent uppercase font-bold">{activeFile?.split('/').pop() || 'welcome.a0m'}</span>
                   </div>
                </div>
@@ -466,7 +511,7 @@ export default function UnifiedIDE() {
 
             {/* Editor Decoration */}
             <div className="absolute bottom-6 left-12 flex items-center gap-3 opacity-20 pointer-events-none">
-               <Cpu className="w-10 h-10 text-white" />
+               <MemoryIcon className="w-10 h-10 text-white" />
                <div className="text-[8px] font-black uppercase text-white">
                   <p>Line count: {content.split('\n').length}</p>
                   <p>Sovereign Encoding: UTF-8</p>
@@ -490,7 +535,7 @@ export default function UnifiedIDE() {
            <div className="bg-zinc-950 rounded-[2rem] border border-white/5 p-6 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase text-gray-500">Security</span>
-                <ShieldCheck className="w-4 h-4 text-green-500" />
+                <GppGoodIcon className="w-4 h-4 text-green-500" />
               </div>
               <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
                 <motion.div 
@@ -518,7 +563,7 @@ export default function UnifiedIDE() {
                   <div className="p-3 bg-white/5 rounded-xl border border-white/5 flex flex-col gap-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                         <Wifi className={`w-3 h-3 ${state.network.status === 'CONNECTED' ? 'text-green-500' : 'text-gray-600'}`} />
+                         <WifiIcon className={`w-3 h-3 ${state.network.status === 'CONNECTED' ? 'text-green-500' : 'text-gray-600'}`} />
                          <span className="text-[8px] font-black uppercase text-gray-400">APN STATUS</span>
                       </div>
                       <span className={`text-[8px] font-black uppercase ${

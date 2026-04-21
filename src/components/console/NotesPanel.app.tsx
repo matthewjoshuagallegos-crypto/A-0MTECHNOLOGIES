@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { FileText, Plus, Trash2 } from 'lucide-react';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { notesEngine } from './../../services/NotesEngine.app';
 
 export default function NotesPanel() {
@@ -21,7 +23,7 @@ export default function NotesPanel() {
   return (
     <div className="bg-neutral-950 p-6 rounded-2xl border border-neutral-800 text-neutral-300 font-mono">
       <h2 className="text-sm font-black uppercase text-accent mb-4 flex items-center gap-2">
-        <FileText size={16} /> A#0M Sovereignty Notes
+        <InsertDriveFileIcon  /> A#0M Sovereignty Notes
       </h2>
       <div className="flex gap-2 mb-4">
         <input 
@@ -31,7 +33,7 @@ export default function NotesPanel() {
           placeholder="New note segment..."
         />
         <button onClick={addNote} className="bg-accent text-black px-4 py-2 rounded-lg text-xs font-bold uppercase hover:opacity-90">
-          <Plus size={16} />
+          <AddIcon  />
         </button>
       </div>
       <div className="space-y-2">
@@ -39,7 +41,7 @@ export default function NotesPanel() {
           <div key={note.id} className="bg-neutral-900 p-3 rounded-lg border border-neutral-800 flex justify-between items-center text-xs">
             <span>{note.content}</span>
             <button onClick={() => deleteNote(note.id)} className="text-red-500 hover:text-red-400">
-              <Trash2 size={14} />
+              <DeleteIcon  />
             </button>
           </div>
         ))}

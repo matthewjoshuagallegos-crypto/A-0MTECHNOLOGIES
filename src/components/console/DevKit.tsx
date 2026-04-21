@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Code2, Terminal, Cpu, Network, ShieldCheck, Box, Sword, Globe } from 'lucide-react';
+import CodeIcon from '@mui/icons-material/Code';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import MemoryIcon from '@mui/icons-material/Memory';
+import HubIcon from '@mui/icons-material/Hub';
+import GppGoodIcon from '@mui/icons-material/GppGood';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import HardwareIcon from '@mui/icons-material/Hardware';
+import PublicIcon from '@mui/icons-material/Public';
 
 export default function DevKit() {
   const [activeFile, setActiveFile] = useState<'GRADLE' | 'HEADER' | 'COMBAT' | 'GGPO'>('HEADER');
@@ -80,7 +87,7 @@ class REALMSCOLLIDE_API ARealmsFighter : public ACharacter {
         
         <div className="bg-zinc-900 border border-white/5 rounded-3xl p-8 tv-focus" tabIndex={0}>
           <div className="flex items-center gap-4 mb-6">
-            <Network className="w-8 h-8 text-blue-400" />
+            <HubIcon className="w-8 h-8 text-blue-400" />
             <h3 className="text-2xl font-black uppercase">Rollback Netcode</h3>
           </div>
           <p className="text-gray-400 font-mono text-sm leading-relaxed mb-6">
@@ -93,7 +100,7 @@ class REALMSCOLLIDE_API ARealmsFighter : public ACharacter {
 
         <div className="bg-zinc-950 border border-white/5 rounded-3xl p-8 tv-focus" tabIndex={0}>
           <div className="flex items-center gap-4 mb-6">
-            <ShieldCheck className="w-8 h-8 text-green-400" />
+            <GppGoodIcon className="w-8 h-8 text-green-400" />
             <h3 className="text-2xl font-black uppercase">Android TV Manifest</h3>
           </div>
           <ul className="space-y-3 font-mono text-xs text-gray-500">
@@ -117,25 +124,25 @@ class REALMSCOLLIDE_API ARealmsFighter : public ACharacter {
              onClick={() => setActiveFile('HEADER')}
              className={`p-4 rounded-xl flex items-center justify-center gap-3 font-black uppercase transition-all text-xs ${activeFile === 'HEADER' ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
            >
-             <Code2 className="w-4 h-4" /> Header
+             <CodeIcon className="w-4 h-4" /> Header
            </button>
            <button 
              onClick={() => setActiveFile('COMBAT')}
              className={`p-4 rounded-xl flex items-center justify-center gap-3 font-black uppercase transition-all text-xs ${activeFile === 'COMBAT' ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
            >
-             <Sword className="w-4 h-4" /> Combat
+             <HardwareIcon className="w-4 h-4" /> Combat
            </button>
            <button 
              onClick={() => setActiveFile('GGPO')}
              className={`p-4 rounded-xl flex items-center justify-center gap-3 font-black uppercase transition-all text-xs ${activeFile === 'GGPO' ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
            >
-             <Globe className="w-4 h-4" /> GGPO
+             <PublicIcon className="w-4 h-4" /> GGPO
            </button>
            <button 
              onClick={() => setActiveFile('GRADLE')}
              className={`p-4 rounded-xl flex items-center justify-center gap-3 font-black uppercase transition-all text-xs ${activeFile === 'GRADLE' ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
            >
-             <Box className="w-4 h-4" /> Gradle
+             <InventoryIcon className="w-4 h-4" /> Gradle
            </button>
         </div>
       </div>
@@ -143,7 +150,7 @@ class REALMSCOLLIDE_API ARealmsFighter : public ACharacter {
       {/* Code Editor Preview */}
       <div className="w-2/3 bg-black border border-white/10 rounded-[3-rem] p-10 flex flex-col overflow-hidden relative tv-focus" tabIndex={0}>
          <div className="flex items-center gap-4 mb-8 text-gray-400">
-            <Terminal className="w-6 h-6" />
+            <TerminalIcon className="w-6 h-6" />
             <span className="font-mono text-sm uppercase font-bold tracking-[0.2em]">Source Code Inspection // com.lteenterprise.realmscollide</span>
          </div>
          
@@ -152,7 +159,7 @@ class REALMSCOLLIDE_API ARealmsFighter : public ACharacter {
          </pre>
 
          <div className="absolute bottom-8 right-12 flex items-center gap-4 opacity-30">
-            <Cpu className="w-12 h-12 text-accent" />
+            <MemoryIcon className="w-12 h-12 text-accent" />
             <div className="text-right">
                <p className="text-xs font-black uppercase">Target SDK 33</p>
                <p className="text-xs font-black uppercase">ARM64-V8A Target</p>

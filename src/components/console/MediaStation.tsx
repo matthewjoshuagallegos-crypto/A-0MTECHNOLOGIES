@@ -1,5 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Music as MusicIcon, Disc3 } from 'lucide-react';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import AlbumIcon from '@mui/icons-material/Album';
 
 const playlist = [
   { id: 1, title: 'SOVEREIGN SYNTH', artist: 'A#0M AUDIO LABS', duration: '6:12', cover: 'https://images.unsplash.com/photo-1614613535308-eb5fb8a54f67?auto=format&fit=crop&q=80&w=800&h=800', type: 'FLAC / High-Res', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
@@ -87,7 +93,7 @@ export default function MediaStation() {
              {/* Playing overlay */}
              {isPlaying && (
                <div className="absolute top-8 right-8 z-20 flex items-center justify-center w-16 h-16 bg-black/50 backdrop-blur-md rounded-full shadow-lg border border-white/10">
-                 <Disc3 className="w-8 h-8 text-white animate-[spin_3s_linear_infinite]" />
+                 <AlbumIcon className="w-8 h-8 text-white animate-[spin_3s_linear_infinite]" />
                </div>
              )}
           </div>
@@ -112,18 +118,18 @@ export default function MediaStation() {
              <div className="flex items-center justify-between mt-8">
                 <div className="flex items-center gap-8">
                   <button onClick={prevTrack} className="tv-focus p-4 rounded-full bg-white/5 hover:bg-white/20 text-white" tabIndex={0}>
-                     <SkipBack className="w-10 h-10 fill-current" />
+                     <SkipPreviousIcon className="w-10 h-10 fill-current" />
                   </button>
                   <button onClick={() => setIsPlaying(!isPlaying)} className="tv-focus p-8 rounded-full bg-white text-black hover:scale-110 shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all" tabIndex={0}>
-                     {isPlaying ? <Pause className="w-12 h-12 fill-current" /> : <Play className="w-12 h-12 fill-current ml-2" />}
+                     {isPlaying ? <PauseIcon className="w-12 h-12 fill-current" /> : <PlayArrowIcon className="w-12 h-12 fill-current ml-2" />}
                   </button>
                   <button onClick={nextTrack} className="tv-focus p-4 rounded-full bg-white/5 hover:bg-white/20 text-white" tabIndex={0}>
-                     <SkipForward className="w-10 h-10 fill-current" />
+                     <SkipNextIcon className="w-10 h-10 fill-current" />
                   </button>
                 </div>
                 
                 <div className="flex items-center gap-4 text-gray-400">
-                   <Volume2 className="w-8 h-8" />
+                   <VolumeUpIcon className="w-8 h-8" />
                    <div className="w-32 h-2 bg-white/10 rounded-full overflow-hidden">
                       <div className="w-3/4 h-full bg-white" />
                    </div>
@@ -136,7 +142,7 @@ export default function MediaStation() {
        <div className="w-1/2 bg-zinc-900/40 rounded-[3rem] border border-white/5 p-12 overflow-hidden flex flex-col backdrop-blur-2xl">
           <div className="flex items-center gap-6 mb-12">
             <div className="p-4 bg-accent/20 rounded-2xl">
-               <MusicIcon className="w-10 h-10 text-accent" />
+               <MusicNoteIcon className="w-10 h-10 text-accent" />
             </div>
             <div>
               <h2 className="text-4xl font-black uppercase tracking-widest">Authority Playlist</h2>

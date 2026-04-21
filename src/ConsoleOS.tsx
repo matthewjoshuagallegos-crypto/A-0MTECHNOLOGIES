@@ -1,6 +1,22 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wifi, Gamepad2, Coins, Settings, Radio, Activity, Music, Layers, DownloadCloud, Store, Server, Check, Package as PackageIcon, Code2 as CodeIcon, Terminal as TerminalIcon, Cpu, Search } from 'lucide-react';
+import WifiIcon from '@mui/icons-material/Wifi';
+import GamepadIcon from '@mui/icons-material/Gamepad';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import SettingsIcon from '@mui/icons-material/Settings';
+import RadioIcon from '@mui/icons-material/Radio';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import LayersIcon from '@mui/icons-material/Layers';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import StoreIcon from '@mui/icons-material/Store';
+import DnsIcon from '@mui/icons-material/Dns';
+import CheckIcon from '@mui/icons-material/Check';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import CodeIcon from '@mui/icons-material/Code';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import MemoryIcon from '@mui/icons-material/Memory';
+import SearchIcon from '@mui/icons-material/Search';
 import GamingHub from './components/console/GamingHub';
 import DataVault from './components/console/DataVault';
 import NetworkConnect from './components/console/NetworkConnect';
@@ -15,12 +31,27 @@ import UnifiedIDE from './components/console/UnifiedIDE';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useA0M } from './core/A0MContext';
 
+import VirtualKeyboard from './components/VirtualKeyboard';
+
+/**
+ * The master Controller Interface for the A#0M System TV Mode.
+ * Functions as the top-level operating layout managing primary navigation, status bar updates, 
+ * and orchestration between large layout views like the IDE, Games, and Development interfaces.
+ *
+ * @returns {JSX.Element} The rendered global Console OS structural wrapper.
+ */
 export default function ConsoleOS() {
   const { isSaving } = useA0M();
   const [view, setView] = useState('GAMES');
   const [time, setTime] = useState('');
   const [search, setSearch] = useState('');
 
+  /**
+   * Catches user keyboard inputs originating from the dashboard's system search node.
+   * Maps explicit routing keywords to internal OS views.
+   *
+   * @param {React.KeyboardEvent<HTMLInputElement>} e - Exposes physical input actions
+   */
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (search.trim().toLowerCase() === 'explorer') {
@@ -40,15 +71,15 @@ export default function ConsoleOS() {
   }, []);
 
   const navItems = [
-    { id: 'STORE', icon: <Store className="w-6 h-6"/>, label: 'Store' },
-    { id: 'MIGRATE', icon: <DownloadCloud className="w-6 h-6"/>, label: 'Migration' },
-    { id: 'RENDERER', icon: <Layers className="w-6 h-6"/>, label: '15-Grade' },
-    { id: 'BUILD', icon: <PackageIcon className="w-6 h-6"/>, label: 'Deploy' },
+    { id: 'STORE', icon: <StoreIcon className="w-6 h-6"/>, label: 'Store' },
+    { id: 'MIGRATE', icon: <CloudDownloadIcon className="w-6 h-6"/>, label: 'Migration' },
+    { id: 'RENDERER', icon: <LayersIcon className="w-6 h-6"/>, label: '15-Grade' },
+    { id: 'BUILD', icon: <Inventory2Icon className="w-6 h-6"/>, label: 'Deploy' },
     { id: 'IDE', icon: <CodeIcon className="w-6 h-6"/>, label: 'Sovereign IDE' },
-    { id: 'DEV KIT', icon: <Cpu className="w-6 h-6"/>, label: 'SDK Docs' },
+    { id: 'DEV KIT', icon: <MemoryIcon className="w-6 h-6"/>, label: 'SDK Docs' },
     { id: 'TERMINAL', icon: <TerminalIcon className="w-6 h-6"/>, label: 'Kernel' },
-    { id: 'GAMES', icon: <Gamepad2 className="w-6 h-6"/>, label: 'Library' },
-    { id: 'DATA VAULT', icon: <Coins className="w-6 h-6"/>, label: 'Yield' },
+    { id: 'GAMES', icon: <GamepadIcon className="w-6 h-6"/>, label: 'Library' },
+    { id: 'DATA VAULT', icon: <MonetizationOnIcon className="w-6 h-6"/>, label: 'Yield' },
   ];
 
   return (
@@ -66,7 +97,7 @@ export default function ConsoleOS() {
            </div>
            
            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
                 type="text"
                 placeholder="Search..."
@@ -97,18 +128,18 @@ export default function ConsoleOS() {
          <div className="flex items-center gap-10 text-2xl font-bold text-gray-300">
            {isSaving ? (
              <div className="flex items-center gap-3 text-accent bg-accent/10 px-5 py-2 rounded-full border border-accent/20">
-               <Server className="w-5 h-5 animate-pulse" /> <span className="text-sm font-bold uppercase tracking-widest">Saving to Vault...</span>
+               <DnsIcon className="w-5 h-5 animate-pulse" /> <span className="text-sm font-bold uppercase tracking-widest">Saving to Vault...</span>
              </div>
            ) : (
              <div className="flex items-center gap-3 text-green-500 bg-green-500/10 px-5 py-2 rounded-full border border-green-500/20">
-               <Check className="w-5 h-5" /> <span className="text-sm font-bold uppercase tracking-widest">System Saved</span>
+               <CheckIcon className="w-5 h-5" /> <span className="text-sm font-bold uppercase tracking-widest">System Saved</span>
              </div>
            )}
            <div className="flex items-center gap-3">
-              <Activity className="w-6 h-6 text-green-500 animate-pulse" />
+              <ShowChartIcon className="w-6 h-6 text-green-500 animate-pulse" />
            </div>
            <div className="flex items-center gap-3">
-              <Wifi className="w-8 h-8 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+              <WifiIcon className="w-8 h-8 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
               <span className="font-mono text-xl mr-2">LTEUSA</span>
            </div>
            <div className="font-mono">{time}</div>
@@ -116,6 +147,7 @@ export default function ConsoleOS() {
       </header>
 
       <main className="flex-1 relative overflow-hidden mt-4">
+         <VirtualKeyboard />
          <AnimatePresence mode="wait">
             <motion.div
               key={view}
@@ -138,7 +170,7 @@ export default function ConsoleOS() {
               {view === 'TERMINAL' && <TerminalView />}
               {view === 'SETTINGS' && (
                 <div className="h-full flex items-center justify-center flex-col opacity-50">
-                  <Settings className="w-32 h-32 mb-8 animate-[spin_10s_linear_infinite]" />
+                  <SettingsIcon className="w-32 h-32 mb-8 animate-[spin_10s_linear_infinite]" />
                   <h2 className="text-4xl font-black uppercase tracking-widest">Sovereign Settings</h2>
                   <p className="text-xl font-mono mt-4 text-gray-400">Android Build A21S30i19GP13</p>
                 </div>

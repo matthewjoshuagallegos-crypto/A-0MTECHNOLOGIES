@@ -1,5 +1,5 @@
 // A#0M Secure Kernel Android Build Pipeline
-// Architecture: Android 21 / Level 21
+// Architecture: Android TV (Level 26+)
 // Component: build.gradle
 // Status: Initializing...
 
@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.android.application' version '8.2.0'
+    id 'com.android.application' version '8.2.0' // AGP 8.2.0 requires Java 17
 }
 
 android {
@@ -19,7 +19,7 @@ android {
     compileSdkVersion 34
     defaultConfig {
         applicationId "com.a0m.core.app"
-        minSdkVersion 21
+        minSdkVersion 26 // Aligned to Android TV Minimum (Oreo)
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"

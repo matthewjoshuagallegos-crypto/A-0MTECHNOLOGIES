@@ -3,7 +3,10 @@
  * Copyright (c) 2026 Matthew Joshua Gallegos
  */
 
-import { Trophy, Medal, Award, User, Target } from 'lucide-react';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import PersonIcon from '@mui/icons-material/Person';
+import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 
 interface Entry {
   rank: number;
@@ -34,10 +37,10 @@ export default function Leaderboard() {
            {entries.slice(1, 4).map((entry, i) => (
              <div key={i} className="premium-card p-10 flex flex-col items-center text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-5">
-                   <Trophy className="w-20 h-20" />
+                   <EmojiEventsIcon className="w-20 h-20" />
                 </div>
                 <div className="w-20 h-20 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center mb-6">
-                   {i === 0 ? <Medal className="w-10 h-10 text-accent" /> : <Award className="w-10 h-10 text-gray-500" />}
+                   {i === 0 ? <EmojiEventsIcon className="w-10 h-10 text-accent" /> : <WorkspacePremiumIcon className="w-10 h-10 text-gray-500" />}
                 </div>
                 <h4 className="text-[9px] font-mono text-accent uppercase tracking-widest mb-2">Rank #0{entry.rank}</h4>
                 <p className="text-lg font-black text-white mb-1">{entry.name}</p>
@@ -53,7 +56,7 @@ export default function Leaderboard() {
         <div className="premium-card bg-zinc-900/10">
           <div className="p-8 border-b border-white/5 bg-black/40">
              <h3 className="text-[11px] font-black uppercase tracking-widest text-white flex items-center gap-4">
-                <Target className="w-4 h-4 text-accent" /> Full Segment Registry
+                <GpsFixedIcon className="w-4 h-4 text-accent" /> Full Segment Registry
              </h3>
           </div>
           <div className="divide-y divide-white/5">

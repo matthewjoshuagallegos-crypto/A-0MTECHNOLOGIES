@@ -1,5 +1,11 @@
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { DollarSign, Activity, Database, Server, ChevronRight, RefreshCw, Network } from 'lucide-react';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import StorageIcon from '@mui/icons-material/Storage';
+import DnsIcon from '@mui/icons-material/Dns';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import SyncIcon from '@mui/icons-material/Sync';
+import HubIcon from '@mui/icons-material/Hub';
 import { useA0M } from '../../core/A0MContext';
 
 const data = [
@@ -28,7 +34,7 @@ export default function DataVault() {
           <p className="text-2xl text-gray-400 font-medium">Your telemetry is your property. Monetize your gameplay and network usage instantly.</p>
         </div>
         <button className="tv-focus flex items-center gap-4 bg-accent text-black px-10 py-5 rounded-full font-black uppercase text-2xl" autoFocus tabIndex={0}>
-           <DollarSign className="w-8 h-8" /> Withdraw Payout
+           <AttachMoneyIcon className="w-8 h-8" /> Withdraw Payout
         </button>
       </div>
 
@@ -45,7 +51,7 @@ export default function DataVault() {
               </div>
               <div className="text-right flex items-center gap-4">
                 <button onClick={handleHarvest} className="text-white hover:text-accent outline-none focus:ring-2 ring-accent rounded-full p-2">
-                   <RefreshCw className="w-6 h-6" />
+                   <SyncIcon className="w-6 h-6" />
                 </button>
                 <span className="text-accent font-mono text-3xl font-bold bg-accent/10 px-4 py-2 rounded-xl">+142.5%</span>
               </div>
@@ -76,28 +82,28 @@ export default function DataVault() {
             
             <div className="bg-zinc-900 rounded-[2rem] p-8 border border-white/5 tv-focus group flex flex-col justify-center" tabIndex={0}>
                <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-6">
-                 <Network className="w-8 h-8 text-blue-500" />
+                 <HubIcon className="w-8 h-8 text-blue-500" />
                </div>
                <p className="text-gray-400 text-xl font-bold mb-2 uppercase tracking-widest">Network Stability</p>
                <p className="text-6xl font-mono font-black text-white group-focus:text-blue-400 transition-colors">0.2 MS</p>
                <div className="mt-4 flex items-center text-sm font-bold text-gray-500 uppercase">
-                 <ChevronRight className="w-4 h-4" /> GGPO Rollback Active
+                 <ChevronRightIcon className="w-4 h-4" /> GGPO Rollback Active
                </div>
             </div>
 
             <div className="bg-zinc-900 rounded-[2rem] p-8 border border-white/5 tv-focus group flex flex-col justify-center" tabIndex={0}>
                <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mb-6">
-                 <Database className="w-8 h-8 text-accent" />
+                 <StorageIcon className="w-8 h-8 text-accent" />
                </div>
                <p className="text-gray-400 text-xl font-bold mb-2 uppercase tracking-widest">A#0M Tokens Vaulted</p>
                <p className="text-6xl font-mono font-black text-white group-focus:text-accent transition-colors">{state.tokens.toLocaleString()}</p>
                <div className="mt-4 flex items-center text-sm font-bold text-gray-500 uppercase">
-                 <ChevronRight className="w-4 h-4" /> Go to Exchange
+                 <ChevronRightIcon className="w-4 h-4" /> Go to Exchange
                </div>
             </div>
 
             <div className="bg-zinc-950 rounded-[2rem] p-8 border border-white/5 tv-focus flex items-center gap-6 group" tabIndex={0}>
-               <Server className="w-12 h-12 text-blue-500 group-focus:animate-pulse" />
+               <DnsIcon className="w-12 h-12 text-blue-500 group-focus:animate-pulse" />
                <div>
                  <p className="text-white font-black text-xl mb-1 uppercase tracking-widest">Hardware Node Active</p>
                  <p className="text-blue-400 text-lg font-mono">Selling unused compute...</p>

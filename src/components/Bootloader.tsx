@@ -4,7 +4,10 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { Shield, Cpu, Zap, Lock } from 'lucide-react';
+import SecurityIcon from '@mui/icons-material/Security';
+import MemoryIcon from '@mui/icons-material/Memory';
+import BoltIcon from '@mui/icons-material/Bolt';
+import LockIcon from '@mui/icons-material/Lock';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Bootloader({ onComplete }: { onComplete: () => void }) {
@@ -58,7 +61,7 @@ export default function Bootloader({ onComplete }: { onComplete: () => void }) {
         className="relative flex flex-col items-center text-center"
       >
         <div className="relative mb-12">
-          <Cpu className="w-24 h-24 text-accent animate-pulse" />
+          <MemoryIcon className="w-24 h-24 text-accent animate-pulse" />
           <motion.div 
              animate={{ rotate: 360 }}
              transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
@@ -88,7 +91,7 @@ export default function Bootloader({ onComplete }: { onComplete: () => void }) {
                    exit={{ opacity: 0, scale: 0.95 }}
                    className="flex items-center gap-3 text-left mb-2"
                 >
-                  <Zap className="w-3 h-3 text-accent" />
+                  <BoltIcon className="w-3 h-3 text-accent" />
                   <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{log}</span>
                 </motion.div>
               ))}
@@ -99,10 +102,10 @@ export default function Bootloader({ onComplete }: { onComplete: () => void }) {
 
       <div className="absolute bottom-12 flex gap-12 text-[9px] font-mono text-zinc-700 uppercase tracking-[0.3em]">
         <div className="flex items-center gap-2 italic">
-          <Shield className="w-3 h-3" /> SECURITY_ENFORCED
+          <SecurityIcon className="w-3 h-3" /> SECURITY_ENFORCED
         </div>
         <div className="flex items-center gap-2 italic">
-          <Lock className="w-3 h-3" /> FCC_COMPLIANT
+          <LockIcon className="w-3 h-3" /> FCC_COMPLIANT
         </div>
       </div>
     </div>

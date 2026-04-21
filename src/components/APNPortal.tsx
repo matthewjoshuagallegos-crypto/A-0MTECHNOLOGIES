@@ -4,7 +4,12 @@
  */
 
 import { useState } from 'react';
-import { Wifi, Radio, Signal, Settings2, ShieldCheck, Zap } from 'lucide-react';
+import WifiIcon from '@mui/icons-material/Wifi';
+import RadioIcon from '@mui/icons-material/Radio';
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import SettingsIcon from '@mui/icons-material/Settings';
+import GppGoodIcon from '@mui/icons-material/GppGood';
+import BoltIcon from '@mui/icons-material/Bolt';
 
 export default function APNPortal() {
   const [profiles] = useState([
@@ -21,7 +26,7 @@ export default function APNPortal() {
           <h1 className="text-4xl font-black text-white italic tracking-tighter uppercase leading-none">APN PROFilling</h1>
         </div>
         <div className="bg-accent/10 border border-accent/20 p-6 rounded-3xl flex items-center gap-6">
-           <Signal className="w-10 h-10 text-accent animate-pulse" />
+           <SignalCellularAltIcon className="w-10 h-10 text-accent animate-pulse" />
            <div>
               <p className="text-[9px] font-black text-white uppercase tracking-widest">Active Uplink</p>
               <p className="text-xl font-black text-accent font-mono leading-none">A#0M_USA_512</p>
@@ -32,7 +37,7 @@ export default function APNPortal() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
          <div className="space-y-6">
             <h3 className="text-[11px] font-black uppercase tracking-widest text-white mb-8 flex items-center gap-4">
-               <Radio className="w-4 h-4 text-accent" /> Configured Profiles
+               <RadioIcon className="w-4 h-4 text-accent" /> Configured Profiles
             </h3>
             {profiles.map((p, i) => (
               <div key={i} className="premium-card p-8 bg-zinc-900/20 group hover:border-accent/40 transition-all cursor-pointer">
@@ -41,7 +46,7 @@ export default function APNPortal() {
                        <h4 className="text-lg font-black text-white tracking-tight group-hover:text-accent transition-colors">{p.name}</h4>
                        <p className="text-[10px] font-mono text-gray-500 uppercase">{p.apn}</p>
                     </div>
-                    <Settings2 className="w-4 h-4 text-gray-700 hover:text-white transition-colors" />
+                    <SettingsIcon className="w-4 h-4 text-gray-700 hover:text-white transition-colors" />
                  </div>
                  <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/5">
                     <div>
@@ -64,7 +69,7 @@ export default function APNPortal() {
          <div className="space-y-12">
             <div className="p-10 premium-card bg-gradient-to-br from-zinc-900 to-black relative overflow-hidden">
                <div className="absolute top-0 right-0 p-10 opacity-5 grayscale">
-                  <Wifi className="w-64 h-64" />
+                  <WifiIcon className="w-64 h-64" />
                </div>
                <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-2">Carrier Tunneling</h3>
                <p className="text-[11px] font-mono text-gray-500 uppercase tracking-widest mb-10">Bypassing legacy routing barriers...</p>
@@ -79,7 +84,7 @@ export default function APNPortal() {
                     <div key={i} className="flex justify-between items-center p-4 bg-black/40 border border-white/5 rounded-2xl">
                        <span className="text-[10px] font-black text-white tracking-widest">{row.label.toUpperCase()}</span>
                        <div className="flex items-center gap-3">
-                          <ShieldCheck className="w-3 h-3 text-green-500" />
+                          <GppGoodIcon className="w-3 h-3 text-green-500" />
                           <span className="text-[9px] font-mono text-green-500 font-bold">{row.status}</span>
                        </div>
                     </div>
@@ -93,7 +98,7 @@ export default function APNPortal() {
 
             <div className="p-10 border border-white/10 rounded-[40px] bg-zinc-950/50 flex items-center gap-8">
                <div className="p-6 bg-accent/20 rounded-full">
-                  <Zap className="w-8 h-8 text-accent animate-pulse" />
+                  <BoltIcon className="w-8 h-8 text-accent animate-pulse" />
                </div>
                <div>
                   <h4 className="text-white font-bold text-lg leading-tight">Hyper-Speed Tuning</h4>

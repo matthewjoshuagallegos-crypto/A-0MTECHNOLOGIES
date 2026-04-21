@@ -1,4 +1,9 @@
-import { Router, Radio, Shield, Globe, Lock, Share2 } from 'lucide-react';
+import RouterIcon from '@mui/icons-material/Router';
+import RadioIcon from '@mui/icons-material/Radio';
+import SecurityIcon from '@mui/icons-material/Security';
+import PublicIcon from '@mui/icons-material/Public';
+import LockIcon from '@mui/icons-material/Lock';
+import ShareIcon from '@mui/icons-material/Share';
 import { useState } from 'react';
 
 export default function NetworkConnect() {
@@ -32,19 +37,19 @@ export default function NetworkConnect() {
             tabIndex={0}
           >
             <div className="flex items-center gap-6">
-              <Router className={`w-8 h-8 ${scanning ? 'animate-bounce' : ''}`} /> 
+              <RouterIcon className={`w-8 h-8 ${scanning ? 'animate-bounce' : ''}`} /> 
               {scanning ? "Scanning Uplinks..." : "Scan Environment"}
             </div>
           </button>
 
           <div className="bg-zinc-900 rounded-3xl p-10 border border-white/5 space-y-8 flex-1 relative overflow-hidden">
              <div className="absolute top-0 right-0 p-8 opacity-10">
-               <Shield className="w-32 h-32" />
+               <SecurityIcon className="w-32 h-32" />
              </div>
              <div>
                 <h3 className="text-xl font-bold text-gray-500 uppercase tracking-widest mb-2">Network Security</h3>
                 <div className="flex items-center gap-4 text-green-500">
-                  <Lock className="w-8 h-8" />
+                  <LockIcon className="w-8 h-8" />
                   <span className="text-3xl font-black uppercase">Active</span>
                 </div>
              </div>
@@ -54,7 +59,7 @@ export default function NetworkConnect() {
              <div>
                 <h3 className="text-xl font-bold text-gray-500 uppercase tracking-widest mb-2">Routing Protocol</h3>
                 <div className="flex items-center gap-4 text-white">
-                  <Share2 className="w-8 h-8 text-accent" />
+                  <ShareIcon className="w-8 h-8 text-accent" />
                   <span className="text-2xl font-black uppercase">512-BIT KERNEL TUNNEL</span>
                 </div>
                 <p className="text-gray-400 text-lg mt-4 font-mono leading-relaxed">
@@ -68,7 +73,7 @@ export default function NetworkConnect() {
        <div className="w-2/3">
          <div className="bg-[#0A0A0A] rounded-[2.5rem] p-12 border border-white/10 h-full overflow-y-auto custom-scrollbar shadow-2xl relative">
             <h3 className="text-3xl font-black uppercase tracking-widest mb-10 flex items-center gap-6 text-white pb-6 border-b border-white/10">
-              <Globe className="w-10 h-10 text-accent" /> Available Nodes
+              <PublicIcon className="w-10 h-10 text-accent" /> Available Nodes
             </h3>
             
             <div className="space-y-6">
@@ -87,14 +92,14 @@ export default function NetworkConnect() {
                       {isConnected && <div className="absolute left-0 top-0 bottom-0 w-2 bg-accent" />}
                       
                       <div className="flex items-center gap-8 z-10 pl-4">
-                         <Radio className={`w-12 h-12 ${isConnected ? 'text-accent' : 'text-gray-600'}`} />
+                         <RadioIcon className={`w-12 h-12 ${isConnected ? 'text-accent' : 'text-gray-600'}`} />
                          <div>
                            <h4 className={`text-3xl font-bold ${isConnected ? 'text-accent' : 'text-white'}`}>{net.name}</h4>
                            <div className="flex items-center gap-3 text-lg text-gray-400 mt-2 font-mono uppercase">
                              <span className={isConnected ? "text-white font-bold" : ""}>{isConnected ? 'Connected' : net.type}</span>
                              <span>•</span>
                              <span className="flex items-center gap-2">
-                               {net.secure ? <Lock className="w-4 h-4" /> : null} 
+                               {net.secure ? <LockIcon className="w-4 h-4" /> : null} 
                                {net.secure ? 'Secured' : 'Open Network'}
                              </span>
                            </div>

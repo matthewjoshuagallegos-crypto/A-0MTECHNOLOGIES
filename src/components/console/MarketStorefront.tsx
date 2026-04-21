@@ -1,4 +1,8 @@
-import { ShoppingCart, Server, Shield, Search, Star } from 'lucide-react';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import DnsIcon from '@mui/icons-material/Dns';
+import SecurityIcon from '@mui/icons-material/Security';
+import SearchIcon from '@mui/icons-material/Search';
+import StarIcon from '@mui/icons-material/Star';
 import { useA0M } from '../../core/A0MContext';
 
 export default function MarketStorefront() {
@@ -27,7 +31,7 @@ export default function MarketStorefront() {
           <div>
             <h1 className="text-5xl font-black uppercase text-white mb-2 tracking-tighter shadow-black">A#0M Exchange Platform</h1>
             <p className="text-xl text-accent font-mono uppercase tracking-widest flex items-center gap-3">
-              <Server className="w-5 h-5" /> Secured by Google Private Host Network
+              <DnsIcon className="w-5 h-5" /> Secured by Google Private Host Network
             </p>
           </div>
           <div className="flex gap-4">
@@ -37,10 +41,10 @@ export default function MarketStorefront() {
                   placeholder="SEARCH MARKET..." 
                   className="bg-zinc-900 border border-white/10 text-white font-mono uppercase px-8 py-4 pl-14 rounded-full outline-none w-80 focus:bg-white/10 transition-colors"
                 />
-                <Search className="w-6 h-6 text-gray-500 absolute left-5 top-1/2 -translate-y-1/2" />
+                <SearchIcon className="w-6 h-6 text-gray-500 absolute left-5 top-1/2 -translate-y-1/2" />
              </div>
              <button className="bg-white text-black font-black uppercase px-8 py-4 rounded-full tv-focus flex items-center gap-2">
-                <ShoppingCart className="w-6 h-6" /> {state.tokens.toLocaleString()} A#0M
+                <ShoppingCartIcon className="w-6 h-6" /> {state.tokens.toLocaleString()} A#0M
              </button>
           </div>
        </div>
@@ -59,7 +63,7 @@ export default function MarketStorefront() {
                  >
                    <img src={game.art} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-focus:scale-110" />
                    <div className="absolute top-4 right-4 bg-black/80 backdrop-blur px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
-                      <Star className="w-4 h-4 text-accent fill-accent" />
+                      <StarIcon className="w-4 h-4 text-accent fill-accent" />
                       <span className="text-white font-bold font-mono">15-LAYER CERTIFIED</span>
                    </div>
                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 flex flex-col justify-end">
@@ -74,7 +78,7 @@ export default function MarketStorefront() {
           <div className="bg-zinc-900/50 border border-white/5 rounded-[3rem] p-12 tv-focus group flex gap-12 items-center relative overflow-hidden" tabIndex={0}>
              <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-focus:opacity-100 transition-opacity" />
              <div className="w-24 h-24 bg-blue-500/20 rounded-full flex items-center justify-center shrink-0 border border-blue-500/30">
-                <Shield className="w-12 h-12 text-blue-400" />
+                <SecurityIcon className="w-12 h-12 text-blue-400" />
              </div>
              <div>
                 <h3 className="text-3xl font-black uppercase text-white mb-2">Google Backbone Active</h3>

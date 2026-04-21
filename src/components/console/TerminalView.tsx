@@ -2,8 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import 'xterm/css/xterm.css';
-import { Terminal as TerminalIcon, Cpu, ShieldAlert, CpuIcon } from 'lucide-react';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import MemoryIcon from '@mui/icons-material/Memory';
+import SecurityUpdateWarningIcon from '@mui/icons-material/SecurityUpdateWarning';
 
+/**
+ * Standalone Sovereignty Terminal Console.
+ * Directly proxies Linux/Node commands to the backend securely using `xterm.js`.
+ * 
+ * @returns {JSX.Element} The rendered Terminal Emulator component.
+ */
 export default function TerminalView() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<Terminal | null>(null);
@@ -11,6 +19,14 @@ export default function TerminalView() {
   const [isReady, setIsReady] = useState(false);
   const [currentInput, setCurrentInput] = useState('');
 
+  /**
+   * Processes a raw string command line input and forwards it to the shell API.
+   * Intercepts `a0m` prefixed instructions mapping to local CLI endpoints.
+   * 
+   * @async
+   * @param {string} input - The standard CLI string typed by the user.
+   * @returns {Promise<void>} Resolves when I/O processing is complete.
+   */
   const handleCommand = async (input: string) => {
     const term = xtermRef.current;
     if (!term) return;
@@ -142,7 +158,7 @@ export default function TerminalView() {
            </div>
            <div className="flex flex-col items-end">
               <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">AES-512</span>
-              <ShieldAlert className="w-8 h-8 text-accent mt-1" />
+              <SecurityUpdateWarningIcon className="w-8 h-8 text-accent mt-1" />
            </div>
         </div>
       </div>
@@ -167,7 +183,7 @@ export default function TerminalView() {
         
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 p-10 pointer-events-none opacity-20">
-           <CpuIcon className="w-32 h-32 text-accent" />
+           <MemoryIcon className="w-32 h-32 text-accent" />
         </div>
       </div>
 

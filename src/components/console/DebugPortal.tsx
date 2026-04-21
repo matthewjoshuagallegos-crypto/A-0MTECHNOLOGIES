@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Shield, Cpu, Database, Activity, RefreshCw } from 'lucide-react';
+import SecurityIcon from '@mui/icons-material/Security';
+import MemoryIcon from '@mui/icons-material/Memory';
+import StorageIcon from '@mui/icons-material/Storage';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import SyncIcon from '@mui/icons-material/Sync';
 import { useA0M } from '../../core/A0MContext';
 
 export default function DebugPortal() {
@@ -13,10 +17,10 @@ export default function DebugPortal() {
     <div className="h-full bg-black p-10 flex flex-col gap-8 font-mono">
        <div className="flex justify-between items-center border-b border-white/10 pb-6">
           <h2 className="text-3xl font-black uppercase tracking-widest text-white flex items-center gap-4">
-             <Shield className="w-8 h-8 text-accent" /> Sovereign DebugPortal
+             <SecurityIcon className="w-8 h-8 text-accent" /> Sovereign DebugPortal
           </h2>
           <button onClick={refresh} className="flex items-center gap-2 bg-accent/20 text-accent px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-accent hover:text-black">
-             <RefreshCw className="w-4 h-4" /> Refresh Kernel State
+             <SyncIcon className="w-4 h-4" /> Refresh Kernel State
           </button>
        </div>
 
@@ -24,7 +28,7 @@ export default function DebugPortal() {
           {/* Kernel State */}
           <div className="bg-zinc-950 p-8 rounded-3xl border border-white/5">
              <h3 className="text-xs font-black uppercase text-gray-500 mb-6 flex items-center gap-2">
-                <Cpu className="w-4 h-4" /> Runtime State
+                <MemoryIcon className="w-4 h-4" /> Runtime State
              </h3>
              <pre className="text-xs text-accent whitespace-pre-wrap">
                 {JSON.stringify(state, null, 2)}
@@ -34,7 +38,7 @@ export default function DebugPortal() {
           {/* VFS Audit */}
           <div className="bg-zinc-950 p-8 rounded-3xl border border-white/5">
              <h3 className="text-xs font-black uppercase text-gray-500 mb-6 flex items-center gap-2">
-                <Database className="w-4 h-4" /> VFS Audit Log
+                <StorageIcon className="w-4 h-4" /> VFS Audit Log
              </h3>
              <div className="text-[10px] text-gray-400 space-y-2">
                 <p>[INIT] Kernel Mount Point: /sec/alpha</p>

@@ -4,7 +4,12 @@
  */
 
 import { useState } from 'react';
-import { Send, User, MessageSquare, Terminal, Eye, MoreHorizontal } from 'lucide-react';
+import SendIcon from '@mui/icons-material/Send';
+import PersonIcon from '@mui/icons-material/Person';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 export default function Messenger() {
   const [messages] = useState([
@@ -56,7 +61,7 @@ export default function Messenger() {
 
       <div className="p-4 bg-zinc-900/50 backdrop-blur-2xl rounded-3xl border border-white/10 flex items-center gap-4">
          <div className="p-3 bg-black rounded-2xl text-accent border border-white/5">
-            <Terminal className="w-5 h-5" />
+            <TerminalIcon className="w-5 h-5" />
          </div>
          <input 
            type="text" 
@@ -64,7 +69,7 @@ export default function Messenger() {
            className="flex-1 bg-transparent text-sm font-mono text-white outline-none px-4"
          />
          <button className="p-4 bg-accent text-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-            <Send className="w-5 h-5" />
+            <SendIcon className="w-5 h-5" />
          </button>
       </div>
     </div>

@@ -2,7 +2,10 @@ import { useState, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
-import { Monitor, Cpu, Layers, Camera } from 'lucide-react';
+import MonitorIcon from '@mui/icons-material/Monitor';
+import MemoryIcon from '@mui/icons-material/Memory';
+import LayersIcon from '@mui/icons-material/Layers';
+import CameraIcon from '@mui/icons-material/Camera';
 
 const pipelineData = [
   { tech: 'Blender', proc: 'Base Mesh Generation' },
@@ -86,11 +89,11 @@ export default function RendererEngine() {
         </div>
         <div className="flex gap-6">
            <div className="bg-black border border-white/10 px-8 py-4 rounded-full flex items-center gap-4">
-              <Monitor className="w-6 h-6 text-gray-500" />
+              <MonitorIcon className="w-6 h-6 text-gray-500" />
               <span className="font-black text-xl text-white">8K UHD READY</span>
            </div>
            <div className="bg-accent/20 border border-accent/40 px-8 py-4 rounded-full flex items-center gap-4 focus:ring-4 ring-white tv-focus" tabIndex={0}>
-              <Cpu className="w-6 h-6 text-accent" />
+              <MemoryIcon className="w-6 h-6 text-accent" />
               <span className="font-black text-xl text-accent uppercase tracking-widest">Compile Shaders</span>
            </div>
         </div>
@@ -99,7 +102,7 @@ export default function RendererEngine() {
       <div className="flex gap-10 flex-1 min-h-0">
          <div className="w-2/3 bg-zinc-900/50 rounded-[2rem] border border-white/5 p-8 flex flex-col relative tv-focus" tabIndex={0}>
             <div className="flex items-center gap-4 mb-8">
-               <Layers className="w-8 h-8 text-white" />
+               <LayersIcon className="w-8 h-8 text-white" />
                <h3 className="text-2xl font-black uppercase tracking-widest">WebGL Graph: 15-Layer Depth Allocation</h3>
             </div>
             
@@ -137,7 +140,7 @@ export default function RendererEngine() {
 
             <div className="bg-black border border-white/5 rounded-[2rem] p-8 flex-1 relative overflow-hidden tv-focus group" tabIndex={0}>
                <div className="absolute top-0 right-0 p-6 opacity-10 group-focus:opacity-30 transition-opacity">
-                  <Camera className="w-32 h-32 text-accent" />
+                  <CameraIcon className="w-32 h-32 text-accent" />
                </div>
                <h4 className="text-2xl font-black uppercase text-white mb-6">Pipeline Architecture</h4>
                <div className="text-gray-400 text-sm leading-relaxed font-mono space-y-6 h-full overflow-y-auto pr-4 custom-scrollbar pb-[100px] z-10 relative">
