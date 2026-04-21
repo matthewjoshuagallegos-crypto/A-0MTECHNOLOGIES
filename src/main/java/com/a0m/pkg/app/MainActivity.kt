@@ -1,4 +1,4 @@
-package com.a0m.core.app
+package com.a0m.pkg.app
 
 import android.os.Bundle
 import android.webkit.WebSettings
@@ -29,11 +29,12 @@ class MainActivity : AppCompatActivity() {
         
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
-                // System Handshake Successful
+                // System Handshake Successful - KERNEL SYNCED
             }
         }
         
         // A#0M KERNEL: Connecting to Sovereign Cloud Portal [Internet Sync Mode]
+        // This connects the native package to the high-speed dev gateway
         webView.loadUrl("https://ais-dev-elkuzu4hunxbhnbgvs4a4b-402518551856.us-east1.run.app")
     }
 

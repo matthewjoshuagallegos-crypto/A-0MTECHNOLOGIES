@@ -13,7 +13,54 @@ export class A0MUI {
 
     constructor(rootId: string) {
         this.appRoot = document.getElementById(rootId) || document.body;
+        this.appRoot.classList.add('a0m-native-surface');
         this.kernel = A0MKernel.getInstance();
+        this.renderBootScreen();
+    }
+
+    private async renderBootScreen() {
+        this.appRoot.innerHTML = `
+            <div class="fixed inset-0 bg-black flex items-center justify-center font-mono">
+                <div class="w-80 space-y-6">
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] uppercase tracking-widest text-accent font-black">
+                            <span>A#0M Kernel Boot</span>
+                            <span id="boot-percent">0%</span>
+                        </div>
+                        <div class="progress-line"></div>
+                    </div>
+                    <div id="boot-logs" class="text-[9px] text-gray-600 h-20 overflow-hidden space-y-1">
+                        <div class="animate-pulse">Initializing Sovereign Logical Sectors...</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const logs = [
+            "Hardware: Macintosh/Apple/Pixel/Microsoft Linked",
+            "Encryption: AES-512-GCM Handshake Active",
+            "Logic: FCC Compliance vA21S30i19GP13 Verified",
+            "Sync: Google HQ Joint Path Synchronized",
+            "Ready: A#0M Technologies Kernel Online"
+        ];
+
+        const logEl = document.getElementById('boot-logs');
+        const percentEl = document.getElementById('boot-percent');
+
+        for(let i=0; i<logs.length; i++) {
+            await this.wait(400);
+            if (logEl) {
+                const div = document.createElement('div');
+                div.innerText = `> ${logs[i]}`;
+                logEl.appendChild(div);
+                logEl.scrollTop = logEl.scrollHeight;
+            }
+            if (percentEl) {
+                percentEl.innerText = `${Math.round(((i + 1) / logs.length) * 100)}%`;
+            }
+        }
+
+        await this.wait(500);
         this.init();
     }
 

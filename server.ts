@@ -174,19 +174,21 @@ async function startServer() {
     }
   });
 
-  // Vite Integration
-  if (process.env.NODE_ENV !== 'production') {
+  // Vite Integration - Force static serving for stability in preview
+  const distPath = path.join(process.cwd(), 'dist');
+  if (fs.existsSync(distPath)) {
+    console.log("A#0M KERNEL: SERVING FROM DIST [PRODUCTION MODE]");
+    app.use(express.static(distPath));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  } else {
+    console.log("A#0M KERNEL: STARTING VITE DEV MIDDLEWARE");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
   }
 
   app.listen(PORT, '0.0.0.0', () => {

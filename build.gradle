@@ -15,13 +15,33 @@ plugins {
 }
 
 android {
-    namespace 'com.a0m.core.app'
+    namespace 'com.aom.pkg.app'
     compileSdkVersion 34
     defaultConfig {
-        applicationId "com.a0m.core.app"
-        minSdkVersion 26 // Aligned to Android TV Minimum (Oreo)
+        applicationId "com.aom.pkg.app"
+        minSdkVersion 26
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }

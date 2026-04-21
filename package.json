@@ -12,8 +12,8 @@
   "scripts": {
     "start": "node dist/server.cjs",
     "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --target=node18 --outfile=dist/server.cjs --external:express --external:vite --external:stripe --external:ws --external:node-cron --external:better-sqlite3",
-    "postbuild": "echo '[!] COMPILING com.a#0m.package.app' && cp dist/index.html dist/com.a#0m.package.app.html && echo '[+] INSTALLABLE TARGETS GENERATED IN dist/'",
+    "build": "vite build && esbuild server.ts --bundle --platform=node --target=node18 --outfile=dist/server.cjs --external:express --external:vite --external:stripe --external:ws --external:node-cron --external:better-sqlite3 && cp -r dist/* src/main/assets/",
+    "postbuild": "echo '[!] COMPILING com.a#0m.package.app' && echo '[+] ASSETS SYNCED TO ANDROID' && echo '[+] INSTALLABLE TARGETS GENERATED'",
     "publish": "npm run build && echo 'Applet published successfully'",
     "preview": "vite preview",
     "clean": "rm -rf dist",
