@@ -10,8 +10,8 @@
     "a0m": "./cli.js"
   },
   "scripts": {
-    "start": "node dist/server.cjs",
-    "dev": "tsx server.ts",
+    "start": "node server.cjs",
+    "dev": "node server.cjs",
     "build": "vite build && esbuild server.ts --bundle --platform=node --target=node18 --outfile=dist/server.cjs --external:express --external:vite --external:stripe --external:ws --external:node-cron --external:better-sqlite3 && cp -r dist/* src/main/assets/",
     "postbuild": "echo '[!] COMPILING com.a#0m.package.app' && echo '[+] ASSETS SYNCED TO ANDROID' && echo '[+] INSTALLABLE TARGETS GENERATED'",
     "publish": "npm run build && echo 'Applet published successfully'",
