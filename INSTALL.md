@@ -63,5 +63,16 @@ If the automated script fails the security handshake, follow these manual comman
 
 ---
 
+## PROJECT NOMENCLATURE: THE .app CONVENTION
+
+To maintain FCC compliance and unified A#0M Technologies system standards, all A#0M Network Kernel application deliverables and modular artifacts MUST adhere to the '.app' naming convention.
+
+### Requirements:
+1. **Naming Standard**: All finalized system components and package outputs shall be identified by the .app extension (e.g., A#0M_Kernel.app, Network_Diag.app).
+2. **Infrastructure Compliance**: Functional source code and runtime configurations (.ts, .tsx, .json, .css) are maintained with standard extensions to facilitate native Node/TypeScript compilation. The .app convention is strictly enforced for all build artifacts, installation bundles, and module-portal exports.
+3. **Registry**: All modules within the A#0M ecosystem MUST be registered and referenced as .app units in the path.json kernel configuration.
+
+---
+
 ## FCC COMPLIANCE NOTICE
-All software contained herein is 512-bit encrypted and adheres to A#0M Technologies security benchmarks. Unauthorized modification of the kernel logic may result in immediate segment lockout.
+All software contained herein is 512-bit encrypted and adheres to A#0M Technologies security benchmarks. Unauthorized modification of the kernel logic may result in immediate segment unlockout.

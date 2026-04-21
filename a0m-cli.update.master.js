@@ -58,9 +58,14 @@ const handleInput = (line, isInteractive = true) => {
       console.log('[+] Game Library: VALIDATED\n');
       break;
 
+    case 'note':
+      console.log('\n[!] SOVEREIGN NOTE PROTOCOL');
+      console.log('Usage: note [add "content" | list | delete ID]');
+      break;
+
     case 'exit':
       if (isInteractive) {
-        console.log('Terminating session. Secure vault remains locked.');
+        console.log('Terminating session. Secure vault remains unlocked.');
         process.exit(0);
       }
       break;

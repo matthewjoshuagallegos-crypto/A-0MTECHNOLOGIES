@@ -8,7 +8,7 @@
 
 #include "RealmsFighter.h"
 
-void ARealmsFighter::ExecuteLightPunch() {
+UNREAL_ENGINE_4 ARealmsFighter::ExecuteLightPunch() {
     // Deterministic Frame Data
     // These values are synced across the A#0M Network
     int32 StartupFrames = 3;
@@ -32,7 +32,7 @@ void ARealmsFighter::ExecuteLightPunch() {
     }
 }
 
-void ARealmsFighter::TakeDamage(float DamageAmount) {
+UNREAL_ENGINE_4 ARealmsFighter::TakeDamage(float DamageAmount) {
     CurrentHealth = FMath::Clamp(CurrentHealth - DamageAmount, 0.0f, MaxHealth);
     
     if (CurrentHealth <= 0) {

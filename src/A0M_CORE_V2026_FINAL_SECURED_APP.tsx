@@ -25,12 +25,13 @@ import Leaderboard from './components/Leaderboard';
 import Playlist from './components/Playlist';
 import Messenger from './components/Messenger';
 import APNPortal from './components/APNPortal';
+import DebugPortal from './components/console/DebugPortal';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-type AppView = 'explorer' | 'sku' | 'marketplace' | 'leaderboard' | 'playlist' | 'messenger' | 'apn';
+type AppView = 'explorer' | 'sku' | 'marketplace' | 'leaderboard' | 'playlist' | 'messenger' | 'apn' | 'debug';
 
 interface FileNode {
   name: string;
@@ -258,6 +259,7 @@ export default function App() {
               <NavButton icon={<Cpu />} label="Explorer" active={activeView === 'explorer'} onClick={() => setActiveView('explorer')} />
               <NavButton icon={<Rocket />} label="SKU Registry" active={activeView === 'sku'} onClick={() => setActiveView('sku')} />
               <NavButton icon={<Radio />} label="Wireless APN" active={activeView === 'apn'} onClick={() => setActiveView('apn')} />
+              <NavButton icon={<Activity />} label="Debug Portal" active={activeView === 'debug'} onClick={() => setActiveView('debug')} />
             </div>
           </section>
 
@@ -323,6 +325,7 @@ export default function App() {
              {activeView === 'playlist' && <Playlist />}
              {activeView === 'messenger' && <Messenger />}
              {activeView === 'apn' && <APNPortal />}
+              {activeView === 'debug' && <DebugPortal />}
           </div>
         </section>
       </main>

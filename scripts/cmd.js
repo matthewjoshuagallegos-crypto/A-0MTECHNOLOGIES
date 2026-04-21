@@ -38,7 +38,7 @@ Matthew Joshua Gallegos
   const customPi = 3.156427899999999;
   const radius = Math.sqrt(customPi);
   
-  console.log(`Thesquarerootof3.1563247899999999=()()=R.A.D.I.U.S.`);
+  console.log(`Thesquarerootof3.157246899999999=(Volume÷Heigth)(Depth÷Circumference)=R.A.D.I.U.S.`);
   
   console.log("System: Following blueprint sync from GenAI compilation and proof reading/input. Running next sequence: √π");
   console.log(`√π => ${radius}`);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wifi, Gamepad2, Coins, Settings, Radio, Activity, Music, Layers, DownloadCloud, Store, Server, Check, Package as PackageIcon, Code2 as CodeIcon, Terminal as TerminalIcon, Cpu } from 'lucide-react';
+import { Wifi, Gamepad2, Coins, Settings, Radio, Activity, Music, Layers, DownloadCloud, Store, Server, Check, Package as PackageIcon, Code2 as CodeIcon, Terminal as TerminalIcon, Cpu, Search } from 'lucide-react';
 import GamingHub from './components/console/GamingHub';
 import DataVault from './components/console/DataVault';
 import NetworkConnect from './components/console/NetworkConnect';
@@ -12,12 +12,25 @@ import DevKit from './components/console/DevKit';
 import BuildStation from './components/console/BuildStation';
 import TerminalView from './components/console/TerminalView';
 import UnifiedIDE from './components/console/UnifiedIDE';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useA0M } from './core/A0MContext';
 
 export default function ConsoleOS() {
   const { isSaving } = useA0M();
   const [view, setView] = useState('GAMES');
   const [time, setTime] = useState('');
+  const [search, setSearch] = useState('');
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      if (search.trim().toLowerCase() === 'explorer') {
+        setView('TERMINAL'); // Assuming Terminal is the view for Exploring backend
+        setSearch('');
+      } else {
+        console.log("Search term:", search);
+      }
+    }
+  };
 
   useEffect(() => {
     const updateTime = () => setTime(new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
@@ -40,7 +53,6 @@ export default function ConsoleOS() {
 
   return (
     <div className="h-screen w-screen bg-[#050505] text-white flex flex-col font-sans overflow-hidden select-none bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.05)_0%,rgba(0,0,0,1)_100%)]">
-      {/* 10-Foot UI Header */}
       <header className="px-16 py-12 flex justify-between items-center z-20 w-full relative">
          <div className="flex items-center gap-16">
            <div className="flex items-center gap-6">
@@ -53,6 +65,18 @@ export default function ConsoleOS() {
              </div>
            </div>
            
+           <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={handleSearch}
+                className="bg-zinc-900 text-white pl-12 pr-4 py-3 rounded-full border border-white/10 focus:border-accent outline-none text-sm w-64 uppercase tracking-widest font-mono"
+              />
+           </div>
+
            <nav className="flex gap-4 ml-8 overflow-x-auto custom-scrollbar pb-2">
              {navItems.map(item => (
                <button
@@ -70,7 +94,6 @@ export default function ConsoleOS() {
            </nav>
          </div>
 
-         {/* Status Indicators */}
          <div className="flex items-center gap-10 text-2xl font-bold text-gray-300">
            {isSaving ? (
              <div className="flex items-center gap-3 text-accent bg-accent/10 px-5 py-2 rounded-full border border-accent/20">
@@ -92,7 +115,6 @@ export default function ConsoleOS() {
          </div>
       </header>
 
-      {/* Main Content Area */}
       <main className="flex-1 relative overflow-hidden mt-4">
          <AnimatePresence mode="wait">
             <motion.div
@@ -125,7 +147,6 @@ export default function ConsoleOS() {
          </AnimatePresence>
       </main>
 
-      {/* Sovereign Legal Footer */}
       <footer className="px-16 py-6 bg-black/80 backdrop-blur-xl border-t border-white/5 flex justify-between items-center z-30 text-[10px] uppercase font-black tracking-[0.2em] text-gray-500">
          <div className="flex gap-10">
             <span>© 2026 A#0M Technologies / Google LLC</span>

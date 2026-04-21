@@ -20,6 +20,8 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
+    // Attempt to capture the state of the system
+    console.error("System State at Panic:", localStorage.getItem('A0M_VAULT'));
   }
 
   public render() {

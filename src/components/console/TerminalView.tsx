@@ -9,6 +9,51 @@ export default function TerminalView() {
   const xtermRef = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [currentInput, setCurrentInput] = useState('');
+
+  const handleCommand = async (input: string) => {
+    const term = xtermRef.current;
+    if (!term) return;
+
+    const cmdLine = input.trim();
+    if (!cmdLine) {
+      term.write('\r\n A#0M > ');
+      return;
+    }
+
+    term.writeln(`\r\n\x1b[1;30m[EXEC] \x1b[0m\x1b[37m${cmdLine}\x1b[0m`);
+
+    // Backend Execution Proxy
+    try {
+      let commandToExecute = cmdLine;
+      if (cmdLine.startsWith('a0m ')) {
+        const subCmd = cmdLine.substring(4);
+        commandToExecute = `node cli.js ${subCmd}`;
+      }
+
+      const response = await fetch('/api/explorer/shell', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: commandToExecute })
+      });
+      
+      const data = await response.json();
+      
+      if (data.stdout && data.stdout.trim()) {
+        term.write(`\x1b[32m${data.stdout.replace(/\n/g, '\r\n')}\x1b[0m`);
+      }
+      if (data.stderr && data.stderr.trim()) {
+        term.write(`\r\n\x1b[1;31m[ERROR] \x1b[0m\x1b[31m${data.stderr.replace(/\n/g, '\r\n')}\x1b[0m`);
+      }
+      if (data.error) {
+        term.write(`\r\n\x1b[1;31m[CRITICAL] \x1b[0m\x1b[31;1m${data.error}\x1b[0m\r\n`);
+      }
+    } catch (err) {
+      term.write(`\r\n\x1b[1;31m[SYSTEM CRITICAL] \x1b[0m\x1b[31mConnection Failure: ${err}\x1b[0m\r\n`);
+    }
+
+    term.write('\r\n A#0M > ');
+  };
 
   useEffect(() => {
     if (!terminalRef.current) return;
@@ -17,7 +62,7 @@ export default function TerminalView() {
       cursorBlink: true,
       theme: {
         background: '#0a0a0a',
-        foreground: '#D4AF37', // A#0M Gold
+        foreground: '#D4AF37',
         cursor: '#ffffff',
         selectionBackground: 'rgba(212, 175, 55, 0.3)',
       },
@@ -30,14 +75,9 @@ export default function TerminalView() {
     term.loadAddon(fitAddon);
     term.open(terminalRef.current);
     
-    // Safety delay for DOM layout stabilization before fitting
     setTimeout(() => {
       if (terminalRef.current && terminalRef.current.clientWidth > 0) {
-        try {
-          fitAddon.fit();
-        } catch (e) {
-          console.warn('XTerm fit failed gracefully', e);
-        }
+        fitAddon.fit();
       }
     }, 100);
 
@@ -47,67 +87,21 @@ export default function TerminalView() {
     term.writeln('\x1b[1;33m---------------------------------------------------------\x1b[0m');
     term.writeln('Type \x1b[1;36m"a0m help"\x1b[0m to list available protocols.\r\n');
 
-    let currentInput = '';
-
     term.onKey(({ key, domEvent }) => {
-      const char = key;
       if (domEvent.keyCode === 13) { // Enter
         term.write('\r\n');
         handleCommand(currentInput);
-        currentInput = '';
+        setCurrentInput('');
       } else if (domEvent.keyCode === 8) { // Backspace
         if (currentInput.length > 0) {
-          currentInput = currentInput.slice(0, -1);
+          setCurrentInput(prev => prev.slice(0, -1));
           term.write('\b \b');
         }
-      } else {
-        currentInput += char;
-        term.write(char);
+      } else if (!domEvent.altKey && !domEvent.ctrlKey && !domEvent.metaKey) {
+        setCurrentInput(prev => prev + key);
+        term.write(key);
       }
     });
-
-    const handleCommand = async (input: string) => {
-      const cmd = input.trim();
-      if (!cmd) {
-        term.write('\r\n A#0M > ');
-        return;
-      }
-
-      // Formatting outgoing command
-      term.writeln(`\r\n\x1b[1;30m[EXEC] \x1b[0m\x1b[37m${cmd}\x1b[0m`);
-
-      try {
-        let commandToExecute = cmd;
-        if (cmd.startsWith('a0m ')) {
-            const subCmd = cmd.substring(4);
-            commandToExecute = `node cli.js ${subCmd}`;
-        }
-
-        const response = await fetch('/api/explorer/shell', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ command: commandToExecute })
-        });
-        
-        const data = await response.json();
-        
-        if (data.stdout && data.stdout.trim()) {
-          // Success formatting
-          term.write(`\x1b[32m${data.stdout.replace(/\n/g, '\r\n')}\x1b[0m`);
-        }
-        if (data.stderr && data.stderr.trim()) {
-          // Error formatting
-          term.write(`\r\n\x1b[1;31m[ERROR] \x1b[0m\x1b[31m${data.stderr.replace(/\n/g, '\r\n')}\x1b[0m`);
-        }
-        if (data.error) {
-          term.write(`\r\n\x1b[1;31m[CRITICAL] \x1b[0m\x1b[31;1m${data.error}\x1b[0m\r\n`);
-        }
-      } catch (err) {
-        term.write(`\r\n\x1b[1;31m[SYSTEM CRITICAL] \x1b[0m\x1b[31mConnection Failure: ${err}\x1b[0m\r\n`);
-      }
-
-      term.write('\r\n A#0M > ');
-    };
 
     term.write(' A#0M > ');
     xtermRef.current = term;
@@ -115,13 +109,7 @@ export default function TerminalView() {
     setIsReady(true);
 
     const handleResize = () => {
-      if (terminalRef.current && terminalRef.current.clientWidth > 0) {
-        try {
-          fitAddon.fit();
-        } catch (e) {
-          // Graceful handling for hidden terminal resize events
-        }
-      }
+      try { fitAddon.fit(); } catch (e) {}
     };
     window.addEventListener('resize', handleResize);
 
@@ -129,7 +117,7 @@ export default function TerminalView() {
       window.removeEventListener('resize', handleResize);
       term.dispose();
     };
-  }, []);
+  }, [currentInput]);
 
   return (
     <div className="h-full flex flex-col p-16 gap-10">
@@ -162,6 +150,21 @@ export default function TerminalView() {
       <div className="flex-1 bg-black rounded-[3.5rem] border border-white/10 p-10 overflow-hidden shadow-2xl relative group">
         <div ref={terminalRef} className="h-full w-full opacity-90 group-focus-within:opacity-100 transition-opacity" />
         
+        <div className="absolute bottom-10 right-10 flex gap-4">
+           <button 
+             onClick={() => {
+               if (currentInput.trim()) {
+                 xtermRef.current?.write('\r\n');
+                 handleCommand(currentInput);
+                 setCurrentInput('');
+               }
+             }}
+             className="bg-accent text-black font-black px-6 py-3 rounded-full hover:bg-white transition-all shadow-lg flex items-center gap-2"
+           >
+             RUN COMMAND
+           </button>
+        </div>
+        
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 p-10 pointer-events-none opacity-20">
            <CpuIcon className="w-32 h-32 text-accent" />
@@ -171,7 +174,7 @@ export default function TerminalView() {
       <div className="flex justify-between items-center text-[10px] font-black text-gray-600 uppercase tracking-[0.3em]">
          <div className="flex gap-10">
             <span>ADB STACK: OPERATIONAL</span>
-            <span>LTEUSA: DISCONNECTED</span>
+            <span>LTEUSA: CONNECTED</span>
          </div>
          <div className="flex gap-10">
             <span>KRNL_REV: 2026.4.19.GP</span>

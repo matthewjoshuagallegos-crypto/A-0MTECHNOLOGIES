@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { eventBus } from '../services/A0MEventBus.app';
+import { kernelEngine } from '../services/A0MKernelEngine.app';
 
 export type GameObj = { 
     id: number; 
@@ -56,19 +58,26 @@ const defaultState: AppState = {
 const A0MContext = createContext<{
     state: AppState, 
     setState: React.Dispatch<React.SetStateAction<AppState>>, 
-    isSaving: boolean
+    isSaving: boolean,
+    eventBus: typeof eventBus,
+    kernelEngine: typeof kernelEngine
 } | null>(null);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('A0M_VAULT');
-    if (!saved) return defaultState;
     try {
+      const saved = localStorage.getItem('A0M_VAULT');
+      if (!saved) return defaultState;
       const parsed = JSON.parse(saved);
-      // Ensure schema compliance by merging with defaultState
+      
+      // Ensure basic structure exists
+      if (!parsed || typeof parsed !== 'object') return defaultState;
+      
+      // Deep merge with defaultState to guarantee all required fields exist
       return {
         ...defaultState,
         ...parsed,
+        library: Array.isArray(parsed.library) ? parsed.library : defaultState.library,
         ide: {
           ...defaultState.ide,
           ...(parsed.ide || {})
@@ -79,7 +88,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
       };
     } catch (e) {
-      console.warn("Vault Corruption Detected: Resetting to clean state");
+      console.error("Vault Corruption detected, resetting to default", e);
+      localStorage.removeItem('A0M_VAULT');
       return defaultState;
     }
   });
@@ -112,7 +122,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   }, [state]);
 
   return (
-    <A0MContext.Provider value={{ state, setState, isSaving }}>
+    <A0MContext.Provider value={{ state, setState, isSaving, eventBus, kernelEngine }}>
         {children}
     </A0MContext.Provider>
   );

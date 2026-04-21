@@ -25,6 +25,7 @@ export class SecureKernelUpgradeManager {
   }
 
   public getUpgradeRegistry(): SKU[] {
+    console.log("Registry Access:", this.upgradeRegistry);
     return [...this.upgradeRegistry];
   }
 }
